@@ -22,13 +22,15 @@ import java.util.List;
  * @author mode 2021/5/21 19:56
  */
 public interface ForeignKeyTriggers extends java.util.EventListener {
-    public boolean supportForeignRename();
-
     public List<String> createForeignKey(TriggerContext buildContext, String catalog, String schema, String table, //
             EForeignKey foreignKeyInfo);
 
     public List<String> dropForeignKey(TriggerContext buildContext, String catalog, String schema, String table, //
             EForeignKey foreignKeyInfo);
+
+    public default boolean supportForeignRename() {
+        return true;
+    }
 
     public List<String> foreignKeyRename(TriggerContext buildContext, String catalog, String schema, String table,//
             EForeignKey foreignKeyInfo, String newForeignKeyName);

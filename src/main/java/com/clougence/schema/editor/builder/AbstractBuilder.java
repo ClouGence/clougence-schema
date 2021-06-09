@@ -15,11 +15,8 @@
  */
 package com.clougence.schema.editor.builder;
 import com.clougence.schema.editor.EditorContext;
-import com.clougence.schema.editor.builder.actions.Action;
-import com.clougence.schema.editor.domain.EColumn;
-import com.clougence.schema.editor.domain.EForeignKey;
-import com.clougence.schema.editor.domain.EIndex;
-import com.clougence.schema.editor.domain.EPrimaryKey;
+import com.clougence.schema.editor.builder.actions.*;
+import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.BuilderProvider;
 import com.clougence.schema.editor.triggers.TriggerContext;
 import com.clougence.schema.metadata.CaseSensitivityType;
@@ -69,7 +66,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.tableRename(buildContext(), catalog, schema, table, newName);
-            this.actions.add(context.getActionBuilder().buildTableRename(sqlString, catalog, schema, table, newName));
+            this.actions.add(new TableRenameAction(sqlString, catalog, schema, table, newName));
         }
     }
 
@@ -80,7 +77,18 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.tableComment(buildContext(), catalog, schema, table, comment);
-            this.actions.add(context.getActionBuilder().buildTableComment(sqlString, catalog, schema, table, comment));
+            this.actions.add(new TableCommentAction(sqlString, catalog, schema, table, comment));
+        }
+    }
+
+    protected void triggerTableCreate(boolean beAffected, String catalog, String schema, String table, ETable eTable) {
+        BuilderProvider provider = context.getBuilderProvider();
+        if (provider == null) {
+            return;
+        }
+        if (context.isIncludeAffected() || !beAffected) {
+            List<String> sqlString = provider.tableCreate(buildContext(), catalog, schema, table, eTable);
+            this.actions.add(new TableCreateAction(sqlString, catalog, schema, table, eTable));
         }
     }
     // -------------------------------------------------------------------------------------------------------------------------- Column
@@ -92,7 +100,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.addColumn(buildContext(), catalog, schema, table, columnInfo);
-            this.actions.add(context.getActionBuilder().buildColumnAdd(sqlString, catalog, schema, table, columnInfo));
+            this.actions.add(new ColumnAddAction(sqlString, catalog, schema, table, columnInfo));
         }
     }
 
@@ -103,7 +111,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.dropColumn(buildContext(), catalog, schema, table, columnInfo);
-            this.actions.add(context.getActionBuilder().buildColumnDrop(sqlString, catalog, schema, table, columnInfo));
+            this.actions.add(new ColumnDropAction(sqlString, catalog, schema, table, columnInfo));
         }
     }
 
@@ -114,7 +122,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.columnRename(buildContext(), catalog, schema, table, columnInfo, newColumnName);
-            this.actions.add(context.getActionBuilder().buildColumnRename(sqlString, catalog, schema, table, columnInfo, newColumnName));
+            this.actions.add(new ColumnRenameAction(sqlString, catalog, schema, table, columnInfo, newColumnName));
         }
     }
 
@@ -125,7 +133,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.columnChange(buildContext(), catalog, schema, table, columnInfo, newInfo, diffChange);
-            this.actions.add(context.getActionBuilder().buildColumnChangeType(sqlString, catalog, schema, table, columnInfo, newInfo, diffChange));
+            this.actions.add(new ColumnChangeTypeAction(sqlString, catalog, schema, table, columnInfo, newInfo, diffChange));
         }
     }
 
@@ -136,7 +144,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.columnComment(buildContext(), catalog, schema, table, columnInfo, comment);
-            this.actions.add(context.getActionBuilder().buildColumnComment(sqlString, catalog, schema, table, columnInfo, comment));
+            this.actions.add(new ColumnCommentAction(sqlString, catalog, schema, table, columnInfo, comment));
         }
     }
 
@@ -148,7 +156,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.createPrimaryKey(buildContext(), catalog, schema, table, primaryInfo);
-            this.actions.add(context.getActionBuilder().buildPrimaryKeyCreate(sqlString, catalog, schema, table, primaryInfo));
+            this.actions.add(new PrimaryKeyCreateAction(sqlString, catalog, schema, table, primaryInfo));
         }
     }
 
@@ -159,7 +167,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.dropPrimaryKey(buildContext(), catalog, schema, table, primaryInfo);
-            this.actions.add(context.getActionBuilder().buildPrimaryKeyDrop(sqlString, catalog, schema, table, primaryInfo));
+            this.actions.add(new PrimaryKeyDropAction(sqlString, catalog, schema, table, primaryInfo));
         }
     }
 
@@ -170,7 +178,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.primaryKeyAddColumn(buildContext(), catalog, schema, table, primaryInfo, needAddColumns);
-            this.actions.add(context.getActionBuilder().buildPrimaryKeyAddColumn(sqlString, catalog, schema, table, primaryInfo, needAddColumns));
+            this.actions.add(new PrimaryKeyAddColumnAction(sqlString, catalog, schema, table, primaryInfo, needAddColumns));
         }
     }
 
@@ -181,7 +189,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.primaryKeyDropColumn(buildContext(), catalog, schema, table, primaryInfo, needRemoveColumns);
-            this.actions.add(context.getActionBuilder().buildPrimaryKeyDropColumn(sqlString, catalog, schema, table, primaryInfo, needRemoveColumns));
+            this.actions.add(new PrimaryKeyDropColumnAction(sqlString, catalog, schema, table, primaryInfo, needRemoveColumns));
         }
     }
     // -------------------------------------------------------------------------------------------------------------------------- Index
@@ -193,7 +201,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.createIndex(buildContext(), catalog, schema, table, indexInfo);
-            this.actions.add(context.getActionBuilder().buildIndexCreate(sqlString, catalog, schema, table, indexInfo));
+            this.actions.add(new IndexCreateAction(sqlString, catalog, schema, table, indexInfo));
         }
     }
 
@@ -204,7 +212,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.indexRename(buildContext(), catalog, schema, table, indexInfo, newIndexName);
-            this.actions.add(context.getActionBuilder().buildIndexRename(sqlString, catalog, schema, table, indexInfo, newIndexName));
+            this.actions.add(new IndexRenameAction(sqlString, catalog, schema, table, indexInfo, newIndexName));
         }
     }
 
@@ -215,7 +223,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.dropIndex(buildContext(), catalog, schema, table, indexInfo);
-            this.actions.add(context.getActionBuilder().buildIndexDrop(sqlString, catalog, schema, table, indexInfo));
+            this.actions.add(new IndexDropAction(sqlString, catalog, schema, table, indexInfo));
         }
     }
 
@@ -226,7 +234,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.indexAddColumn(buildContext(), catalog, schema, table, indexInfo, needAddColumns);
-            this.actions.add(context.getActionBuilder().buildIndexAddColumn(sqlString, catalog, schema, table, indexInfo, needAddColumns));
+            this.actions.add(new IndexAddColumnAction(sqlString, catalog, schema, table, indexInfo, needAddColumns));
         }
     }
 
@@ -237,7 +245,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.indexDropColumn(buildContext(), catalog, schema, table, indexInfo, needRemoveColumns);
-            this.actions.add(context.getActionBuilder().buildIndexDropColumn(sqlString, catalog, schema, table, indexInfo, needRemoveColumns));
+            this.actions.add(new IndexDropColumnAction(sqlString, catalog, schema, table, indexInfo, needRemoveColumns));
         }
     }
     // -------------------------------------------------------------------------------------------------------------------------- ForeignKey
@@ -249,7 +257,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.createForeignKey(buildContext(), catalog, schema, table, foreignKeyInfo);
-            this.actions.add(context.getActionBuilder().buildForeignKeyCreate(sqlString, catalog, schema, table, foreignKeyInfo));
+            this.actions.add(new ForeignKeyCreateAction(sqlString, catalog, schema, table, foreignKeyInfo));
         }
     }
 
@@ -260,7 +268,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.dropForeignKey(buildContext(), catalog, schema, table, foreignKeyInfo);
-            this.actions.add(context.getActionBuilder().buildForeignKeyDrop(sqlString, catalog, schema, table, foreignKeyInfo));
+            this.actions.add(new ForeignKeyDropAction(sqlString, catalog, schema, table, foreignKeyInfo));
         }
     }
 
@@ -271,7 +279,7 @@ public class AbstractBuilder {
         }
         if (context.isIncludeAffected() || !beAffected) {
             List<String> sqlString = provider.foreignKeyRename(buildContext(), catalog, schema, table, foreignKeyInfo, newForeignKeyName);
-            this.actions.add(context.getActionBuilder().buildForeignRename(sqlString, catalog, schema, table, foreignKeyInfo, newForeignKeyName));
+            this.actions.add(new ForeignRenameAction(sqlString, catalog, schema, table, foreignKeyInfo, newForeignKeyName));
         }
     }
 }

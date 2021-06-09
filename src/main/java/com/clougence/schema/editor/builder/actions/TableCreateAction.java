@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.editor.triggers;
+package com.clougence.schema.editor.builder.actions;
 import com.clougence.schema.editor.domain.ETable;
+import lombok.Getter;
 
 import java.util.List;
 
 /**
- * @author mode 2021/5/21 19:56
+ * @author mode 2021/6/8 19:56
  */
-public interface TableTriggers extends java.util.EventListener {
-    public default boolean supportTableRename() {
-        return true;
+@Getter
+public class TableCreateAction extends Action {
+    private final ETable tableInfo;
+
+    public TableCreateAction(List<String> sqlString, String catalog, String schema, String table, ETable tableInfo) {
+        super(sqlString, catalog, schema, table);
+        this.tableInfo = tableInfo.clone();
     }
-
-    public List<String> tableRename(TriggerContext buildContext, String catalog, String schema, String table, String newName);
-
-    public List<String> tableComment(TriggerContext buildContext, String catalog, String schema, String table, String comment);
-
-    public List<String> tableCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable);
 }

@@ -236,16 +236,8 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
             throw new NullPointerException("table contains at least one column.");
         }
         if (this.context.getBuilderProvider() == null) {
-            throw new NullPointerException("the triggerServices is not ready.");
+            throw new NullPointerException("the builderProvider is not ready.");
         }
-        //
-        CreateSqlBuilder createSqlBuilder = this.context.getBuilderProvider().getCreateSqlBuild(this.context.getDsIdentity());
-        List<String> sqlList = createSqlBuilder.buildCreate(this.buildContext(), this.eTable);
-        if (sqlList != null) {
-            List<Action> actions = sqlList.stream().map(s -> {
-                return ActionBuilder.buildSql(Collections.singletonList(s));
-            }).collect(Collectors.toList());
-            this.actions.addAll(actions);
-        }
+        super.triggerTableCreate(this.beAffected, this.eTable.getCatalog(), this.eTable.getSchema(), this.eTable.getName(), this.eTable);
     }
 }

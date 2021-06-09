@@ -22,13 +22,15 @@ import java.util.List;
  * @author mode 2021/5/21 19:56
  */
 public interface ColumnTriggers extends java.util.EventListener {
-    public boolean supportColumnRename();
-
     public List<String> addColumn(TriggerContext buildContext, String catalog, String schema, String table,    //
             EColumn columnInfo);
 
     public List<String> dropColumn(TriggerContext buildContext, String catalog, String schema, String table,   //
             EColumn columnInfo);
+
+    public default boolean supportColumnRename() {
+        return true;
+    }
 
     public List<String> columnRename(TriggerContext buildContext, String catalog, String schema, String table, //
             EColumn columnInfo, String newColumnName);

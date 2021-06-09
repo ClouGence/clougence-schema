@@ -22,16 +22,18 @@ import java.util.List;
  * @author mode 2021/5/21 19:56
  */
 public interface IndexTriggers extends java.util.EventListener {
-    public boolean supportIndexRename();
-
     public List<String> createIndex(TriggerContext buildContext, String catalog, String schema, String table,//
             EIndex indexInfo);
 
-    public List<String> indexRename(TriggerContext buildContext, String catalog, String schema, String table,//
-            EIndex indexInfo, String newIndexName);
-
     public List<String> dropIndex(TriggerContext buildContext, String catalog, String schema, String table,//
             EIndex indexInfo);
+
+    public default boolean supportIndexRename() {
+        return true;
+    }
+
+    public List<String> indexRename(TriggerContext buildContext, String catalog, String schema, String table,//
+            EIndex indexInfo, String newIndexName);
 
     public List<String> indexAddColumn(TriggerContext buildContext, String catalog, String schema, String table, //
             EIndex indexInfo, List<String> needAddColumns);
