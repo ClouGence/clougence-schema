@@ -34,4 +34,8 @@ public abstract class Action {
         this.schema = schema;
         this.table = table;
     }
+
+    public final WarnLevel getWarnLevel() {
+        return WarnLevel.Normal;
+    }
 }

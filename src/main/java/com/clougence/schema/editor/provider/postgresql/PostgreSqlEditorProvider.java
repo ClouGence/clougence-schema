@@ -1,4 +1,4 @@
-package com.clougence.schema.editor.provider.mysql;
+package com.clougence.schema.editor.provider.postgresql;
 import com.clougence.schema.DataSourceType;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.AbstractProvider;
@@ -16,10 +16,10 @@ import java.util.List;
  * @author mode 2021/1/8 19:56
  */
 @Slf4j
-public class MySqlEditorProvider extends AbstractProvider implements BuilderProvider {
+public class PostgreSqlEditorProvider extends AbstractProvider implements BuilderProvider {
     @Override
     protected DataSourceType getDataSourceType() {
-        return DataSourceType.MySQL;
+        return DataSourceType.PostgreSQL;
     }
 
     protected StringBuilder buildAlterTable(TriggerContext buildContext, String catalog, String schema, String table) {
@@ -40,33 +40,33 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
     public List<String> tableRename(TriggerContext buildContext, String catalog, String schema, String table, String newName) {
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
+        StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
-        StringBuilder sqlBuild = new StringBuilder();
-        sqlBuild.append("rename table ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-            sqlBuild.append(" to ");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, newName));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
-            sqlBuild.append(" to ");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, newName));
-        }
+        sqlBuild.append(" rename to ");
+        sqlBuild.append(fmtName(useDelimited, caseSensitivity, newName));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
 
     @Override
     public List<String> tableComment(TriggerContext buildContext, String catalog, String schema, String table, String comment) {
-        StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
+        boolean useDelimited = buildContext.isUseDelimited();
+        CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         //
-        sqlBuild.append(" comment '" + comment + "';");
+        StringBuilder sqlBuild = new StringBuilder();
+        sqlBuild.append("comment on table ");
+        if (StringUtils.isBlank(schema)) {
+            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
+        } else {
+            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
+        }
+        sqlBuild.append(" is '" + comment + "';");
         return Collections.singletonList(sqlBuild.toString());
     }
 
     @Override
     public List<String> tableCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable) {
-        return new MySqlCreateUtils().buildCreate(buildContext, catalog, schema, table, eTable);
+        return new PostgreSqlCreateUtils().buildCreate(buildContext, catalog, schema, table, eTable);
     }
 
     @Override
@@ -76,12 +76,14 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
         sqlBuild.append(" add " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
-        sqlBuild.append(" " + MySqlProviderUtils.buildColumnType(columnInfo));
-        if (StringUtils.isNotBlank(columnInfo.getComment())) {
-            sqlBuild.append(" comment '" + columnInfo.getComment() + "'");
-        }
+        sqlBuild.append(" " + PostgreSqlProviderUtils.buildColumnType(columnInfo));
         sqlBuild.append(";");
-        return Collections.singletonList(sqlBuild.toString());
+        //
+        ArrayList<String> columnScripts = new ArrayList<>();
+        columnScripts.add(sqlBuild.toString());
+        //
+        columnScripts.addAll(columnComment(buildContext, catalog, schema, table, columnInfo, columnInfo.getComment()));
+        return columnScripts;
     }
 
     @Override
@@ -89,8 +91,10 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
-        //
         sqlBuild.append(" drop column " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        if (buildContext.isCascade()) {
+            sqlBuild.append(" cascade");
+        }
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -100,13 +104,9 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
-        //
-        sqlBuild.append(" change column " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
-        sqlBuild.append(" " + fmtName(useDelimited, caseSensitivity, newColumnName));
-        sqlBuild.append(MySqlProviderUtils.buildColumnType(columnInfo));
-        if (StringUtils.isNotBlank(columnInfo.getComment())) {
-            sqlBuild.append(" comment '" + columnInfo.getComment() + "'");
-        }
+        sqlBuild.append(" rename column ");
+        sqlBuild.append(fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        sqlBuild.append(" to " + fmtName(useDelimited, caseSensitivity, newColumnName));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -117,21 +117,33 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
-        sqlBuild.append(" modify column " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
-        sqlBuild.append(MySqlProviderUtils.buildColumnType(newInfo));
-        if (StringUtils.isNotBlank(newInfo.getComment())) {
-            sqlBuild.append(" comment '" + newInfo.getComment() + "'");
-        }
+        sqlBuild.append(" alter column " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        String columnType = PostgreSqlProviderUtils.buildColumnType(newInfo);
+        sqlBuild.append(" type " + columnType);
+        sqlBuild.append(" using " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()) + "::" + columnType);
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
 
     @Override
     public List<String> columnComment(TriggerContext buildContext, String catalog, String schema, String table, EColumn columnInfo, String comment) {
-        EColumn newInfo = columnInfo.clone();
-        newInfo.setComment(comment);
-        List<String> diffChange = Collections.singletonList("comment");
-        return columnChange(buildContext, catalog, schema, table, columnInfo, newInfo, diffChange);
+        boolean useDelimited = buildContext.isUseDelimited();
+        CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
+        StringBuilder sqlBuild = new StringBuilder();
+        sqlBuild.append("comment on column ");
+        if (StringUtils.isBlank(schema)) {
+            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
+            sqlBuild.append(".");
+            sqlBuild.append(fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        } else {
+            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema));
+            sqlBuild.append(".");
+            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
+            sqlBuild.append(".");
+            sqlBuild.append(fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        }
+        sqlBuild.append(" is '" + comment + "';");
+        return Collections.singletonList(sqlBuild.toString());
     }
 
     @Override
@@ -172,12 +184,6 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         //
         StringBuilder sqlBuild = new StringBuilder("drop index ");
         sqlBuild.append(fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
-        sqlBuild.append(" on ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
-        }
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -186,9 +192,8 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
     public List<String> indexRename(TriggerContext buildContext, String catalog, String schema, String table, EIndex indexInfo, String newIndexName) {
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
-        StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
-        //
-        sqlBuild.append(" rename index ");
+        StringBuilder sqlBuild = new StringBuilder();
+        sqlBuild.append("alter index ");
         sqlBuild.append(fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
         sqlBuild.append(" to ");
         sqlBuild.append(fmtName(useDelimited, caseSensitivity, newIndexName));
@@ -224,7 +229,16 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
-        sqlBuild.append(" add primary key");
+        sqlBuild.append(" add constraint ");
+        String pkName = "";
+        if (StringUtils.isBlank(primaryInfo.getPrimaryKeyName())) {
+            pkName = table + "_pkey";
+        } else {
+            pkName = primaryInfo.getPrimaryKeyName();
+        }
+        //
+        sqlBuild.append(fmtName(useDelimited, caseSensitivity, pkName));
+        sqlBuild.append(" primary key ");
         sqlBuild.append("(");
         List<String> columnList = primaryInfo.getColumnList();
         for (int i = 0; i < columnList.size(); i++) {
@@ -241,8 +255,9 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
     @Override
     public List<String> dropPrimaryKey(TriggerContext buildContext, String catalog, String schema, String table, EPrimaryKey primaryInfo) {
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
-        //
-        sqlBuild.append(" drop primary key;");
+        sqlBuild.append(" drop constraint ");
+        sqlBuild.append(primaryInfo.getPrimaryKeyName());
+        sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
 
@@ -270,16 +285,16 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
 
     @Override
     public List<String> createForeignKey(TriggerContext buildContext, String catalog, String schema, String table, EForeignKey foreignKeyInfo) {
-        return Collections.singletonList("mysql build ddl script createForeignKey.");// TODO
+        return Collections.singletonList("postgresql build ddl script createForeignKey.");// TODO
     }
 
     @Override
     public List<String> dropForeignKey(TriggerContext buildContext, String catalog, String schema, String table, EForeignKey foreignKeyInfo) {
-        return Collections.singletonList("mysql build ddl script dropForeignKey.");// TODO
+        return Collections.singletonList("postgresql build ddl script dropForeignKey.");// TODO
     }
 
     @Override
     public List<String> foreignKeyRename(TriggerContext buildContext, String catalog, String schema, String table, EForeignKey foreignKeyInfo, String newForeignKeyName) {
-        return Collections.singletonList("mysql build ddl script foreignKeyRename.");// TODO
+        return Collections.singletonList("postgresql build ddl script foreignKeyRename.");// TODO
     }
 }

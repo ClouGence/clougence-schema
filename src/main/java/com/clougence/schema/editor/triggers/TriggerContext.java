@@ -28,4 +28,5 @@ public class TriggerContext {
     private CaseSensitivityType delimitedCaseSensitivity;
     private boolean             useDelimited;
     private boolean             cascade;
+    private boolean             ifExists;
 }
