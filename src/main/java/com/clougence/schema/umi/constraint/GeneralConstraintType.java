@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema;
+package com.clougence.schema.umi.constraint;
+import com.clougence.schema.umi.UmiConstraintType;
+
 /**
- * The enum Db type.
- *
- * @author wanshao create time is 2019/12/12 3:36 下午
+ * 约束类型
+ * @version : 2021-03-30
+ * @author 赵永春 (zyc@hasor.net)
  */
-public enum DataSourceType {
-    MySQL("MySQL"), //
-    AdbForMySQL("AdbForMySQL"), //
-    PostgreSQL("PostgreSQL"), //
-    Oracle("Oracle"), //
-    Jdbc("Jdbc"), //
+public enum GeneralConstraintType implements UmiConstraintType {
+    /** 非空的 */
+    NonNull("NonNull"),
+    /** 唯一的 */
+    Unique("Unique"),
+    /**  主要的 */
+    Primary("Primary"),
     ;
     private final String typeName;
 
-    DataSourceType(String typeName) {
+    GeneralConstraintType(String typeName) {
         this.typeName = typeName;
     }
 
-    public String getTypeName() {
+    @Override
+    public String getCode() {
         return this.typeName;
     }
 
-    public static DataSourceType valueOfCode(String code) {
-        for (DataSourceType constraintType : DataSourceType.values()) {
-            if (constraintType.typeName != null && constraintType.typeName.equalsIgnoreCase(code)) {
+    public static GeneralConstraintType valueOfCode(String code) {
+        for (GeneralConstraintType constraintType : GeneralConstraintType.values()) {
+            if (constraintType.typeName.equalsIgnoreCase(code)) {
                 return constraintType;
             }
         }

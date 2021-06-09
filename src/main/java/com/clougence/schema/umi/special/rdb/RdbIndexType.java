@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema;
+package com.clougence.schema.umi.special.rdb;
 /**
- * The enum Db type.
- *
- * @author wanshao create time is 2019/12/12 3:36 下午
+ * @author mode 2021/5/21 19:56
  */
-public enum DataSourceType {
-    MySQL("MySQL"), //
-    AdbForMySQL("AdbForMySQL"), //
-    PostgreSQL("PostgreSQL"), //
-    Oracle("Oracle"), //
-    Jdbc("Jdbc"), //
+public enum RdbIndexType {
+    Unique("Unique"),
+    Normal("Normal"),
     ;
     private final String typeName;
 
-    DataSourceType(String typeName) {
+    RdbIndexType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -36,10 +31,10 @@ public enum DataSourceType {
         return this.typeName;
     }
 
-    public static DataSourceType valueOfCode(String code) {
-        for (DataSourceType constraintType : DataSourceType.values()) {
-            if (constraintType.typeName != null && constraintType.typeName.equalsIgnoreCase(code)) {
-                return constraintType;
+    public static RdbIndexType valueOfCode(String code) {
+        for (RdbIndexType umiIndexType : RdbIndexType.values()) {
+            if (umiIndexType.typeName.equals(code)) {
+                return umiIndexType;
             }
         }
         return null;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata;
-import com.clougence.schema.DataSourceType;
-
-import java.sql.SQLException;
+package com.clougence.schema.metadata.domain.rdb.oracle;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 元信息服务
- * @version : 2020-10-31
+ * Oracle 约束
+ * @version : 2021-05-07
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface MetaDataService {
-    /** 获取版本信息 */
-    public String getVersion() throws SQLException;
-
-    public DataSourceType getType();
+@Getter
+@Setter
+public class OracleConstraint {
+    private String               schema;
+    private String               name;
+    private OracleConstraintType constraintType;
+    private boolean              enabled;
+    private boolean              validated;
+    private boolean              generated;
 }

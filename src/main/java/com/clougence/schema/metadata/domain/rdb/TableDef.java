@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata;
-import com.clougence.schema.DataSourceType;
-
-import java.sql.SQLException;
-
+package com.clougence.schema.metadata.domain.rdb;
 /**
- * 元信息服务
+ * 查询的表
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface MetaDataService {
-    /** 获取版本信息 */
-    public String getVersion() throws SQLException;
+public interface TableDef {
+    /** 分类 */
+    public String getCatalog();
 
-    public DataSourceType getType();
+    /** Schema */
+    public String getSchema();
+
+    /** 表名 */
+    public String getTable();
+
+    /** 表类型 */
+    public TableType getTableType();
 }

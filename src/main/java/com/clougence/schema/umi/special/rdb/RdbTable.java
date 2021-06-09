@@ -1,0 +1,69 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.clougence.schema.umi.special.rdb;
+import com.clougence.schema.umi.StrutsUmiSchema;
+import com.clougence.schema.umi.constraint.GeneralConstraintType;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * 结构类型
+ * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
+ */
+@Getter
+@Setter
+public class RdbTable extends StrutsUmiSchema {
+    private List<RdbIndex> indices = new ArrayList<>();
+
+    public RdbPrimaryKey getPrimaryKey() {
+        List<RdbPrimaryKey> primaryKeys = this.getConstraints(RdbPrimaryKey.class, GeneralConstraintType.Primary);
+        return primaryKeys.isEmpty() ? null : primaryKeys.get(0);
+    }
+
+    public void setPrimaryKey(RdbPrimaryKey primaryKey) {
+        this.overwriteConstraint(RdbPrimaryKey.class, GeneralConstraintType.Primary, Collections.singletonList(primaryKey));
+    }
+
+    public List<RdbUniqueKey> getUniqueKey() {
+        return this.getConstraints(RdbUniqueKey.class, GeneralConstraintType.Unique);
+    }
+
+    public void setUniqueKey(List<RdbUniqueKey> uniqueKeys) {
+        this.overwriteConstraint(RdbUniqueKey.class, GeneralConstraintType.Unique, uniqueKeys);
+    }
+
+    public List<RdbForeignKey> getForeignKey() {
+        return this.getConstraints(RdbForeignKey.class);
+    }
+
+    public void setForeignKey(List<RdbForeignKey> foreignKeys) {
+        this.overwriteConstraint(RdbForeignKey.class, foreignKeys);
+    }
+
+    public RdbTableType getTableType() {
+        String value = getAttributes().getValue(RdbTableType.class.getName());
+        return RdbTableType.valueOfCode(value);
+    }
+
+    public void setTableType(RdbTableType tableType) {
+        getAttributes().setValue(RdbTableType.class.getName(), tableType.getTypeName());
+    }
+}

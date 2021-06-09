@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata;
-import com.clougence.schema.DataSourceType;
+package com.clougence.schema.umi;
+import com.clougence.schema.metadata.FieldType;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.sql.SQLException;
+import java.util.Map;
 
 /**
- * 元信息服务
- * @version : 2020-10-31
+ * 结构类型
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2020-05-21
  */
-public interface MetaDataService {
-    /** 获取版本信息 */
-    public String getVersion() throws SQLException;
+@Getter
+@Setter
+public class StrutsUmiSchema extends AbstractUmiSchema {
+    /** 每个字段Map */
+    private Map<String, AbstractUmiSchema> properties;
 
-    public DataSourceType getType();
+    @Override
+    public final FieldType getDataType() {
+        return UmiStrutsTypes.Struts;
+    }
 }

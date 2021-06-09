@@ -13,19 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata;
-import com.clougence.schema.DataSourceType;
+package com.clougence.schema.metadata.domain.rdb;
+import net.hasor.db.types.TypeHandlerRegistry;
 
-import java.sql.SQLException;
+import java.sql.JDBCType;
 
 /**
- * 元信息服务
+ * 列信息
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface MetaDataService {
-    /** 获取版本信息 */
-    public String getVersion() throws SQLException;
+public interface ColumnDef {
+    /** 列名 */
+    public String getName();
 
-    public DataSourceType getType();
+    /** 数据库上的列类型（数据库原始类型信息） */
+    public String getColumnType();
+
+    /** 使用的 jdbcType,如果没有配置那么会通过 javaType 来自动推断 */
+    public JDBCType getJdbcType();
+
+    /** 对应的 javaType */
+    public default Class<?> getJavaType() {
+        return TypeHandlerRegistry.toJavaType(this.getJdbcType());
+    }
+
+    /** 是否为主键 */
+    public boolean isPrimaryKey();
 }

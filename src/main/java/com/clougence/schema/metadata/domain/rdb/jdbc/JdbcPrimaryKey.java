@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata;
-import com.clougence.schema.DataSourceType;
+package com.clougence.schema.metadata.domain.rdb.jdbc;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * 元信息服务
- * @version : 2020-10-31
+ * Jdbc 主键
+ * @version : 2020-04-25
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface MetaDataService {
-    /** 获取版本信息 */
-    public String getVersion() throws SQLException;
-
-    public DataSourceType getType();
+@Getter
+@Setter
+public class JdbcPrimaryKey extends JdbcConstraint {
+    private List<String> columns = new ArrayList<>();
 }

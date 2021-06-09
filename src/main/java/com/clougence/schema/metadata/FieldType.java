@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2010 the original author or authors.
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata;
-import com.clougence.schema.DataSourceType;
-
-import java.sql.SQLException;
+import java.sql.JDBCType;
 
 /**
- * 元信息服务
- * @version : 2020-10-31
+ * 数据实际类型。
+ * @version : 2020-01-22
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface MetaDataService {
-    /** 获取版本信息 */
-    public String getVersion() throws SQLException;
+public interface FieldType {
+    public String getCodeKey();
 
-    public DataSourceType getType();
+    public default String getFullTypeCodeKey() {
+        return this.getClass().getName() + "," + this.getCodeKey();
+    }
+
+    public default String getSimpleTypeCodeKey() {
+        return this.getClass().getSimpleName() + "," + this.getCodeKey();
+    }
+
+    public Integer getJdbcType();
+
+    public JDBCType toJDBCType();
 }
