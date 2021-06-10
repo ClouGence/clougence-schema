@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata;
-import com.clougence.schema.metadata.provider.AbstractMetadataProvider;
+import com.clougence.schema.metadata.provider.rdb.AbstractMetadataProvider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.junit.After;
 import org.junit.Before;

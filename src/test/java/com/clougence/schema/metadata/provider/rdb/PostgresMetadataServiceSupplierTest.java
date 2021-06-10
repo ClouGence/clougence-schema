@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.provider;
-import com.clougence.schema.metadata.SqlType;
-import com.clougence.schema.metadata.domain.postgres.PostgresSchema;
+package com.clougence.schema.metadata.provider.rdb;
 import com.clougence.schema.metadata.AbstractMetadataServiceSupplierTest;
 import com.clougence.schema.metadata.DsUtils;
+import com.clougence.schema.metadata.FieldType;
+import com.clougence.schema.metadata.domain.rdb.postgres.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.junit.Test;
 
@@ -77,8 +77,8 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getSchemasTest() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresSchema> schemas = this.repository.getSchemas();
-        List<String> collect = schemas.stream().map(com.clougence.schema.metadata.domain.postgres.PostgresSchema::getSchema).collect(Collectors.toList());
+        List<PostgresSchema> schemas = this.repository.getSchemas();
+        List<String> collect = schemas.stream().map(PostgresSchema::getSchema).collect(Collectors.toList());
         assert collect.contains("tester");
         assert collect.contains("information_schema");
         assert collect.contains("public");
@@ -87,7 +87,7 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getSchemaTest() throws SQLException {
-        com.clougence.schema.metadata.domain.postgres.PostgresSchema schema1 = this.repository.getSchema("abc");
+        PostgresSchema schema1 = this.repository.getSchema("abc");
         PostgresSchema schema2 = this.repository.getSchema("tester");
         assert schema1 == null;
         assert schema2 != null;
@@ -95,10 +95,10 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getTables() throws SQLException {
-        Map<String, List<com.clougence.schema.metadata.domain.postgres.PostgresTable>> tableList = this.repository.getTables(new String[] { "tester", "public" });
+        Map<String, List<PostgresTable>> tableList = this.repository.getTables(new String[] { "tester", "public" });
         assert tableList.size() >= 1;
         assert tableList.containsKey("tester");
-        List<String> tableForTesterSchema = tableList.get("tester").stream().map(com.clougence.schema.metadata.domain.postgres.PostgresTable::getTable).collect(Collectors.toList());
+        List<String> tableForTesterSchema = tableList.get("tester").stream().map(PostgresTable::getTable).collect(Collectors.toList());
         assert tableForTesterSchema.contains("proc_table");
         assert tableForTesterSchema.contains("proc_table_ref");
         assert tableForTesterSchema.contains("t1");
@@ -112,44 +112,44 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void findTables() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresTable> tableList = this.repository.findTable("tester", new String[] { "proc_table_ref", "tb_user_view", "tb_user_view_m" });
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresTable> tableMap = tableList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresTable::getTable, o -> o));
+        List<PostgresTable> tableList = this.repository.findTable("tester", new String[] { "proc_table_ref", "tb_user_view", "tb_user_view_m" });
+        Map<String, PostgresTable> tableMap = tableList.stream().collect(Collectors.toMap(PostgresTable::getTable, o -> o));
         assert tableMap.size() == 3;
         assert tableMap.containsKey("proc_table_ref");
         assert tableMap.containsKey("tb_user_view");
         assert tableMap.containsKey("tb_user_view_m");
-        assert tableMap.get("proc_table_ref").getTableType() == com.clougence.schema.metadata.domain.postgres.PostgresTableType.Table;
-        assert tableMap.get("tb_user_view").getTableType() == com.clougence.schema.metadata.domain.postgres.PostgresTableType.View;
-        assert tableMap.get("tb_user_view_m").getTableType() == com.clougence.schema.metadata.domain.postgres.PostgresTableType.Materialized;
+        assert tableMap.get("proc_table_ref").getTableType() == PostgresTableType.Table;
+        assert tableMap.get("tb_user_view").getTableType() == PostgresTableType.View;
+        assert tableMap.get("tb_user_view_m").getTableType() == PostgresTableType.Materialized;
     }
 
     @Test
     public void getTable() throws SQLException {
-        com.clougence.schema.metadata.domain.postgres.PostgresTable tableObj1 = this.repository.getTable("tester", "proc_table_ref");
-        com.clougence.schema.metadata.domain.postgres.PostgresTable tableObj2 = this.repository.getTable("tester", "tb_user_view");
-        com.clougence.schema.metadata.domain.postgres.PostgresTable tableObj3 = this.repository.getTable("tester", "abc");
-        com.clougence.schema.metadata.domain.postgres.PostgresTable tableObj4 = this.repository.getTable("tester", "tb_user");
+        PostgresTable tableObj1 = this.repository.getTable("tester", "proc_table_ref");
+        PostgresTable tableObj2 = this.repository.getTable("tester", "tb_user_view");
+        PostgresTable tableObj3 = this.repository.getTable("tester", "abc");
+        PostgresTable tableObj4 = this.repository.getTable("tester", "tb_user");
         assert tableObj1 != null;
-        assert tableObj1.getTableType() == com.clougence.schema.metadata.domain.postgres.PostgresTableType.Table;
+        assert tableObj1.getTableType() == PostgresTableType.Table;
         assert tableObj2 != null;
-        assert tableObj2.getTableType() == com.clougence.schema.metadata.domain.postgres.PostgresTableType.View;
+        assert tableObj2.getTableType() == PostgresTableType.View;
         assert tableObj3 == null;
         assert tableObj4 != null;
-        assert tableObj4.getTableType() == com.clougence.schema.metadata.domain.postgres.PostgresTableType.Table;
+        assert tableObj4.getTableType() == PostgresTableType.Table;
     }
 
     @Test
     public void getColumns_1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresColumn> columnList = this.repository.getColumns("tester", "tb_postgre_types");
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresTypes> columnMap1 = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresColumn::getName, com.clougence.schema.metadata.domain.postgres.PostgresColumn::getSqlType));
-        Map<String, String> columnMap2 = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresColumn::getName, com.clougence.schema.metadata.domain.postgres.PostgresColumn::getColumnType));
-        Map<String, JDBCType> columnMap3 = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresColumn::getName, com.clougence.schema.metadata.domain.postgres.PostgresColumn::getJdbcType));
+        List<PostgresColumn> columnList = this.repository.getColumns("tester", "tb_postgre_types");
+        Map<String, PostgresTypes> columnMap1 = columnList.stream().collect(Collectors.toMap(PostgresColumn::getName, PostgresColumn::getSqlType));
+        Map<String, String> columnMap2 = columnList.stream().collect(Collectors.toMap(PostgresColumn::getName, PostgresColumn::getColumnType));
+        Map<String, JDBCType> columnMap3 = columnList.stream().collect(Collectors.toMap(PostgresColumn::getName, PostgresColumn::getJdbcType));
         //
-        List<SqlType> collect1 = columnList.stream().map(com.clougence.schema.metadata.domain.postgres.PostgresColumn::getSqlType).collect(Collectors.toList());
+        List<FieldType> collect1 = columnList.stream().map(PostgresColumn::getSqlType).collect(Collectors.toList());
         assert !collect1.contains(null);
         assert collect1.size() == columnList.size();
         //
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresColumn> columnMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresColumn::getName, c -> c));
+        Map<String, PostgresColumn> columnMap = columnList.stream().collect(Collectors.toMap(PostgresColumn::getName, c -> c));
         assert columnMap.containsKey("c_decimal");
         assert columnMap.containsKey("c_date");
         assert columnMap.containsKey("c_timestamp");
@@ -175,8 +175,8 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getColumns_2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresColumn> columnList = this.repository.getColumns("tester", "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresColumn> columnMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresColumn::getName, c -> c));
+        List<PostgresColumn> columnList = this.repository.getColumns("tester", "proc_table_ref");
+        Map<String, PostgresColumn> columnMap = columnList.stream().collect(Collectors.toMap(PostgresColumn::getName, c -> c));
         assert columnMap.size() == 6;
         assert columnMap.get("r_int").isPrimaryKey();
         assert !columnMap.get("r_int").isUniqueKey();
@@ -194,38 +194,38 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getConstraint1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresConstraint> columnList = this.repository.getConstraint("tester", "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresConstraint::getName, com.clougence.schema.metadata.domain.postgres.PostgresConstraint::getConstraintType));
-        Set<String> typeNameSet = columnList.stream().map(com.clougence.schema.metadata.domain.postgres.PostgresConstraint::getName).collect(Collectors.toSet());
-        Set<com.clougence.schema.metadata.domain.postgres.PostgresConstraintType> typeEnumSet = columnList.stream().map(com.clougence.schema.metadata.domain.postgres.PostgresConstraint::getConstraintType).collect(Collectors.toSet());
+        List<PostgresConstraint> columnList = this.repository.getConstraint("tester", "proc_table_ref");
+        Map<String, PostgresConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(PostgresConstraint::getName, PostgresConstraint::getConstraintType));
+        Set<String> typeNameSet = columnList.stream().map(PostgresConstraint::getName).collect(Collectors.toSet());
+        Set<PostgresConstraintType> typeEnumSet = columnList.stream().map(PostgresConstraint::getConstraintType).collect(Collectors.toSet());
         //
         assert typeMap.size() == 4;
         assert typeNameSet.contains("proc_table_ref_uk");
         assert typeNameSet.contains("ptr");
         assert typeNameSet.contains("proc_table_ref_pkey");
         //
-        assert typeMap.get("proc_table_ref_uk") == com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.Unique;
-        assert typeMap.get("ptr") == com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.ForeignKey;
-        assert typeEnumSet.contains(com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.PrimaryKey);
+        assert typeMap.get("proc_table_ref_uk") == PostgresConstraintType.Unique;
+        assert typeMap.get("ptr") == PostgresConstraintType.ForeignKey;
+        assert typeEnumSet.contains(PostgresConstraintType.PrimaryKey);
     }
 
     @Test
     public void getConstraint2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresConstraint> columnList = this.repository.getConstraint("tester", "proc_table_ref", com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.Unique);
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresConstraint::getName, com.clougence.schema.metadata.domain.postgres.PostgresConstraint::getConstraintType));
-        Set<com.clougence.schema.metadata.domain.postgres.PostgresConstraintType> typeEnumSet = columnList.stream().map(com.clougence.schema.metadata.domain.postgres.PostgresConstraint::getConstraintType).collect(Collectors.toSet());
+        List<PostgresConstraint> columnList = this.repository.getConstraint("tester", "proc_table_ref", PostgresConstraintType.Unique);
+        Map<String, PostgresConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(PostgresConstraint::getName, PostgresConstraint::getConstraintType));
+        Set<PostgresConstraintType> typeEnumSet = columnList.stream().map(PostgresConstraint::getConstraintType).collect(Collectors.toSet());
         //
         assert typeMap.size() == 1;
-        assert !typeEnumSet.contains(com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.PrimaryKey);
+        assert !typeEnumSet.contains(PostgresConstraintType.PrimaryKey);
         assert typeMap.containsKey("proc_table_ref_uk");
         assert !typeMap.containsKey("ptr");
-        assert typeMap.get("proc_table_ref_uk") == com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.Unique;
+        assert typeMap.get("proc_table_ref_uk") == PostgresConstraintType.Unique;
     }
 
     @Test
     public void getPrimaryKey1() throws SQLException {
-        com.clougence.schema.metadata.domain.postgres.PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "proc_table_ref");
-        assert primaryKey.getConstraintType() == com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.PrimaryKey;
+        PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "proc_table_ref");
+        assert primaryKey.getConstraintType() == PostgresConstraintType.PrimaryKey;
         assert primaryKey.getName().startsWith("proc_table_ref_pkey");
         assert primaryKey.getColumns().size() == 1;
         assert primaryKey.getColumns().contains("r_int");
@@ -233,8 +233,8 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getPrimaryKey2() throws SQLException {
-        com.clougence.schema.metadata.domain.postgres.PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "proc_table");
-        assert primaryKey.getConstraintType() == com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.PrimaryKey;
+        PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "proc_table");
+        assert primaryKey.getConstraintType() == PostgresConstraintType.PrimaryKey;
         assert primaryKey.getName().startsWith("proc_table_pkey");
         assert primaryKey.getColumns().size() == 2;
         assert primaryKey.getColumns().contains("c_id");
@@ -243,25 +243,25 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getPrimaryKey3() throws SQLException {
-        com.clougence.schema.metadata.domain.postgres.PostgresTable table = this.repository.getTable("tester", "t3");
-        com.clougence.schema.metadata.domain.postgres.PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "t3");
+        PostgresTable table = this.repository.getTable("tester", "t3");
+        PostgresPrimaryKey primaryKey = this.repository.getPrimaryKey("tester", "t3");
         assert table != null;
         assert primaryKey == null;
     }
 
     @Test
     public void getUniqueKey() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresUniqueKey> uniqueKeyList = this.repository.getUniqueKey("tester", "tb_user");
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresUniqueKey::getName, u -> u));
+        List<PostgresUniqueKey> uniqueKeyList = this.repository.getUniqueKey("tester", "tb_user");
+        Map<String, PostgresUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(PostgresUniqueKey::getName, u -> u));
         assert uniqueKeyMap.size() == 2;
         //
         assert uniqueKeyMap.containsKey("tb_user_useruuid_uindex");
-        assert uniqueKeyMap.get("tb_user_useruuid_uindex").getConstraintType() == com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.Unique;
+        assert uniqueKeyMap.get("tb_user_useruuid_uindex").getConstraintType() == PostgresConstraintType.Unique;
         assert uniqueKeyMap.get("tb_user_useruuid_uindex").getColumns().size() == 1;
         assert uniqueKeyMap.get("tb_user_useruuid_uindex").getColumns().contains("useruuid");
         //
         assert uniqueKeyMap.containsKey("tb_user_email_useruuid_uindex");
-        assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getConstraintType() == com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.Unique;
+        assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getConstraintType() == PostgresConstraintType.Unique;
         assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getColumns().size() == 2;
         assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getColumns().contains("useruuid");
         assert uniqueKeyMap.get("tb_user_email_useruuid_uindex").getColumns().contains("email");
@@ -269,12 +269,12 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getForeignKey() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresForeignKey> foreignKeyList1 = this.repository.getForeignKey("tester", "tb_user");
+        List<PostgresForeignKey> foreignKeyList1 = this.repository.getForeignKey("tester", "tb_user");
         assert foreignKeyList1.size() == 0;
-        List<com.clougence.schema.metadata.domain.postgres.PostgresForeignKey> foreignKeyList2 = this.repository.getForeignKey("tester", "proc_table_ref");
+        List<PostgresForeignKey> foreignKeyList2 = this.repository.getForeignKey("tester", "proc_table_ref");
         assert foreignKeyList2.size() == 1;
-        com.clougence.schema.metadata.domain.postgres.PostgresForeignKey foreignKey = foreignKeyList2.get(0);
-        assert foreignKey.getConstraintType() == com.clougence.schema.metadata.domain.postgres.PostgresConstraintType.ForeignKey;
+        PostgresForeignKey foreignKey = foreignKeyList2.get(0);
+        assert foreignKey.getConstraintType() == PostgresConstraintType.ForeignKey;
         assert foreignKey.getColumns().size() == 2;
         assert foreignKey.getColumns().get(0).equals("r_k1");
         assert foreignKey.getColumns().get(1).equals("r_k2");
@@ -287,32 +287,32 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getIndexes1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresIndex> indexList = this.repository.getIndexes("tester", "tb_user");
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresIndex> indexMap = indexList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresIndex::getName, i -> i));
+        List<PostgresIndex> indexList = this.repository.getIndexes("tester", "tb_user");
+        Map<String, PostgresIndex> indexMap = indexList.stream().collect(Collectors.toMap(PostgresIndex::getName, i -> i));
         assert indexMap.size() == 3;
         //
         assert indexMap.containsKey("normal_index_tb_user");
         assert indexMap.get("normal_index_tb_user").getColumns().size() == 2;
         assert indexMap.get("normal_index_tb_user").getColumns().get(0).equals("loginpassword");
         assert indexMap.get("normal_index_tb_user").getColumns().get(1).equals("loginname");
-        assert indexMap.get("normal_index_tb_user").getIndexType() == com.clougence.schema.metadata.domain.postgres.PostgresIndexType.Normal;
+        assert indexMap.get("normal_index_tb_user").getIndexType() == PostgresIndexType.Normal;
         //
         assert indexMap.containsKey("tb_user_email_useruuid_uindex");
         assert indexMap.get("tb_user_email_useruuid_uindex").getColumns().size() == 2;
         assert indexMap.get("tb_user_email_useruuid_uindex").getColumns().get(0).equals("email");
         assert indexMap.get("tb_user_email_useruuid_uindex").getColumns().get(1).equals("useruuid");
-        assert indexMap.get("tb_user_email_useruuid_uindex").getIndexType() == com.clougence.schema.metadata.domain.postgres.PostgresIndexType.Unique;
+        assert indexMap.get("tb_user_email_useruuid_uindex").getIndexType() == PostgresIndexType.Unique;
         //
         assert indexMap.containsKey("tb_user_useruuid_uindex");
         assert indexMap.get("tb_user_useruuid_uindex").getColumns().size() == 1;
         assert indexMap.get("tb_user_useruuid_uindex").getColumns().get(0).equals("useruuid");
-        assert indexMap.get("tb_user_useruuid_uindex").getIndexType() == com.clougence.schema.metadata.domain.postgres.PostgresIndexType.Unique;
+        assert indexMap.get("tb_user_useruuid_uindex").getIndexType() == PostgresIndexType.Unique;
     }
 
     @Test
     public void getIndexes2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresIndex> indexList = this.repository.getIndexes("tester", "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresIndex> indexMap = indexList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresIndex::getName, i -> i));
+        List<PostgresIndex> indexList = this.repository.getIndexes("tester", "proc_table_ref");
+        Map<String, PostgresIndex> indexMap = indexList.stream().collect(Collectors.toMap(PostgresIndex::getName, i -> i));
         //
         assert indexMap.size() == 3;
         assert indexMap.containsKey("proc_table_ref_uk");
@@ -321,31 +321,31 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
         //
         assert indexMap.get("proc_table_ref_uk").getColumns().size() == 1;
         assert indexMap.get("proc_table_ref_uk").getColumns().get(0).equals("r_name");
-        assert indexMap.get("proc_table_ref_uk").getIndexType() == com.clougence.schema.metadata.domain.postgres.PostgresIndexType.Unique;
+        assert indexMap.get("proc_table_ref_uk").getIndexType() == PostgresIndexType.Unique;
         //
         assert indexMap.get("proc_table_ref_pkey").getColumns().size() == 1;
         assert indexMap.get("proc_table_ref_pkey").getColumns().get(0).equals("r_int");
-        assert indexMap.get("proc_table_ref_pkey").getIndexType() == com.clougence.schema.metadata.domain.postgres.PostgresIndexType.Unique;
+        assert indexMap.get("proc_table_ref_pkey").getIndexType() == PostgresIndexType.Unique;
         //
         assert indexMap.get("proc_table_ref_index").getColumns().size() == 1;
         assert indexMap.get("proc_table_ref_index").getColumns().get(0).equals("r_index");
-        assert indexMap.get("proc_table_ref_index").getIndexType() == com.clougence.schema.metadata.domain.postgres.PostgresIndexType.Normal;
+        assert indexMap.get("proc_table_ref_index").getIndexType() == PostgresIndexType.Normal;
     }
 
     @Test
     public void getIndexes3() throws SQLException {
-        List<com.clougence.schema.metadata.domain.postgres.PostgresIndex> indexList = this.repository.getIndexes("tester", "proc_table_ref", new com.clougence.schema.metadata.domain.postgres.PostgresIndexType[] { com.clougence.schema.metadata.domain.postgres.PostgresIndexType.Normal });
-        Map<String, com.clougence.schema.metadata.domain.postgres.PostgresIndex> indexMap = indexList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.postgres.PostgresIndex::getName, i -> i));
+        List<PostgresIndex> indexList = this.repository.getIndexes("tester", "proc_table_ref", new PostgresIndexType[] { PostgresIndexType.Normal });
+        Map<String, PostgresIndex> indexMap = indexList.stream().collect(Collectors.toMap(PostgresIndex::getName, i -> i));
         assert indexMap.size() == 1;
         assert indexMap.containsKey("proc_table_ref_index");
     }
 
     @Test
     public void getIndexes4() throws SQLException {
-        com.clougence.schema.metadata.domain.postgres.PostgresIndex index = this.repository.getIndexes("tester", "proc_table_ref", "proc_table_ref_uk");
+        PostgresIndex index = this.repository.getIndexes("tester", "proc_table_ref", "proc_table_ref_uk");
         assert index.getName().equals("proc_table_ref_uk");
         assert index.getColumns().size() == 1;
         assert index.getColumns().get(0).equals("r_name");
-        assert index.getIndexType() == com.clougence.schema.metadata.domain.postgres.PostgresIndexType.Unique;
+        assert index.getIndexType() == PostgresIndexType.Unique;
     }
 }

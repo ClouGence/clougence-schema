@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.provider;
-import com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlColumn;
+package com.clougence.schema.metadata.provider.rdb;
 import com.clougence.schema.metadata.AbstractMetadataServiceSupplierTest;
 import com.clougence.schema.metadata.DsUtils;
+import com.clougence.schema.metadata.domain.rdb.adb.mysql.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.junit.Test;
 
@@ -61,26 +61,26 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getSchemasTest() throws SQLException {
-        List<com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlSchema> schemas = this.repository.getSchemas();
-        List<String> collect = schemas.stream().map(com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlSchema::getName).collect(Collectors.toList());
+        List<AdbMySqlSchema> schemas = this.repository.getSchemas();
+        List<String> collect = schemas.stream().map(AdbMySqlSchema::getName).collect(Collectors.toList());
         assert collect.contains("INFORMATION_SCHEMA");
         assert collect.contains(ADBMYSQL_SCHEMA_NAME);
     }
 
     @Test
     public void getSchemaTest() throws SQLException {
-        com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlSchema schema1 = this.repository.getSchema("abc");
-        com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlSchema schema2 = this.repository.getSchema(ADBMYSQL_SCHEMA_NAME);
+        AdbMySqlSchema schema1 = this.repository.getSchema("abc");
+        AdbMySqlSchema schema2 = this.repository.getSchema(ADBMYSQL_SCHEMA_NAME);
         assert schema1 == null;
         assert schema2 != null;
     }
 
     @Test
     public void getTables() throws SQLException {
-        Map<String, List<com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTable>> tableList = this.repository.getTables(new String[] { "INFORMATION_SCHEMA" });
+        Map<String, List<AdbMySqlTable>> tableList = this.repository.getTables(new String[] { "INFORMATION_SCHEMA" });
         assert tableList.size() == 1;
         assert tableList.containsKey("INFORMATION_SCHEMA");
-        List<String> tableForInformationSchema = tableList.get("INFORMATION_SCHEMA").stream().map(com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTable::getTable).collect(Collectors.toList());
+        List<String> tableForInformationSchema = tableList.get("INFORMATION_SCHEMA").stream().map(AdbMySqlTable::getTable).collect(Collectors.toList());
         assert tableForInformationSchema.contains("COLUMNS");
         assert tableForInformationSchema.contains("TABLES");
         assert tableForInformationSchema.contains("SCHEMATA");
@@ -89,16 +89,16 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getMaterializedView() throws SQLException {
-        List<com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTable> tableList = this.repository.findTable(ADBMYSQL_SCHEMA_NAME, new String[] { "m_tb_user" });
+        List<AdbMySqlTable> tableList = this.repository.findTable(ADBMYSQL_SCHEMA_NAME, new String[] { "m_tb_user" });
         assert tableList.size() == 1;
-        assert tableList.get(0) instanceof com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlMaterialized;
-        assert tableList.get(0).getTableType() == com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTableType.Materialized;
+        assert tableList.get(0) instanceof AdbMySqlMaterialized;
+        assert tableList.get(0).getTableType() == AdbMySqlTableType.Materialized;
     }
 
     @Test
     public void findTables() throws SQLException {
-        List<com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTable> tableList = this.repository.findTable("INFORMATION_SCHEMA", new String[] { "COLUMNS", "TABLES", "SCHEMATA", "ABC" });
-        List<String> tableNames = tableList.stream().map(com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTable::getTable).collect(Collectors.toList());
+        List<AdbMySqlTable> tableList = this.repository.findTable("INFORMATION_SCHEMA", new String[] { "COLUMNS", "TABLES", "SCHEMATA", "ABC" });
+        List<String> tableNames = tableList.stream().map(AdbMySqlTable::getTable).collect(Collectors.toList());
         assert tableNames.size() == 3;
         assert tableNames.contains("COLUMNS");
         assert tableNames.contains("TABLES");
@@ -107,20 +107,20 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getTable() throws SQLException {
-        com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTable tableObj1 = this.repository.getTable("INFORMATION_SCHEMA", "COLUMNS");
-        com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTable tableObj2 = this.repository.getTable("INFORMATION_SCHEMA", "ABC");
-        com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTable tableObj3 = this.repository.getTable(ADBMYSQL_SCHEMA_NAME, "t3");
+        AdbMySqlTable tableObj1 = this.repository.getTable("INFORMATION_SCHEMA", "COLUMNS");
+        AdbMySqlTable tableObj2 = this.repository.getTable("INFORMATION_SCHEMA", "ABC");
+        AdbMySqlTable tableObj3 = this.repository.getTable(ADBMYSQL_SCHEMA_NAME, "t3");
         assert tableObj1 != null;
-        assert tableObj1.getTableType() == com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTableType.SystemView;
+        assert tableObj1.getTableType() == AdbMySqlTableType.SystemView;
         assert tableObj2 == null;
         assert tableObj3 != null;
-        assert tableObj3.getTableType() == com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTableType.Table;
+        assert tableObj3.getTableType() == AdbMySqlTableType.Table;
     }
 
     @Test
     public void getColumns_1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlColumn> columnList = this.repository.getColumns("INFORMATION_SCHEMA", "COLUMNS");
-        Map<String, com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlColumn::getName, c -> c));
+        List<AdbMySqlColumn> columnList = this.repository.getColumns("INFORMATION_SCHEMA", "COLUMNS");
+        Map<String, AdbMySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(AdbMySqlColumn::getName, c -> c));
         assert columnMap.size() > 11;
         assert columnMap.containsKey("TABLE_NAME");
         assert columnMap.containsKey("TABLE_SCHEMA");
@@ -133,13 +133,13 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
         assert columnMap.containsKey("CHARACTER_MAXIMUM_LENGTH");
         assert columnMap.containsKey("CHARACTER_OCTET_LENGTH");
         assert columnMap.containsKey("COLUMN_TYPE");
-        assert columnMap.get("TABLE_NAME").getSqlType() == com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTypes.VARCHAR;
+        assert columnMap.get("TABLE_NAME").getSqlType() == AdbMySqlTypes.VARCHAR;
     }
 
     @Test
     public void getColumns_2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlColumn> columnList = this.repository.getColumns(ADBMYSQL_SCHEMA_NAME, "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(AdbMySqlColumn::getName, c -> c));
+        List<AdbMySqlColumn> columnList = this.repository.getColumns(ADBMYSQL_SCHEMA_NAME, "proc_table_ref");
+        Map<String, AdbMySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(AdbMySqlColumn::getName, c -> c));
         assert columnMap.size() == 6;
         assert columnMap.get("r_int").isPrimaryKey();
         assert !columnMap.get("r_k1").isPrimaryKey();
@@ -151,7 +151,7 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getPrimaryKey1() throws SQLException {
-        com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADBMYSQL_SCHEMA_NAME, "proc_table_ref");
+        AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADBMYSQL_SCHEMA_NAME, "proc_table_ref");
         assert primaryKey.getName().equals("PRIMARY");
         assert primaryKey.getColumns().size() == 1;
         assert primaryKey.getColumns().contains("r_int");
@@ -159,7 +159,7 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getPrimaryKey2() throws SQLException {
-        com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADBMYSQL_SCHEMA_NAME, "proc_table");
+        AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADBMYSQL_SCHEMA_NAME, "proc_table");
         assert primaryKey.getName().equals("PRIMARY");
         assert primaryKey.getColumns().size() == 2;
         assert primaryKey.getColumns().contains("c_id");
@@ -168,8 +168,8 @@ public class AdbMySqlMetadataServiceSupplierTest extends AbstractMetadataService
 
     @Test
     public void getPrimaryKey3() throws SQLException {
-        com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlTable table = this.repository.getTable(ADBMYSQL_SCHEMA_NAME, "t3");
-        com.clougence.schema.metadata.domain.adb.mysql.AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADBMYSQL_SCHEMA_NAME, "t3");
+        AdbMySqlTable table = this.repository.getTable(ADBMYSQL_SCHEMA_NAME, "t3");
+        AdbMySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(ADBMYSQL_SCHEMA_NAME, "t3");
         assert table != null;
         assert primaryKey != null;
         assert primaryKey.getName().equals("PRIMARY");

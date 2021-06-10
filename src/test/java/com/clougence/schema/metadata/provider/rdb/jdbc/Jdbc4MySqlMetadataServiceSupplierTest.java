@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.jdbc;
-import com.clougence.schema.metadata.domain.jdbc.JdbcTable;
+package com.clougence.schema.metadata.provider.rdb.jdbc;
 import com.clougence.schema.metadata.AbstractMetadataServiceSupplierTest;
 import com.clougence.schema.metadata.DsUtils;
-import com.clougence.schema.metadata.provider.JdbcMetadataProvider;
+import com.clougence.schema.metadata.domain.rdb.jdbc.*;
+import com.clougence.schema.metadata.provider.rdb.JdbcMetadataProvider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.junit.Test;
 
@@ -68,15 +68,15 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getSchemasTest() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcSchema> schemas = this.repository.getSchemas();
+        List<JdbcSchema> schemas = this.repository.getSchemas();
         assert schemas.isEmpty();
     }
 
     @Test
     public void getTables() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcTable> tableList = this.repository.findTables("information_schema", null, new String[] { "COLUMNS", "TABLES", "SCHEMATA" });
+        List<JdbcTable> tableList = this.repository.findTables("information_schema", null, new String[] { "COLUMNS", "TABLES", "SCHEMATA" });
         assert tableList.size() == 3;
-        List<String> tableNames = tableList.stream().map(com.clougence.schema.metadata.domain.jdbc.JdbcTable::getTable).collect(Collectors.toList());
+        List<String> tableNames = tableList.stream().map(JdbcTable::getTable).collect(Collectors.toList());
         assert tableNames.contains("COLUMNS");
         assert tableNames.contains("TABLES");
         assert tableNames.contains("SCHEMATA");
@@ -84,20 +84,20 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getTable() throws SQLException {
-        com.clougence.schema.metadata.domain.jdbc.JdbcTable tableObj1 = this.repository.getTable("information_schema", null, "COLUMNS");
-        com.clougence.schema.metadata.domain.jdbc.JdbcTable tableObj2 = this.repository.getTable("information_schema", null, "ABC");
-        com.clougence.schema.metadata.domain.jdbc.JdbcTable tableObj3 = this.repository.getTable(MYSQL_SCHEMA_NAME, null, "t3");
+        JdbcTable tableObj1 = this.repository.getTable("information_schema", null, "COLUMNS");
+        JdbcTable tableObj2 = this.repository.getTable("information_schema", null, "ABC");
+        JdbcTable tableObj3 = this.repository.getTable(MYSQL_SCHEMA_NAME, null, "t3");
         assert tableObj1 != null;
-        assert tableObj1.getTableType() == com.clougence.schema.metadata.domain.jdbc.JdbcTableType.SystemView;
+        assert tableObj1.getTableType() == JdbcTableType.SystemView;
         assert tableObj2 == null;
         assert tableObj3 != null;
-        assert tableObj3.getTableType() == com.clougence.schema.metadata.domain.jdbc.JdbcTableType.Table;
+        assert tableObj3.getTableType() == JdbcTableType.Table;
     }
 
     @Test
     public void getColumns_1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcColumn> columnList = this.repository.getColumns("information_schema", null, "COLUMNS");
-        Map<String, com.clougence.schema.metadata.domain.jdbc.JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.jdbc.JdbcColumn::getName, c -> c));
+        List<JdbcColumn> columnList = this.repository.getColumns("information_schema", null, "COLUMNS");
+        Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
         assert columnMap.size() > 11;
         assert columnMap.containsKey("TABLE_NAME");
         assert columnMap.containsKey("TABLE_SCHEMA");
@@ -114,8 +114,8 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getColumns_2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcColumn> columnList = this.repository.getColumns(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.jdbc.JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.jdbc.JdbcColumn::getName, c -> c));
+        List<JdbcColumn> columnList = this.repository.getColumns(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
+        Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
         assert columnMap.size() == 6;
         assert columnMap.get("r_int").isPrimaryKey();
         assert columnMap.get("r_int").isUniqueKey();
@@ -133,8 +133,8 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getColumns_3() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcColumn> columnList = this.repository.getColumns(MYSQL_SCHEMA_NAME, null, "tb_user");
-        Map<String, com.clougence.schema.metadata.domain.jdbc.JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.jdbc.JdbcColumn::getName, c -> c));
+        List<JdbcColumn> columnList = this.repository.getColumns(MYSQL_SCHEMA_NAME, null, "tb_user");
+        Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
         assert columnMap.size() == 7;
         assert columnMap.get("userUUID").isPrimaryKey();
         assert columnMap.get("userUUID").isUniqueKey();
@@ -144,28 +144,28 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getConstraint1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.jdbc.JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.jdbc.JdbcConstraint::getName, com.clougence.schema.metadata.domain.jdbc.JdbcConstraint::getConstraintType));
+        List<JdbcConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
+        Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
         assert typeMap.size() == 2;
         assert typeMap.containsKey("PRIMARY");
         assert typeMap.containsKey("ptr");
-        assert typeMap.get("PRIMARY") == com.clougence.schema.metadata.domain.jdbc.JdbcConstraintType.PrimaryKey;
-        assert typeMap.get("ptr") == com.clougence.schema.metadata.domain.jdbc.JdbcConstraintType.ForeignKey;
+        assert typeMap.get("PRIMARY") == JdbcConstraintType.PrimaryKey;
+        assert typeMap.get("ptr") == JdbcConstraintType.ForeignKey;
     }
 
     @Test
     public void getConstraint2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, null, "proc_table_ref", com.clougence.schema.metadata.domain.jdbc.JdbcConstraintType.ForeignKey);
-        Map<String, com.clougence.schema.metadata.domain.jdbc.JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.jdbc.JdbcConstraint::getName, com.clougence.schema.metadata.domain.jdbc.JdbcConstraint::getConstraintType));
+        List<JdbcConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, null, "proc_table_ref", JdbcConstraintType.ForeignKey);
+        Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
         assert typeMap.size() == 1;
         assert typeMap.containsKey("ptr");
-        assert typeMap.get("ptr") == com.clougence.schema.metadata.domain.jdbc.JdbcConstraintType.ForeignKey;
+        assert typeMap.get("ptr") == JdbcConstraintType.ForeignKey;
     }
 
     @Test
     public void getPrimaryKey1() throws SQLException {
-        com.clougence.schema.metadata.domain.jdbc.JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
-        assert primaryKey.getConstraintType() == com.clougence.schema.metadata.domain.jdbc.JdbcConstraintType.PrimaryKey;
+        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
+        assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
         assert primaryKey.getName().equals("PRIMARY");
         assert primaryKey.getColumns().size() == 1;
         assert primaryKey.getColumns().contains("r_int");
@@ -173,8 +173,8 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getPrimaryKey2() throws SQLException {
-        com.clougence.schema.metadata.domain.jdbc.JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, null, "proc_table");
-        assert primaryKey.getConstraintType() == com.clougence.schema.metadata.domain.jdbc.JdbcConstraintType.PrimaryKey;
+        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, null, "proc_table");
+        assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
         assert primaryKey.getName().equals("PRIMARY");
         assert primaryKey.getColumns().size() == 2;
         assert primaryKey.getColumns().contains("c_id");
@@ -184,15 +184,15 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
     @Test
     public void getPrimaryKey3() throws SQLException {
         JdbcTable table = this.repository.getTable(MYSQL_SCHEMA_NAME, null, "t3");
-        com.clougence.schema.metadata.domain.jdbc.JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, null, "t3");
+        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, null, "t3");
         assert table != null;
         assert primaryKey == null;
     }
 
     @Test
     public void getUniqueKey() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcIndex> uniqueKeyList = this.repository.getUniqueKey(MYSQL_SCHEMA_NAME, null, "tb_user");
-        Map<String, com.clougence.schema.metadata.domain.jdbc.JdbcIndex> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.jdbc.JdbcIndex::getName, u -> u));
+        List<JdbcIndex> uniqueKeyList = this.repository.getUniqueKey(MYSQL_SCHEMA_NAME, null, "tb_user");
+        Map<String, JdbcIndex> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(JdbcIndex::getName, u -> u));
         assert uniqueKeyMap.size() == 3;
         assert uniqueKeyMap.containsKey("PRIMARY");
         assert uniqueKeyMap.containsKey("tb_user_userUUID_uindex");
@@ -206,12 +206,12 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getForeignKey() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcForeignKey> foreignKeyList1 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, null, "tb_user");
+        List<JdbcForeignKey> foreignKeyList1 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, null, "tb_user");
         assert foreignKeyList1.size() == 0;
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcForeignKey> foreignKeyList2 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
+        List<JdbcForeignKey> foreignKeyList2 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
         assert foreignKeyList2.size() == 1;
-        com.clougence.schema.metadata.domain.jdbc.JdbcForeignKey foreignKey = foreignKeyList2.get(0);
-        assert foreignKey.getConstraintType() == com.clougence.schema.metadata.domain.jdbc.JdbcConstraintType.ForeignKey;
+        JdbcForeignKey foreignKey = foreignKeyList2.get(0);
+        assert foreignKey.getConstraintType() == JdbcConstraintType.ForeignKey;
         assert foreignKey.getColumns().size() == 2;
         assert foreignKey.getColumns().get(0).equals("r_k1");
         assert foreignKey.getColumns().get(1).equals("r_k2");
@@ -224,8 +224,8 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getIndexes1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, null, "tb_user");
-        Map<String, com.clougence.schema.metadata.domain.jdbc.JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.jdbc.JdbcIndex::getName, i -> i));
+        List<JdbcIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, null, "tb_user");
+        Map<String, JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(JdbcIndex::getName, i -> i));
         assert indexMap.size() == 4;
         assert indexMap.containsKey("PRIMARY");
         assert indexMap.containsKey("tb_user_userUUID_uindex");
@@ -249,8 +249,8 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getIndexes2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.jdbc.JdbcIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.jdbc.JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.jdbc.JdbcIndex::getName, i -> i));
+        List<JdbcIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, null, "proc_table_ref");
+        Map<String, JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(JdbcIndex::getName, i -> i));
         assert indexMap.size() == 4;
         assert indexMap.containsKey("PRIMARY");
         assert indexMap.containsKey("proc_table_ref_uk");
@@ -273,7 +273,7 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
 
     @Test
     public void getIndexes4() throws SQLException {
-        com.clougence.schema.metadata.domain.jdbc.JdbcIndex index = this.repository.getIndexes(MYSQL_SCHEMA_NAME, null, "proc_table_ref", "ptr");
+        JdbcIndex index = this.repository.getIndexes(MYSQL_SCHEMA_NAME, null, "proc_table_ref", "ptr");
         assert index.getName().equals("ptr");
         assert index.getColumns().size() == 2;
         assert index.getColumns().get(0).equals("r_k1");

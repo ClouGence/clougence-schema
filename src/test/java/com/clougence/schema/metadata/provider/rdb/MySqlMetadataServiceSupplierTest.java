@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.provider;
-import com.clougence.schema.metadata.domain.mysql.MySqlForeignKey;
+package com.clougence.schema.metadata.provider.rdb;
 import com.clougence.schema.metadata.AbstractMetadataServiceSupplierTest;
 import com.clougence.schema.metadata.DsUtils;
+import com.clougence.schema.metadata.domain.rdb.mysql.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.junit.Test;
 
@@ -59,8 +59,8 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
 
     @Test
     public void getSchemasTest() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlSchema> schemas = this.repository.getSchemas();
-        List<String> collect = schemas.stream().map(com.clougence.schema.metadata.domain.mysql.MySqlSchema::getName).collect(Collectors.toList());
+        List<MySqlSchema> schemas = this.repository.getSchemas();
+        List<String> collect = schemas.stream().map(MySqlSchema::getName).collect(Collectors.toList());
         assert collect.contains("information_schema");
         assert collect.contains("mysql");
         assert collect.contains(MYSQL_SCHEMA_NAME);
@@ -68,19 +68,19 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
 
     @Test
     public void getSchemaTest() throws SQLException {
-        com.clougence.schema.metadata.domain.mysql.MySqlSchema schema1 = this.repository.getSchema("abc");
-        com.clougence.schema.metadata.domain.mysql.MySqlSchema schema2 = this.repository.getSchema(MYSQL_SCHEMA_NAME);
+        MySqlSchema schema1 = this.repository.getSchema("abc");
+        MySqlSchema schema2 = this.repository.getSchema(MYSQL_SCHEMA_NAME);
         assert schema1 == null;
         assert schema2 != null;
     }
 
     @Test
     public void getTables() throws SQLException {
-        Map<String, List<com.clougence.schema.metadata.domain.mysql.MySqlTable>> tableList = this.repository.getTables(new String[] { "mysql", "information_schema" });
+        Map<String, List<MySqlTable>> tableList = this.repository.getTables(new String[] { "mysql", "information_schema" });
         assert tableList.size() == 2;
         assert tableList.containsKey("mysql");
         assert tableList.containsKey("information_schema");
-        List<String> tableForInformationSchema = tableList.get("information_schema").stream().map(com.clougence.schema.metadata.domain.mysql.MySqlTable::getTable).collect(Collectors.toList());
+        List<String> tableForInformationSchema = tableList.get("information_schema").stream().map(MySqlTable::getTable).collect(Collectors.toList());
         assert tableForInformationSchema.contains("COLUMNS");
         assert tableForInformationSchema.contains("TABLES");
         assert tableForInformationSchema.contains("SCHEMATA");
@@ -89,8 +89,8 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
 
     @Test
     public void findTables() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlTable> tableList = this.repository.findTable("information_schema", new String[] { "COLUMNS", "TABLES", "SCHEMATA", "ABC" });
-        List<String> tableNames = tableList.stream().map(com.clougence.schema.metadata.domain.mysql.MySqlTable::getTable).collect(Collectors.toList());
+        List<MySqlTable> tableList = this.repository.findTable("information_schema", new String[] { "COLUMNS", "TABLES", "SCHEMATA", "ABC" });
+        List<String> tableNames = tableList.stream().map(MySqlTable::getTable).collect(Collectors.toList());
         assert tableNames.size() == 3;
         assert tableNames.contains("COLUMNS");
         assert tableNames.contains("TABLES");
@@ -99,20 +99,20 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
 
     @Test
     public void getTable() throws SQLException {
-        com.clougence.schema.metadata.domain.mysql.MySqlTable tableObj1 = this.repository.getTable("information_schema", "COLUMNS");
-        com.clougence.schema.metadata.domain.mysql.MySqlTable tableObj2 = this.repository.getTable("information_schema", "ABC");
-        com.clougence.schema.metadata.domain.mysql.MySqlTable tableObj3 = this.repository.getTable(MYSQL_SCHEMA_NAME, "t3");
+        MySqlTable tableObj1 = this.repository.getTable("information_schema", "COLUMNS");
+        MySqlTable tableObj2 = this.repository.getTable("information_schema", "ABC");
+        MySqlTable tableObj3 = this.repository.getTable(MYSQL_SCHEMA_NAME, "t3");
         assert tableObj1 != null;
-        assert tableObj1.getTableType() == com.clougence.schema.metadata.domain.mysql.MySqlTableType.SystemView;
+        assert tableObj1.getTableType() == MySqlTableType.SystemView;
         assert tableObj2 == null;
         assert tableObj3 != null;
-        assert tableObj3.getTableType() == com.clougence.schema.metadata.domain.mysql.MySqlTableType.Table;
+        assert tableObj3.getTableType() == MySqlTableType.Table;
     }
 
     @Test
     public void getColumns_1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlColumn> columnList = this.repository.getColumns("information_schema", "COLUMNS");
-        Map<String, com.clougence.schema.metadata.domain.mysql.MySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.mysql.MySqlColumn::getName, c -> c));
+        List<MySqlColumn> columnList = this.repository.getColumns("information_schema", "COLUMNS");
+        Map<String, MySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(MySqlColumn::getName, c -> c));
         assert columnMap.size() > 11;
         assert columnMap.containsKey("TABLE_NAME");
         assert columnMap.containsKey("TABLE_SCHEMA");
@@ -125,13 +125,13 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
         assert columnMap.containsKey("CHARACTER_MAXIMUM_LENGTH");
         assert columnMap.containsKey("CHARACTER_OCTET_LENGTH");
         assert columnMap.containsKey("COLUMN_TYPE");
-        assert columnMap.get("TABLE_NAME").getSqlType() == com.clougence.schema.metadata.domain.mysql.MySqlTypes.VARCHAR;
+        assert columnMap.get("TABLE_NAME").getSqlType() == MySqlTypes.VARCHAR;
     }
 
     @Test
     public void getColumns_2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlColumn> columnList = this.repository.getColumns(MYSQL_SCHEMA_NAME, "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.mysql.MySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.mysql.MySqlColumn::getName, c -> c));
+        List<MySqlColumn> columnList = this.repository.getColumns(MYSQL_SCHEMA_NAME, "proc_table_ref");
+        Map<String, MySqlColumn> columnMap = columnList.stream().collect(Collectors.toMap(MySqlColumn::getName, c -> c));
         assert columnMap.size() == 6;
         assert columnMap.get("r_int").isPrimaryKey();
         assert !columnMap.get("r_int").isUniqueKey();
@@ -149,32 +149,32 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
 
     @Test
     public void getConstraint1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.mysql.MySqlConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.mysql.MySqlConstraint::getName, com.clougence.schema.metadata.domain.mysql.MySqlConstraint::getConstraintType));
+        List<MySqlConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, "proc_table_ref");
+        Map<String, MySqlConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(MySqlConstraint::getName, MySqlConstraint::getConstraintType));
         assert typeMap.size() == 3;
         assert typeMap.containsKey("PRIMARY");
         assert typeMap.containsKey("proc_table_ref_uk");
         assert typeMap.containsKey("ptr");
-        assert typeMap.get("PRIMARY") == com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.PrimaryKey;
-        assert typeMap.get("proc_table_ref_uk") == com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.Unique;
-        assert typeMap.get("ptr") == com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.ForeignKey;
+        assert typeMap.get("PRIMARY") == MySqlConstraintType.PrimaryKey;
+        assert typeMap.get("proc_table_ref_uk") == MySqlConstraintType.Unique;
+        assert typeMap.get("ptr") == MySqlConstraintType.ForeignKey;
     }
 
     @Test
     public void getConstraint2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, "proc_table_ref", com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.Unique);
-        Map<String, com.clougence.schema.metadata.domain.mysql.MySqlConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.mysql.MySqlConstraint::getName, com.clougence.schema.metadata.domain.mysql.MySqlConstraint::getConstraintType));
+        List<MySqlConstraint> columnList = this.repository.getConstraint(MYSQL_SCHEMA_NAME, "proc_table_ref", MySqlConstraintType.Unique);
+        Map<String, MySqlConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(MySqlConstraint::getName, MySqlConstraint::getConstraintType));
         assert typeMap.size() == 1;
         assert !typeMap.containsKey("PRIMARY");
         assert typeMap.containsKey("proc_table_ref_uk");
         assert !typeMap.containsKey("ptr");
-        assert typeMap.get("proc_table_ref_uk") == com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.Unique;
+        assert typeMap.get("proc_table_ref_uk") == MySqlConstraintType.Unique;
     }
 
     @Test
     public void getPrimaryKey1() throws SQLException {
-        com.clougence.schema.metadata.domain.mysql.MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "proc_table_ref");
-        assert primaryKey.getConstraintType() == com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.PrimaryKey;
+        MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "proc_table_ref");
+        assert primaryKey.getConstraintType() == MySqlConstraintType.PrimaryKey;
         assert primaryKey.getName().equals("PRIMARY");
         assert primaryKey.getColumns().size() == 1;
         assert primaryKey.getColumns().contains("r_int");
@@ -182,8 +182,8 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
 
     @Test
     public void getPrimaryKey2() throws SQLException {
-        com.clougence.schema.metadata.domain.mysql.MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "proc_table");
-        assert primaryKey.getConstraintType() == com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.PrimaryKey;
+        MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "proc_table");
+        assert primaryKey.getConstraintType() == MySqlConstraintType.PrimaryKey;
         assert primaryKey.getName().equals("PRIMARY");
         assert primaryKey.getColumns().size() == 2;
         assert primaryKey.getColumns().contains("c_id");
@@ -192,36 +192,36 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
 
     @Test
     public void getPrimaryKey3() throws SQLException {
-        com.clougence.schema.metadata.domain.mysql.MySqlTable table = this.repository.getTable(MYSQL_SCHEMA_NAME, "t3");
-        com.clougence.schema.metadata.domain.mysql.MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "t3");
+        MySqlTable table = this.repository.getTable(MYSQL_SCHEMA_NAME, "t3");
+        MySqlPrimaryKey primaryKey = this.repository.getPrimaryKey(MYSQL_SCHEMA_NAME, "t3");
         assert table != null;
         assert primaryKey == null;
     }
 
     @Test
     public void getUniqueKey() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlUniqueKey> uniqueKeyList = this.repository.getUniqueKey(MYSQL_SCHEMA_NAME, "tb_user");
-        Map<String, com.clougence.schema.metadata.domain.mysql.MySqlUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.mysql.MySqlUniqueKey::getName, u -> u));
+        List<MySqlUniqueKey> uniqueKeyList = this.repository.getUniqueKey(MYSQL_SCHEMA_NAME, "tb_user");
+        Map<String, MySqlUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(MySqlUniqueKey::getName, u -> u));
         assert uniqueKeyMap.size() == 2;
         assert uniqueKeyMap.containsKey("tb_user_userUUID_uindex");
         assert uniqueKeyMap.containsKey("tb_user_email_userUUID_uindex");
         assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().size() == 1;
-        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getConstraintType() == com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.Unique;
+        assert uniqueKeyMap.get("tb_user_userUUID_uindex").getConstraintType() == MySqlConstraintType.Unique;
         assert uniqueKeyMap.get("tb_user_userUUID_uindex").getColumns().contains("userUUID");
         assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().size() == 2;
-        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getConstraintType() == com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.Unique;
+        assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getConstraintType() == MySqlConstraintType.Unique;
         assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("userUUID");
         assert uniqueKeyMap.get("tb_user_email_userUUID_uindex").getColumns().contains("email");
     }
 
     @Test
     public void getForeignKey() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlForeignKey> foreignKeyList1 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, "tb_user");
+        List<MySqlForeignKey> foreignKeyList1 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, "tb_user");
         assert foreignKeyList1.size() == 0;
-        List<com.clougence.schema.metadata.domain.mysql.MySqlForeignKey> foreignKeyList2 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, "proc_table_ref");
+        List<MySqlForeignKey> foreignKeyList2 = this.repository.getForeignKey(MYSQL_SCHEMA_NAME, "proc_table_ref");
         assert foreignKeyList2.size() == 1;
         MySqlForeignKey foreignKey = foreignKeyList2.get(0);
-        assert foreignKey.getConstraintType() == com.clougence.schema.metadata.domain.mysql.MySqlConstraintType.ForeignKey;
+        assert foreignKey.getConstraintType() == MySqlConstraintType.ForeignKey;
         assert foreignKey.getColumns().size() == 2;
         assert foreignKey.getColumns().get(0).equals("r_k1");
         assert foreignKey.getColumns().get(1).equals("r_k2");
@@ -234,8 +234,8 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
 
     @Test
     public void getIndexes1() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "tb_user");
-        Map<String, com.clougence.schema.metadata.domain.mysql.MySqlIndex> indexMap = indexList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.mysql.MySqlIndex::getName, i -> i));
+        List<MySqlIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "tb_user");
+        Map<String, MySqlIndex> indexMap = indexList.stream().collect(Collectors.toMap(MySqlIndex::getName, i -> i));
         assert indexMap.size() == 4;
         assert indexMap.containsKey("PRIMARY");
         assert indexMap.containsKey("tb_user_userUUID_uindex");
@@ -243,24 +243,24 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
         assert indexMap.containsKey("normal_index_tb_user");
         assert indexMap.get("PRIMARY").getColumns().size() == 1;
         assert indexMap.get("PRIMARY").getColumns().get(0).equals("userUUID");
-        assert indexMap.get("PRIMARY").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Primary;
+        assert indexMap.get("PRIMARY").getIndexType() == MySqlIndexType.Primary;
         assert indexMap.get("tb_user_userUUID_uindex").getColumns().size() == 1;
         assert indexMap.get("tb_user_userUUID_uindex").getColumns().get(0).equals("userUUID");
-        assert indexMap.get("tb_user_userUUID_uindex").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Unique;
+        assert indexMap.get("tb_user_userUUID_uindex").getIndexType() == MySqlIndexType.Unique;
         assert indexMap.get("tb_user_email_userUUID_uindex").getColumns().size() == 2;
         assert indexMap.get("tb_user_email_userUUID_uindex").getColumns().get(0).equals("email");
         assert indexMap.get("tb_user_email_userUUID_uindex").getColumns().get(1).equals("userUUID");
-        assert indexMap.get("tb_user_email_userUUID_uindex").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Unique;
+        assert indexMap.get("tb_user_email_userUUID_uindex").getIndexType() == MySqlIndexType.Unique;
         assert indexMap.get("normal_index_tb_user").getColumns().size() == 2;
         assert indexMap.get("normal_index_tb_user").getColumns().get(0).equals("loginPassword");
         assert indexMap.get("normal_index_tb_user").getColumns().get(1).equals("loginName");
-        assert indexMap.get("normal_index_tb_user").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Normal;
+        assert indexMap.get("normal_index_tb_user").getIndexType() == MySqlIndexType.Normal;
     }
 
     @Test
     public void getIndexes2() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "proc_table_ref");
-        Map<String, com.clougence.schema.metadata.domain.mysql.MySqlIndex> indexMap = indexList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.mysql.MySqlIndex::getName, i -> i));
+        List<MySqlIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "proc_table_ref");
+        Map<String, MySqlIndex> indexMap = indexList.stream().collect(Collectors.toMap(MySqlIndex::getName, i -> i));
         assert indexMap.size() == 4;
         assert indexMap.containsKey("PRIMARY");
         assert indexMap.containsKey("proc_table_ref_uk");
@@ -268,41 +268,41 @@ public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSup
         assert indexMap.containsKey("ptr");
         assert indexMap.get("PRIMARY").getColumns().size() == 1;
         assert indexMap.get("PRIMARY").getColumns().get(0).equals("r_int");
-        assert indexMap.get("PRIMARY").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Primary;
+        assert indexMap.get("PRIMARY").getIndexType() == MySqlIndexType.Primary;
         assert indexMap.get("proc_table_ref_uk").getColumns().size() == 1;
         assert indexMap.get("proc_table_ref_uk").getColumns().get(0).equals("r_name");
-        assert indexMap.get("proc_table_ref_uk").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Unique;
+        assert indexMap.get("proc_table_ref_uk").getIndexType() == MySqlIndexType.Unique;
         assert indexMap.get("proc_table_ref_index").getColumns().size() == 1;
         assert indexMap.get("proc_table_ref_index").getColumns().get(0).equals("r_index");
-        assert indexMap.get("proc_table_ref_index").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Normal;
+        assert indexMap.get("proc_table_ref_index").getIndexType() == MySqlIndexType.Normal;
         assert indexMap.get("ptr").getColumns().size() == 2;
         assert indexMap.get("ptr").getColumns().get(0).equals("r_k1");
         assert indexMap.get("ptr").getColumns().get(1).equals("r_k2");
-        assert indexMap.get("ptr").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Foreign;
+        assert indexMap.get("ptr").getIndexType() == MySqlIndexType.Foreign;
     }
 
     @Test
     public void getIndexes3() throws SQLException {
-        List<com.clougence.schema.metadata.domain.mysql.MySqlIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "proc_table_ref", com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Normal, com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Unique);
-        Map<String, com.clougence.schema.metadata.domain.mysql.MySqlIndex> indexMap = indexList.stream().collect(Collectors.toMap(com.clougence.schema.metadata.domain.mysql.MySqlIndex::getName, i -> i));
+        List<MySqlIndex> indexList = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "proc_table_ref", MySqlIndexType.Normal, MySqlIndexType.Unique);
+        Map<String, MySqlIndex> indexMap = indexList.stream().collect(Collectors.toMap(MySqlIndex::getName, i -> i));
         assert indexMap.size() == 2;
         assert indexMap.containsKey("proc_table_ref_uk");
         assert indexMap.containsKey("proc_table_ref_index");
         assert indexMap.get("proc_table_ref_uk").getColumns().size() == 1;
         assert indexMap.get("proc_table_ref_uk").getColumns().get(0).equals("r_name");
-        assert indexMap.get("proc_table_ref_uk").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Unique;
+        assert indexMap.get("proc_table_ref_uk").getIndexType() == MySqlIndexType.Unique;
         assert indexMap.get("proc_table_ref_index").getColumns().size() == 1;
         assert indexMap.get("proc_table_ref_index").getColumns().get(0).equals("r_index");
-        assert indexMap.get("proc_table_ref_index").getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Normal;
+        assert indexMap.get("proc_table_ref_index").getIndexType() == MySqlIndexType.Normal;
     }
 
     @Test
     public void getIndexes4() throws SQLException {
-        com.clougence.schema.metadata.domain.mysql.MySqlIndex index = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "proc_table_ref", "ptr");
+        MySqlIndex index = this.repository.getIndexes(MYSQL_SCHEMA_NAME, "proc_table_ref", "ptr");
         assert index.getName().equals("ptr");
         assert index.getColumns().size() == 2;
         assert index.getColumns().get(0).equals("r_k1");
         assert index.getColumns().get(1).equals("r_k2");
-        assert index.getIndexType() == com.clougence.schema.metadata.domain.mysql.MySqlIndexType.Foreign;
+        assert index.getIndexType() == MySqlIndexType.Foreign;
     }
 }
