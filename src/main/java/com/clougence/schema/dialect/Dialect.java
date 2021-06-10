@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 package com.clougence.schema.dialect;
-import net.hasor.db.metadata.ColumnDef;
-import net.hasor.db.metadata.TableDef;
+import com.clougence.schema.umi.UmiSchema;
 
 import java.util.Set;
 
 /**
- * SQL 方言
+ * 方言
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SqlDialect {
+public interface Dialect {
     /** Cannot be used as a key for column names. when column name is key words, Generate SQL using Qualifier warp it. */
     public Set<String> keywords();
 
@@ -33,8 +32,8 @@ public interface SqlDialect {
     public String rightQualifier();
 
     /** 生成 form 后面的表名 */
-    public String tableName(boolean useQualifier, TableDef tableDef);
+    public String tableName(boolean useQualifier, UmiSchema tableSchema);
 
     /** 生成 where 中用到的条件名（包括 group by、order by） */
-    public String columnName(boolean useQualifier, TableDef tableDef, ColumnDef columnDef);
+    public String columnName(boolean useQualifier, UmiSchema columnSchema);
 }

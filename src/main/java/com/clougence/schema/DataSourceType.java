@@ -24,6 +24,7 @@ public enum DataSourceType {
     AdbForMySQL("AdbForMySQL"), //
     PostgreSQL("PostgreSQL"), //
     Oracle("Oracle"), //
+    DM("DM"), //
     Jdbc("Jdbc"), //
     ;
     private final String typeName;

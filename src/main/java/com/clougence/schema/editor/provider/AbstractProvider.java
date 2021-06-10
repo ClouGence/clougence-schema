@@ -1,7 +1,7 @@
 package com.clougence.schema.editor.provider;
 import com.clougence.schema.DataSourceType;
-import com.clougence.schema.dialect.SqlDialect;
-import com.clougence.schema.dialect.SqlDialectRegister;
+import com.clougence.schema.dialect.Dialect;
+import com.clougence.schema.dialect.DialectRegister;
 import com.clougence.schema.metadata.CaseSensitivityType;
 
 public abstract class AbstractProvider {
@@ -11,7 +11,7 @@ public abstract class AbstractProvider {
         if (useDelimited) {
             return fmtCaseSensitivity(caseSensitivity, stringData);
         } else {
-            SqlDialect dialect = SqlDialectRegister.findSqlDialect(getDataSourceType());
+            Dialect dialect = DialectRegister.findSqlDialect(getDataSourceType());
             String left = dialect.leftQualifier();
             String right = dialect.rightQualifier();
             if (left == null || right == null) {
