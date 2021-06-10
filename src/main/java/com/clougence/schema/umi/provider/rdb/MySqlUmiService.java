@@ -215,7 +215,7 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
         schema.setDefaultValue(mysqlColumn.getDefaultValue());
         schema.setComment(mysqlColumn.getComment());
         //
-        if (mysqlColumn.isNullable()) {
+        if (!mysqlColumn.isNullable()) {
             schema.getConstraints().add(new NonNull());
         }
         if (mysqlColumn.isPrimaryKey()) {

@@ -41,7 +41,7 @@ public class DialectRegister {
 
     public static Dialect findSqlDialect(DataSourceType dataSourceType) {
         if (dataSourceType == null) {
-            return null;
+            return DefaultDialect.DEFAULT;
         }
         return dialectCache.getOrDefault(dataSourceType, DefaultDialect.DEFAULT);
     }

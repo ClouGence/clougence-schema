@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-import com.clougence.schema.metadata.AbstractMetadataServiceSupplierTest;
-import com.clougence.schema.metadata.DsUtils;
+import com.clougence.schema.AbstractMetadataServiceSupplierTest;
+import com.clougence.schema.DsUtils;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.oracle.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;

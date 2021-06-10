@@ -21,7 +21,11 @@ import com.clougence.schema.editor.NoColumnException;
 import com.clougence.schema.editor.TableEditor;
 import com.clougence.schema.editor.builder.actions.Action;
 import com.clougence.schema.editor.domain.*;
+import com.clougence.schema.editor.provider.BuilderProvider;
+import com.clougence.schema.editor.provider.EditorProviderRegister;
 import com.clougence.schema.metadata.CaseSensitivityType;
+import com.clougence.schema.metadata.domain.rdb.postgres.PostgresTypes;
+import com.clougence.schema.metadata.typemapping.TypeMapping;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 import net.hasor.utils.StringUtils;
 
@@ -29,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -239,6 +244,25 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
         if (this.context.getBuilderProvider() == null) {
             throw new NullPointerException("the builderProvider is not ready.");
         }
-        super.triggerTableCreate(this.beAffected, this.eTable.getCatalog(), this.eTable.getSchema(), this.eTable.getName(), this.eTable);
+        //
+        BuilderProvider provider = null;
+        Function<EColumn, String> columnTypeMapping = null;
+        DataSourceType sourceDsType = this.context.getBuilderProvider().getDataSourceType();
+        if (targetDsType != sourceDsType) {
+            provider = EditorProviderRegister.findProvider(targetDsType);
+            //
+            final TypeMapping typeMapping = TypeMapping.DEFAULT.get();
+            //            final Class<? extends > typeDef = typeMapping.getTypeDef(sourceDsType);
+            columnTypeMapping = new Function<EColumn, String>() {
+                @Override
+                public String apply(EColumn column) {
+                    //                    typeMapping.getMapping(, targetDsType);
+                    return PostgresTypes.OID.getCodeKey();
+                }
+            };
+        } else {
+            provider = this.context.getBuilderProvider();
+        }
+        super.triggerTableCreate(provider, this.beAffected, this.eTable.getCatalog(), this.eTable.getSchema(), this.eTable.getName(), this.eTable, columnTypeMapping);
     }
 }

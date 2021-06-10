@@ -11,6 +11,7 @@ import net.hasor.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author mode 2021/1/8 19:56
@@ -18,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class MySqlEditorProvider extends AbstractProvider implements BuilderProvider {
     @Override
-    protected DataSourceType getDataSourceType() {
+    public DataSourceType getDataSourceType() {
         return DataSourceType.MySQL;
     }
 
@@ -65,8 +66,8 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
     }
 
     @Override
-    public List<String> tableCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable) {
-        return new MySqlCreateUtils().buildCreate(buildContext, catalog, schema, table, eTable);
+    public List<String> tableCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {
+        return new MySqlCreateUtils().buildCreate(buildContext, catalog, schema, table, eTable, columnTypeMapping);
     }
 
     @Override

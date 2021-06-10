@@ -9,6 +9,7 @@ import net.hasor.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -17,11 +18,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostgreSqlCreateUtils extends AbstractProvider {
     @Override
-    protected DataSourceType getDataSourceType() {
+    public DataSourceType getDataSourceType() {
         return DataSourceType.PostgreSQL;
     }
 
-    public List<String> buildCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable) {
+    public List<String> buildCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         List<String> ddlScripts = new ArrayList<>();
@@ -42,7 +43,7 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
                 sqlBuild.append(",\n");
             }
             EColumn eColumn = columnList.get(i);
-            buildColumn(sqlBuild, buildContext, eColumn);
+            buildColumn(sqlBuild, buildContext, eColumn, columnTypeMapping);
         }
         // pk
         EPrimaryKey primaryKey = eTable.getPrimaryKey();
@@ -94,13 +95,18 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         return ddlScripts;
     }
 
-    private void buildColumn(StringBuilder sqlBuild, TriggerContext buildContext, EColumn eColumn) {
+    private void buildColumn(StringBuilder sqlBuild, TriggerContext buildContext, EColumn eColumn, Function<EColumn, String> columnTypeMapping) {
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
+        if (columnTypeMapping != null) {
+            eColumn = eColumn.clone();
+            eColumn.setDbType(columnTypeMapping.apply(eColumn));
+        }
         //
         sqlBuild.append("  ");
         sqlBuild.append(fmtName(useDelimited, caseSensitivity, eColumn.getName()));
         String columnType = PostgreSqlProviderUtils.buildColumnType(eColumn);
+        sqlBuild.append("  ");
         sqlBuild.append(columnType);
         if (StringUtils.isNotBlank(eColumn.getComment())) {
             sqlBuild.append(" comment '" + eColumn.getComment() + "'");

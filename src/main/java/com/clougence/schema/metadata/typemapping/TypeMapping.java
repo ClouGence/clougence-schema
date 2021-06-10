@@ -3,6 +3,8 @@ import com.clougence.schema.metadata.FieldType;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.function.ESupplier;
+import net.hasor.utils.supplier.SingleProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +16,8 @@ import java.util.*;
  * @author mode create time is 2020-05-07
  */
 public final class TypeMapping {
-    private final List<MappingEnt> mappingList = new ArrayList<>();
+    public static SingleProvider<TypeMapping> DEFAULT     = new SingleProvider<>((ESupplier<TypeMapping, Exception>) TypeMapping::new);
+    private final List<MappingEnt>            mappingList = new ArrayList<>();
 
     public TypeMapping() throws IOException, ClassNotFoundException {
         InputStream resourceAsStream = ResourcesUtils.getResourceAsStream("/META-INF/clougence/sql-type-mapping.properties");
@@ -66,6 +69,9 @@ public final class TypeMapping {
             this.mappingList.add(new MappingEnt(sourceTypeDef, targetTypeDef));
         }
     }
+    //    public FieldType getTypeDef(DataSourceType dataSourceType, String fieldType) {
+    //        //
+    //    }
 
     public Map<String, String> getMappingString(Class<? extends FieldType> src, Class<? extends FieldType> dst) {
         Map<String, String> findMappings = new LinkedHashMap<>();

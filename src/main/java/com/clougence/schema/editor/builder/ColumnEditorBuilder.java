@@ -55,7 +55,7 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
             throw new ConflictException("column '" + newName + " already exists.");
         }
         if (!context.getBuilderProvider().supportColumnRename()) {
-            throw new UnsupportedOperationException("dataSource " + this.context.getDataSourceType() + " column rename Unsupported.");
+            throw new UnsupportedOperationException("provider " + this.context.getBuilderProvider().getClass() + " column rename Unsupported.");
         }
         //
         String oldName = this.eColumn.getName();

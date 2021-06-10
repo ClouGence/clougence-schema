@@ -22,6 +22,7 @@ import com.clougence.schema.editor.triggers.TriggerContext;
 import com.clougence.schema.metadata.CaseSensitivityType;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author mode 2021/5/21 19:56
@@ -81,13 +82,12 @@ public class AbstractBuilder {
         }
     }
 
-    protected void triggerTableCreate(boolean beAffected, String catalog, String schema, String table, ETable eTable) {
-        BuilderProvider provider = context.getBuilderProvider();
+    protected void triggerTableCreate(BuilderProvider provider, boolean beAffected, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {
         if (provider == null) {
             return;
         }
         if (context.isIncludeAffected() || !beAffected) {
-            List<String> sqlString = provider.tableCreate(buildContext(), catalog, schema, table, eTable);
+            List<String> sqlString = provider.tableCreate(buildContext(), catalog, schema, table, eTable, columnTypeMapping);
             this.actions.add(new TableCreateAction(sqlString, catalog, schema, table, eTable));
         }
     }

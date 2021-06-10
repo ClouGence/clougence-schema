@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-import com.clougence.schema.metadata.AbstractMetadataServiceSupplierTest;
-import com.clougence.schema.metadata.DsUtils;
+import com.clougence.schema.AbstractMetadataServiceSupplierTest;
+import com.clougence.schema.DsUtils;
 import com.clougence.schema.metadata.domain.rdb.mysql.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.clougence.schema.metadata.DsUtils.MYSQL_SCHEMA_NAME;
+import static com.clougence.schema.DsUtils.MYSQL_SCHEMA_NAME;
 
 /***
  *

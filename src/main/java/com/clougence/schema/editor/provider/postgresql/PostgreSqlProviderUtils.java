@@ -17,6 +17,9 @@ class PostgreSqlProviderUtils {
     }
 
     private static String buildDefault(PostgresTypes sqlTypes, String defaultValue) {
+        if (sqlTypes == null) {
+            throw new IllegalArgumentException("build column Type is unknown.");
+        }
         StringBuilder sqlBuild = new StringBuilder();
         if (defaultValue != null && !"".equals(defaultValue)) {
             switch (sqlTypes) {

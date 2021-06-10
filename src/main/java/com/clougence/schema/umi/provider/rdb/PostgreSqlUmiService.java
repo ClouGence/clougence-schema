@@ -267,7 +267,7 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
         schema.setDefaultValue(pgColumn.getDefaultValue());
         schema.setComment(pgColumn.getComment());
         //
-        if (pgColumn.isNullable()) {
+        if (!pgColumn.isNullable()) {
             schema.getConstraints().add(new NonNull());
         }
         if (pgColumn.isPrimaryKey()) {

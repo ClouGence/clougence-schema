@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.umi;
-import com.clougence.schema.metadata.FieldType;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+package com.clougence.schema.dialect;
+import com.clougence.schema.dialect.provider.AbstractDialect;
 
 /**
- * 结构类型
+ * 默认 SqlDialect 实现
+ * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-05-21
  */
-@Getter
-@Setter
-public class StrutsUmiSchema extends AbstractUmiSchema {
-    /** 每个字段Map */
-    private Map<String, AbstractUmiSchema> properties = new LinkedHashMap<>();
+public class DefaultDialect extends AbstractDialect {
+    public static Dialect DEFAULT = new DefaultDialect();
 
     @Override
-    public final FieldType getDataType() {
-        return UmiStrutsTypes.Struts;
+    protected String keyWordsResource() {
+        return null;
     }
 }

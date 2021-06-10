@@ -9,6 +9,7 @@ import net.hasor.utils.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author mode 2021/1/8 19:56
@@ -16,11 +17,11 @@ import java.util.List;
 @Slf4j
 public class MySqlCreateUtils extends AbstractProvider {
     @Override
-    protected DataSourceType getDataSourceType() {
+    public DataSourceType getDataSourceType() {
         return DataSourceType.MySQL;
     }
 
-    public List<String> buildCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable) {
+    public List<String> buildCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         //
@@ -41,7 +42,7 @@ public class MySqlCreateUtils extends AbstractProvider {
                 sqlBuild.append(",\n");
             }
             EColumn eColumn = columnList.get(i);
-            buildColumn(sqlBuild, buildContext, eColumn);
+            buildColumn(sqlBuild, buildContext, eColumn, columnTypeMapping);
         }
         // pk
         EPrimaryKey primaryKey = eTable.getPrimaryKey();
@@ -70,13 +71,18 @@ public class MySqlCreateUtils extends AbstractProvider {
         return Collections.singletonList(sqlBuild.toString());
     }
 
-    private void buildColumn(StringBuilder sqlBuild, TriggerContext buildContext, EColumn eColumn) {
+    private void buildColumn(StringBuilder sqlBuild, TriggerContext buildContext, EColumn eColumn, Function<EColumn, String> columnTypeMapping) {
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
+        if (columnTypeMapping != null) {
+            eColumn = eColumn.clone();
+            eColumn.setDbType(columnTypeMapping.apply(eColumn));
+        }
         //
         sqlBuild.append("  ");
         sqlBuild.append(fmtName(useDelimited, caseSensitivity, eColumn.getName()));
         String columnType = MySqlProviderUtils.buildColumnType(eColumn);
+        sqlBuild.append("  ");
         sqlBuild.append(columnType);
         if (StringUtils.isNotBlank(eColumn.getComment())) {
             sqlBuild.append(" comment '" + eColumn.getComment() + "'");

@@ -1,8 +1,10 @@
 package com.clougence.schema.editor;
+import com.clougence.schema.DataSourceType;
 import com.clougence.schema.editor.builder.TableEditorBuilder;
 import com.clougence.schema.editor.domain.EIndexType;
 import com.clougence.schema.editor.domain.ETable;
 import com.clougence.schema.umi.constraint.GeneralConstraintType;
+import com.clougence.schema.umi.provider.UmiServiceRegister;
 import com.clougence.schema.umi.provider.rdb.RdbUmiService;
 import com.clougence.schema.umi.special.rdb.RdbColumn;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
@@ -13,17 +15,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.hasor.utils.ExceptionUtils;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
-public class EditorServices {
+public class EditorHelper {
     private final RdbUmiService rdbUmiService;
 
-    public EditorServices(RdbUmiService rdbUmiService) {
-        this.rdbUmiService = rdbUmiService;
+    public EditorHelper(DataSourceType dataSourceType, Connection connection) {
+        this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dataSourceType, connection);
+    }
+
+    public EditorHelper(DataSourceType dataSourceType, DataSource dataSource) {
+        this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dataSourceType, dataSource);
+    }
+
+    public EditorHelper(RdbUmiService rdbUmiService) {
+        this.rdbUmiService = Objects.requireNonNull(rdbUmiService, "rdbUmiService must not null.");
     }
 
     private EditorContext createEditorContext(EditorOptions options) throws SQLException {
@@ -112,13 +125,12 @@ public class EditorServices {
     }
 
     public TableEditor editTableEditor(String catalog, String schema, String table, EditorOptions options) throws SQLException {
-        RdbTable rdbTable = this.rdbUmiService.loadTable(catalog, schema, table);
-        if (rdbTable == null) {
+        ETable eTable = loadTable(catalog, schema, table);
+        if (eTable == null) {
             throw new ConflictException("table '" + schema + "." + table + " is not exists.");
         }
         //
         EditorContext editorContext = this.createEditorContext(options);
-        ETable eTable = loadTable(catalog, schema, table);
         eTable.initDomain();
         return new TableEditorBuilder(eTable, editorContext);
     }

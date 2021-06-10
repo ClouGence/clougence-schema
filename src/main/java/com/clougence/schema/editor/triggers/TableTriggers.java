@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.triggers;
+import com.clougence.schema.editor.domain.EColumn;
 import com.clougence.schema.editor.domain.ETable;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author mode 2021/5/21 19:56
@@ -30,5 +32,5 @@ public interface TableTriggers extends java.util.EventListener {
 
     public List<String> tableComment(TriggerContext buildContext, String catalog, String schema, String table, String comment);
 
-    public List<String> tableCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable);
+    public List<String> tableCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping);
 }

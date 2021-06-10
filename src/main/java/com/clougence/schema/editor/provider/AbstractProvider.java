@@ -5,7 +5,7 @@ import com.clougence.schema.dialect.DialectRegister;
 import com.clougence.schema.metadata.CaseSensitivityType;
 
 public abstract class AbstractProvider {
-    protected abstract DataSourceType getDataSourceType();
+    public abstract DataSourceType getDataSourceType();
 
     protected String fmtName(boolean useDelimited, CaseSensitivityType caseSensitivity, String stringData) {
         if (useDelimited) {
