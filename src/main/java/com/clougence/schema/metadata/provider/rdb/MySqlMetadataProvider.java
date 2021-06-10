@@ -598,7 +598,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
         column.setDefaultCollationName(safeToString(recordMap.get("COLLATION_NAME")));
         column.setDefaultCharacterSetName(safeToString(recordMap.get("CHARACTER_SET_NAME")));
         column.setCharactersMaxLength(safeToLong(recordMap.get("CHARACTER_MAXIMUM_LENGTH")));
-        column.setBytesMaxLength(safeToInteger(recordMap.get("CHARACTER_OCTET_LENGTH")));
+        column.setBytesMaxLength(safeToLong(recordMap.get("CHARACTER_OCTET_LENGTH")));
         column.setDatetimePrecision(safeToInteger(recordMap.get("DATETIME_PRECISION")));
         column.setNumericPrecision(safeToInteger(recordMap.get("NUMERIC_PRECISION")));
         column.setNumericScale(safeToInteger(recordMap.get("NUMERIC_SCALE")));

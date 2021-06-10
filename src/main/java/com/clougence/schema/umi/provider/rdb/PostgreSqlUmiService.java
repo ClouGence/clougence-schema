@@ -1,4 +1,5 @@
 package com.clougence.schema.umi.provider.rdb;
+import com.clougence.schema.DataSourceType;
 import com.clougence.schema.metadata.domain.rdb.postgres.*;
 import com.clougence.schema.metadata.provider.rdb.PostgresMetadataProvider;
 import com.clougence.schema.umi.UmiSchema;
@@ -27,6 +28,11 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
     }
 
     @Override
+    public DataSourceType getDataSourceType() {
+        return DataSourceType.PostgreSQL;
+    }
+
+    @Override
     public List<UmiSchema> getRootSchemas() throws SQLException {
         return new ArrayList<>(getCatalogs());
     }
@@ -47,7 +53,7 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
             return getTable(parentPath[0], parentPath[1], parentPath[2]);
         } else if (parentPath.length == 4) {
             // load column
-            List<ValueUmiSchema> columns = getColumns(parentPath[0], parentPath[1], parentPath[2]);
+            List<RdbColumn> columns = getColumns(parentPath[0], parentPath[1], parentPath[2]);
             return columns.stream().filter(valueUmiSchema -> {
                 return StringUtils.equals(valueUmiSchema.getName(), parentPath[3]);
             }).findFirst().orElse(null);
@@ -160,7 +166,7 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
     }
 
     @Override
-    public List<ValueUmiSchema> getColumns(String catalog, String schema, String table) throws SQLException {
+    public List<RdbColumn> getColumns(String catalog, String schema, String table) throws SQLException {
         String currentCatalog = this.metadataSupplier.eGet().getCurrentCatalog();
         if (!StringUtils.equals(currentCatalog, catalog)) {
             return Collections.emptyList();
@@ -254,8 +260,8 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
         return schema;
     }
 
-    protected ValueUmiSchema convertColumn(PostgresColumn pgColumn) {
-        ValueUmiSchema schema = new ValueUmiSchema();
+    protected RdbColumn convertColumn(PostgresColumn pgColumn) {
+        RdbColumn schema = new RdbColumn();
         schema.setName(pgColumn.getName());
         schema.setDataType(pgColumn.getSqlType());
         schema.setDefaultValue(pgColumn.getDefaultValue());
@@ -271,6 +277,11 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
             schema.getConstraints().add(new Unique());
         }
         //
+        schema.setCharLength(pgColumn.getCharacterMaximumLength());
+        schema.setByteLength(pgColumn.getCharacterOctetLength());
+        schema.setNumericPrecision(pgColumn.getNumericPrecision());
+        schema.setNumericScale(pgColumn.getNumericScale());
+        schema.setDatetimePrecision(pgColumn.getDatetimePrecision());
         schema.getAttributes().setValue("dataType", pgColumn.getDataType());
         if (pgColumn.getJdbcType() != null) {
             schema.getAttributes().setValue("jdbcType", pgColumn.getJdbcType().name());

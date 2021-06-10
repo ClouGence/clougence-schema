@@ -1,10 +1,13 @@
 package com.clougence.schema.umi.provider.rdb;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.provider.rdb.RdbMetaDataService;
+import com.clougence.schema.umi.ValueUmiSchema;
 import com.clougence.schema.umi.provider.AbstractUmiService;
+import com.clougence.schema.umi.special.rdb.*;
 import net.hasor.utils.function.ESupplier;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * mysql DsSchemaRService
@@ -34,5 +37,37 @@ public abstract class AbstractRdbUmiService<T extends RdbMetaDataService> extend
 
     public String getCurrentCatalog() throws SQLException {
         return this.metadataSupplier.get().getCurrentCatalog();
+    }
+
+    public RdbTable loadTable(String catalog, String schema, String table) throws SQLException {
+        RdbTable rdbTable = new RdbTable();
+        ValueUmiSchema umiTable = getTable(catalog, schema, table);
+        rdbTable.setName(umiTable.getName());
+        rdbTable.setComment(umiTable.getComment());
+        //
+        RdbPrimaryKey primaryKey = getPrimaryKey(catalog, schema, table);
+        if (primaryKey != null) {
+            rdbTable.setPrimaryKey(primaryKey);
+        }
+        List<RdbUniqueKey> uniqueKeyList = getUniqueKey(catalog, schema, table);
+        if (uniqueKeyList != null) {
+            rdbTable.setUniqueKey(uniqueKeyList);
+        }
+        List<RdbForeignKey> foreignKeyList = getForeignKey(catalog, schema, table);
+        if (foreignKeyList != null) {
+            rdbTable.setForeignKey(foreignKeyList);
+        }
+        List<RdbIndex> indexesList = getIndexes(catalog, schema, table);
+        if (indexesList != null) {
+            rdbTable.getIndices().addAll(indexesList);
+        }
+        //
+        List<RdbColumn> columns = getColumns(catalog, schema, table);
+        for (RdbColumn umiColumn : columns) {
+            rdbTable.getProperties().put(umiColumn.getName(), umiColumn);
+        }
+        //
+        rdbTable.getAttributes().setAttributes(umiTable.getAttributes());
+        return rdbTable;
     }
 }

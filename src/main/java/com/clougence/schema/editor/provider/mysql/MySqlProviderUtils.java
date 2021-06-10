@@ -1,6 +1,6 @@
 package com.clougence.schema.editor.provider.mysql;
 import com.clougence.schema.editor.domain.EColumn;
-import com.clougence.schema.metadata.domain.mysql.MySqlTypes;
+import com.clougence.schema.metadata.domain.rdb.mysql.MySqlTypes;
 
 class MySqlProviderUtils {
     public static String buildColumnType(EColumn columnInfo) {

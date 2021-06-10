@@ -1,10 +1,8 @@
 package com.clougence.schema.umi.provider.rdb;
+import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.umi.UmiService;
 import com.clougence.schema.umi.ValueUmiSchema;
-import com.clougence.schema.umi.special.rdb.RdbForeignKey;
-import com.clougence.schema.umi.special.rdb.RdbIndex;
-import com.clougence.schema.umi.special.rdb.RdbPrimaryKey;
-import com.clougence.schema.umi.special.rdb.RdbUniqueKey;
+import com.clougence.schema.umi.special.rdb.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,6 +12,12 @@ import java.util.List;
  * @author mode 2020/12/8 15:21
  */
 public interface RdbUmiService extends UmiService {
+    public CaseSensitivityType getPlain() throws SQLException;
+
+    public CaseSensitivityType getDelimited() throws SQLException;
+
+    public RdbTable loadTable(String catalog, String schema, String table) throws SQLException;
+
     public List<ValueUmiSchema> getCatalogs() throws SQLException;
 
     public ValueUmiSchema getCatalog(String catalog) throws SQLException;
@@ -30,7 +34,7 @@ public interface RdbUmiService extends UmiService {
 
     public List<ValueUmiSchema> getTables(String catalog, String schema, String[] tables) throws SQLException;
 
-    public List<ValueUmiSchema> getColumns(String catalog, String schema, String table) throws SQLException;
+    public List<RdbColumn> getColumns(String catalog, String schema, String table) throws SQLException;
 
     public RdbPrimaryKey getPrimaryKey(String catalog, String schema, String table) throws SQLException;
 

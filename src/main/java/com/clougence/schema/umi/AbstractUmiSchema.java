@@ -68,6 +68,14 @@ public abstract class AbstractUmiSchema implements UmiSchema {
         return this.attributes;
     }
 
+    public <T extends UmiConstraint> boolean hasConstraint(Class<T> classType) {
+        return !getConstraints(classType).isEmpty();
+    }
+
+    public boolean hasConstraint(UmiConstraintType constraintType) {
+        return !getConstraints(constraintType).isEmpty();
+    }
+
     public <T extends UmiConstraint> List<T> getConstraints(Class<T> classType) {
         return this.getConstraints().stream().filter(classType::isInstance).map(c -> {
             return (T) c;

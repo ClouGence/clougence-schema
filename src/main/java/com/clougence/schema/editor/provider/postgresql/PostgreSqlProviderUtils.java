@@ -1,6 +1,6 @@
 package com.clougence.schema.editor.provider.postgresql;
 import com.clougence.schema.editor.domain.EColumn;
-import com.clougence.schema.metadata.domain.postgres.PostgresTypes;
+import com.clougence.schema.metadata.domain.rdb.postgres.PostgresTypes;
 
 class PostgreSqlProviderUtils {
     public static String buildColumnType(EColumn columnInfo) {

@@ -40,8 +40,8 @@ public class PostgresColumn implements ColumnDef {
     private Long          typeOid;
     private String        dataType;
     private String        elementType;
-    private Integer       characterMaximumLength;
-    private Integer       characterOctetLength;
+    private Long          characterMaximumLength;
+    private Long          characterOctetLength;
     private String        defaultValue;
     //
     private Integer       numericPrecision;

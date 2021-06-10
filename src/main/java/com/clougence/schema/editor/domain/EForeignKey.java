@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.domain;
+import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 import lombok.Getter;
 import lombok.Setter;
 import net.hasor.utils.StringUtils;
@@ -31,8 +32,8 @@ public class EForeignKey extends EChange<EForeignKey> {
     private String              referenceSchema;
     private String              referenceTable;
     private Map<String, String> referenceMapping = new HashMap<>();
-    private EForeignKeyRule     updateRule       = EForeignKeyRule.NoAction;
-    private EForeignKeyRule     deleteRule       = EForeignKeyRule.NoAction;
+    private RdbForeignKeyRule   updateRule       = RdbForeignKeyRule.NoAction;
+    private RdbForeignKeyRule   deleteRule       = RdbForeignKeyRule.NoAction;
     private Map<String, String> attribute        = new HashMap<>();
 
     @Override

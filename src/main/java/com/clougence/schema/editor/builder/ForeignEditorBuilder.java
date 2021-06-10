@@ -18,8 +18,8 @@ import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.TableEditor.ForeignKeyEditor;
 import com.clougence.schema.editor.domain.EForeignKey;
-import com.clougence.schema.editor.domain.EForeignKeyRule;
 import com.clougence.schema.editor.domain.ETable;
+import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 import net.hasor.utils.StringUtils;
 
 import java.util.*;
@@ -111,8 +111,8 @@ class ForeignEditorBuilder extends AbstractBuilder implements ForeignKeyEditor {
     }
 
     @Override
-    public void configUpdateRule(EForeignKeyRule foreignKeyRule) {
-        foreignKeyRule = (foreignKeyRule == null) ? EForeignKeyRule.NoAction : foreignKeyRule;
+    public void configUpdateRule(RdbForeignKeyRule foreignKeyRule) {
+        foreignKeyRule = (foreignKeyRule == null) ? RdbForeignKeyRule.NoAction : foreignKeyRule;
         if (this.eForeignKey.getUpdateRule() == foreignKeyRule) {
             return;
         }
@@ -121,8 +121,8 @@ class ForeignEditorBuilder extends AbstractBuilder implements ForeignKeyEditor {
     }
 
     @Override
-    public void configDeleteRule(EForeignKeyRule foreignKeyRule) {
-        foreignKeyRule = (foreignKeyRule == null) ? EForeignKeyRule.NoAction : foreignKeyRule;
+    public void configDeleteRule(RdbForeignKeyRule foreignKeyRule) {
+        foreignKeyRule = (foreignKeyRule == null) ? RdbForeignKeyRule.NoAction : foreignKeyRule;
         if (this.eForeignKey.getDeleteRule() == foreignKeyRule) {
             return;
         }

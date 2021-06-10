@@ -31,4 +31,8 @@ public class UniSchemaAttributes {
     public void setValue(String attrName, String value) {
         this.attribute.put(attrName, value);
     }
+
+    public void setAttributes(UniSchemaAttributes attributes) {
+        this.attribute.putAll(attributes.attribute);
+    }
 }

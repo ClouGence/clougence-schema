@@ -22,6 +22,7 @@ import com.clougence.schema.editor.TableEditor;
 import com.clougence.schema.editor.builder.actions.Action;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.metadata.CaseSensitivityType;
+import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 import net.hasor.utils.StringUtils;
 
 import java.util.Collections;
@@ -64,7 +65,7 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
             throw new NullPointerException("new name is null.");
         }
         if (!context.getBuilderProvider().supportTableRename()) {
-            throw new UnsupportedOperationException("dataSource " + this.context.getDataSourceType() + " table rename Unsupported.");
+            throw new UnsupportedOperationException("provider " + context.getBuilderProvider().getClass().getName() + " table rename Unsupported.");
         }
         if (Objects.equals(this.eTable.getName(), newName)) {
             return;
@@ -186,7 +187,7 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
     }
 
     @Override
-    public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, EForeignKeyRule updateRule, EForeignKeyRule deleteRule, Map<String, String> referenceMapping) {
+    public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, RdbForeignKeyRule updateRule, RdbForeignKeyRule deleteRule, Map<String, String> referenceMapping) {
         List<String> indexNames = this.eTable.getIndices().stream().map(EIndex::getName).collect(Collectors.toList());
         if (indexNames.contains(fkName)) {
             throw new ConflictException("foreignKey '" + fkName + " already exists.");
@@ -195,8 +196,8 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
         eForeignKey.setName(fkName);
         eForeignKey.setReferenceSchema(referenceSchema);
         eForeignKey.setReferenceTable(referenceTable);
-        eForeignKey.setUpdateRule(updateRule == null ? EForeignKeyRule.NoAction : updateRule);
-        eForeignKey.setDeleteRule(deleteRule == null ? EForeignKeyRule.NoAction : deleteRule);
+        eForeignKey.setUpdateRule(updateRule == null ? RdbForeignKeyRule.NoAction : updateRule);
+        eForeignKey.setDeleteRule(deleteRule == null ? RdbForeignKeyRule.NoAction : deleteRule);
         referenceMapping = (referenceMapping == null) ? Collections.emptyMap() : referenceMapping;
         for (String columnName : referenceMapping.keySet()) {
             String referenceColumn = referenceMapping.get(columnName);

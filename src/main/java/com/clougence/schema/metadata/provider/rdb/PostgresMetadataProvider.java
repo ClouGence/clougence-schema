@@ -665,8 +665,8 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         column.setSqlType(safeToPostgresTypes(serverVersionNumber, recordMap));
         column.setJdbcType(columnTypeMappingToJdbcType(column, recordMap));
         //
-        column.setCharacterMaximumLength(safeToInteger(recordMap.get("character_maximum_length")));
-        column.setCharacterOctetLength(safeToInteger(recordMap.get("character_octet_length")));
+        column.setCharacterMaximumLength(safeToLong(recordMap.get("character_maximum_length")));
+        column.setCharacterOctetLength(safeToLong(recordMap.get("character_octet_length")));
         column.setDefaultValue(safeToString(recordMap.get("column_default")));
         //
         column.setNumericPrecision(safeToInteger(recordMap.get("numeric_precision")));

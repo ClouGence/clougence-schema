@@ -3,6 +3,7 @@ import com.clougence.schema.DataSourceType;
 import com.clougence.schema.editor.builder.actions.Action;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.metadata.CaseSensitivityType;
+import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public interface TableEditor extends EditorSource<ETable> {
 
     public ForeignKeyEditor getForeignKeyEditor(String fkName);
 
-    public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, EForeignKeyRule updateRule, EForeignKeyRule deleteRule, Map<String, String> referenceMapping);
+    public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, RdbForeignKeyRule updateRule, RdbForeignKeyRule deleteRule, Map<String, String> referenceMapping);
 
     public void buildCreate(DataSourceType dataSourceType);
 
@@ -83,9 +84,9 @@ public interface TableEditor extends EditorSource<ETable> {
 
         public void removeColumn(String[] columnName);
 
-        public void configUpdateRule(EForeignKeyRule foreignKeyRule);
+        public void configUpdateRule(RdbForeignKeyRule foreignKeyRule);
 
-        public void configDeleteRule(EForeignKeyRule foreignKeyRule);
+        public void configDeleteRule(RdbForeignKeyRule foreignKeyRule);
 
         public void delete();
     }

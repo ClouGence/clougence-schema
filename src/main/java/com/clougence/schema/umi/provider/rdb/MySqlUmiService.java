@@ -1,4 +1,5 @@
 package com.clougence.schema.umi.provider.rdb;
+import com.clougence.schema.DataSourceType;
 import com.clougence.schema.metadata.domain.rdb.mysql.*;
 import com.clougence.schema.metadata.provider.rdb.MySqlMetadataProvider;
 import com.clougence.schema.umi.UmiSchema;
@@ -30,6 +31,11 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
     }
 
     @Override
+    public DataSourceType getDataSourceType() {
+        return DataSourceType.MySQL;
+    }
+
+    @Override
     public List<UmiSchema> getRootSchemas() throws SQLException {
         return new ArrayList<>(getSchemas());
     }
@@ -47,7 +53,7 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
             return getTable(null, parentPath[0], parentPath[1]);
         } else if (parentPath.length == 3) {
             // load column
-            List<ValueUmiSchema> columns = getColumns(null, parentPath[0], parentPath[1]);
+            List<RdbColumn> columns = getColumns(null, parentPath[0], parentPath[1]);
             return columns.stream().filter(valueUmiSchema -> {
                 return StringUtils.equals(valueUmiSchema.getName(), parentPath[2]);
             }).findFirst().orElse(null);
@@ -129,7 +135,7 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
     }
 
     @Override
-    public List<ValueUmiSchema> getColumns(String catalog, String schema, String table) throws SQLException {
+    public List<RdbColumn> getColumns(String catalog, String schema, String table) throws SQLException {
         List<MySqlColumn> mysql = this.metadataSupplier.eGet().getColumns(schema, table);
         if (mysql != null && !mysql.isEmpty()) {
             return mysql.stream().map(this::convertColumn).collect(Collectors.toList());
@@ -202,8 +208,8 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
         return schema;
     }
 
-    protected ValueUmiSchema convertColumn(MySqlColumn mysqlColumn) {
-        ValueUmiSchema schema = new ValueUmiSchema();
+    protected RdbColumn convertColumn(MySqlColumn mysqlColumn) {
+        RdbColumn schema = new RdbColumn();
         schema.setName(mysqlColumn.getName());
         schema.setDataType(mysqlColumn.getSqlType());
         schema.setDefaultValue(mysqlColumn.getDefaultValue());
@@ -223,6 +229,12 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
         if (mysqlColumn.getJdbcType() != null) {
             schema.getAttributes().setValue("jdbcType", mysqlColumn.getJdbcType().name());
         }
+        //
+        schema.setCharLength(mysqlColumn.getCharactersMaxLength());
+        schema.setByteLength(mysqlColumn.getBytesMaxLength());
+        schema.setNumericPrecision(mysqlColumn.getNumericPrecision());
+        schema.setNumericScale(mysqlColumn.getNumericScale());
+        schema.setDatetimePrecision(mysqlColumn.getDatetimePrecision());
         schema.getAttributes().setValue("columnType", mysqlColumn.getColumnType());
         schema.getAttributes().setValue("datetimePrecision", String.valueOf(mysqlColumn.getDatetimePrecision()));
         schema.getAttributes().setValue("numericPrecision", String.valueOf(mysqlColumn.getNumericPrecision()));
