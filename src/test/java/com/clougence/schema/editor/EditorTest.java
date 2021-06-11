@@ -2,6 +2,7 @@ package com.clougence.schema.editor;
 import com.clougence.schema.AbstractMetadataServiceSupplierTest;
 import com.clougence.schema.DataSourceType;
 import com.clougence.schema.DsUtils;
+import com.clougence.schema.editor.builder.actions.Action;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.provider.rdb.MySqlMetadataProvider;
 import com.clougence.schema.metadata.typemapping.TypeMapping;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public class EditorTest extends AbstractMetadataServiceSupplierTest<MySqlMetadataProvider> {
     @Override
@@ -44,9 +46,9 @@ public class EditorTest extends AbstractMetadataServiceSupplierTest<MySqlMetadat
         tableEditor.getPrimaryEditor().delete();
         //
         tableEditor.configCaseSensitivity(false, CaseSensitivityType.Upper);
-        tableEditor.buildCreate(DataSourceType.PostgreSQL);
+        List<Action> actions = tableEditor.buildCreate(DataSourceType.PostgreSQL);
         //
-        System.out.println(StringUtils.join(tableEditor.getActions().stream().map(action -> {
+        System.out.println(StringUtils.join(actions.stream().map(action -> {
             return StringUtils.join(action.getSqlString().toArray(), '\n');
         }).toArray(), '\n'));
     }

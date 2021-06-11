@@ -28,10 +28,7 @@ import com.clougence.schema.metadata.typemapping.TypeMapping;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 import net.hasor.utils.StringUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -233,7 +230,7 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
     }
 
     @Override
-    public void buildCreate(DataSourceType targetDsType) {
+    public List<Action> buildCreate(DataSourceType targetDsType) {
         if (StringUtils.isBlank(this.eTable.getName())) {
             throw new NullPointerException("table name is null.");
         }
@@ -262,6 +259,15 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
         } else {
             provider = this.context.getBuilderProvider();
         }
-        super.triggerTableCreate(provider, this.beAffected, this.eTable.getCatalog(), this.eTable.getSchema(), this.eTable.getName(), this.eTable, columnTypeMapping);
+        //
+        List<Action> cacheActions = new ArrayList<>(this.context.getActions());
+        try {
+            this.context.getActions().clear();
+            super.triggerTableCreate(provider, this.beAffected, this.eTable.getCatalog(), this.eTable.getSchema(), this.eTable.getName(), this.eTable, columnTypeMapping);
+            return new ArrayList<>(this.context.getActions());
+        } finally {
+            this.context.getActions().clear();
+            this.context.getActions().addAll(cacheActions);
+        }
     }
 }

@@ -33,7 +33,7 @@ public interface TableEditor extends EditorSource<ETable> {
 
     public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, RdbForeignKeyRule updateRule, RdbForeignKeyRule deleteRule, Map<String, String> referenceMapping);
 
-    public void buildCreate(DataSourceType dataSourceType);
+    public List<Action> buildCreate(DataSourceType targetDsType);
 
     public interface PrimaryEditor extends EditorSource<EPrimaryKey> {
         public void addColumn(String[] columnName);
