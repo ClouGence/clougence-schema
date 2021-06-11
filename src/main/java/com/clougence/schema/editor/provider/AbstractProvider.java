@@ -9,15 +9,15 @@ public abstract class AbstractProvider {
 
     protected String fmtName(boolean useDelimited, CaseSensitivityType caseSensitivity, String stringData) {
         if (useDelimited) {
-            return fmtCaseSensitivity(caseSensitivity, stringData);
-        } else {
             Dialect dialect = DialectRegister.findSqlDialect(getDataSourceType());
             String left = dialect.leftQualifier();
             String right = dialect.rightQualifier();
             if (left == null || right == null) {
                 throw new UnsupportedOperationException("Unsupported ds type -> " + getDataSourceType().name());
             }
-            return left + stringData + right;
+            return left + fmtCaseSensitivity(caseSensitivity, stringData) + right;
+        } else {
+            return fmtCaseSensitivity(caseSensitivity, stringData);
         }
     }
 

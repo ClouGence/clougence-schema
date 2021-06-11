@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-import com.clougence.schema.DataSourceType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.jdbc.*;
@@ -65,11 +64,6 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Rd
             //
             return dbmsVer + "\n" + driverVer + "\n" + jdbcVer;
         }
-    }
-
-    @Override
-    public DataSourceType getType() {
-        return DataSourceType.Jdbc;
     }
 
     public String getCurrentCatalog() throws SQLException {

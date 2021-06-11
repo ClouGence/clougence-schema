@@ -46,6 +46,10 @@ class MySqlProviderUtils {
         Integer numericPrecision = columnInfo.getNumericPrecision();
         Integer numericScale = columnInfo.getNumericScale();
         Integer datetimePrecision = columnInfo.getDatetimePrecision();
+        length = (length != null && length == 0) ? null : length;
+        numericPrecision = (numericPrecision != null && numericPrecision == 0) ? null : numericPrecision;
+        numericScale = (numericScale != null && numericScale == 0) ? null : numericScale;
+        datetimePrecision = (datetimePrecision != null && datetimePrecision == 0) ? null : datetimePrecision;
         //
         switch (sqlTypes) {
             case BIT: {

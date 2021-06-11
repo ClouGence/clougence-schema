@@ -2,7 +2,9 @@ package com.clougence.schema.editor;
 import com.clougence.schema.AbstractMetadataServiceSupplierTest;
 import com.clougence.schema.DataSourceType;
 import com.clougence.schema.DsUtils;
+import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.provider.rdb.MySqlMetadataProvider;
+import com.clougence.schema.metadata.typemapping.TypeMapping;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 import org.junit.Test;
@@ -39,11 +41,17 @@ public class EditorTest extends AbstractMetadataServiceSupplierTest<MySqlMetadat
         EditorHelper helper = new EditorHelper(DataSourceType.MySQL, this.connection);
         TableEditor tableEditor = helper.editTableEditor(null, repository.getCurrentSchema(), "tb_user", new EditorOptions());
         tableEditor.getColumn("loginName").delete();
+        tableEditor.getPrimaryEditor().delete();
         //
+        tableEditor.configCaseSensitivity(false, CaseSensitivityType.Upper);
         tableEditor.buildCreate(DataSourceType.PostgreSQL);
         //
         System.out.println(StringUtils.join(tableEditor.getActions().stream().map(action -> {
             return StringUtils.join(action.getSqlString().toArray(), '\n');
         }).toArray(), '\n'));
+    }
+
+    public static void main(String[] args) {
+        TypeMapping.DEFAULT.get();
     }
 }

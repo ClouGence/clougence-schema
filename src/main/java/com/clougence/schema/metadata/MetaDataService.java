@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata;
-import com.clougence.schema.DataSourceType;
-
 import java.sql.SQLException;
 
 /**
@@ -26,6 +24,4 @@ import java.sql.SQLException;
 public interface MetaDataService {
     /** 获取版本信息 */
     public String getVersion() throws SQLException;
-
-    public DataSourceType getType();
 }

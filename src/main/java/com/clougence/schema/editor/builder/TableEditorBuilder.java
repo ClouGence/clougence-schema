@@ -24,7 +24,6 @@ import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.BuilderProvider;
 import com.clougence.schema.editor.provider.EditorProviderRegister;
 import com.clougence.schema.metadata.CaseSensitivityType;
-import com.clougence.schema.metadata.domain.rdb.postgres.PostgresTypes;
 import com.clougence.schema.metadata.typemapping.TypeMapping;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 import net.hasor.utils.StringUtils;
@@ -251,14 +250,14 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
         if (targetDsType != sourceDsType) {
             provider = EditorProviderRegister.findProvider(targetDsType);
             //
-            final TypeMapping typeMapping = TypeMapping.DEFAULT.get();
-            //            final Class<? extends > typeDef = typeMapping.getTypeDef(sourceDsType);
-            columnTypeMapping = new Function<EColumn, String>() {
-                @Override
-                public String apply(EColumn column) {
-                    //                    typeMapping.getMapping(, targetDsType);
-                    return PostgresTypes.OID.getCodeKey();
+            TypeMapping typeMapping = TypeMapping.DEFAULT.get();
+            final Map<String, String> mappingString = typeMapping.getMapping(sourceDsType, targetDsType);
+            columnTypeMapping = c -> {
+                String targetType = mappingString.get(c.getDbType());
+                if (StringUtils.isBlank(targetType)) {
+                    throw new IllegalArgumentException("source Type '" + c.getDbType() + "' has no mapping.");
                 }
+                return targetType;
             };
         } else {
             provider = this.context.getBuilderProvider();

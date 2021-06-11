@@ -1,0 +1,38 @@
+mappings:
+  source: com.clougence.schema.metadata.domain.rdb.mysql.MySqlTypes
+  target: com.clougence.schema.metadata.domain.rdb.postgres.PostgresTypes
+  map:
+    "bit": "bit"
+    "tinyint": "integer"
+    "smallint": "integer"
+    "mediumint": "integer"
+    "int": "integer"
+    "bigint": "bigint"
+    "decimal": "numeric"
+    "float": "numeric"
+    "double": "numeric"
+    "date": "timestamp without time zone"
+    "datetime": "timestamp without time zone"
+    "timestamp": "timestamp without time zone"
+    "time": "time without time zone"
+    "year": "integer"
+    "char": "character"
+    "varchar": "character varying"
+    "binary": "bytea"
+    "varbinary": "bytea"
+    "tinyblob": "bytea"
+    "blob": "bytea"
+    "mediumblob": "bytea"
+    "longblob":
+    "tinytext": "text"
+    "text": "text"
+    "mediumtext": "text"
+    "longtext":
+    "enum": "text"
+    "set": "text"
+    "json": "json"
+    "geometry": "text"
+    "point": "point"
+    "linestring": "text"
+    "polygon": "polygon"
+    "geomcollection": "text"

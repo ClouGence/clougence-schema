@@ -46,7 +46,7 @@ public class MySqlCreateUtils extends AbstractProvider {
         }
         // pk
         EPrimaryKey primaryKey = eTable.getPrimaryKey();
-        if (primaryKey != null) {
+        if (primaryKey != null && !primaryKey.getColumnList().isEmpty()) {
             sqlBuild.append(",\n");
             buildPrimaryKey(sqlBuild, buildContext, primaryKey);
         }

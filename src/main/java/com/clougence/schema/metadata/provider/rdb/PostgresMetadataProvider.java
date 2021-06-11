@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-import com.clougence.schema.DataSourceType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.postgres.*;
@@ -181,11 +180,6 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         try (Connection conn = this.connectSupplier.eGet()) {
             return new JdbcTemplate(conn).queryForString("select version()");
         }
-    }
-
-    @Override
-    public DataSourceType getType() {
-        return DataSourceType.PostgreSQL;
     }
 
     public long getServerVersionNumber() throws SQLException {

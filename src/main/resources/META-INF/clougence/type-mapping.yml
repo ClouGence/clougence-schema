@@ -1,0 +1,53 @@
+config:
+  # AdbMySql as Source
+  - mappingConfig:
+      - source: AdbForMySQL
+        target: MySQL
+        mapping: /META-INF/clougence/types-mapping/adbmysql-mysql.yml
+  - mappingConfig:
+      - source: AdbForMySQL
+        target: PostgreSQL
+        mapping: /META-INF/clougence/types-mapping/adbmysql-postgres.yml
+  - mappingConfig:
+      - source: AdbForMySQL
+        target: Oracle
+        mapping: /META-INF/clougence/types-mapping/adbmysql-oracle.yml
+  # MySql as Source
+  - mappingConfig:
+      - source: MySQL
+        target: AdbForMySQL
+        mapping: /META-INF/clougence/types-mapping/mysql-adbmysql.yml
+  - mappingConfig:
+      - source: MySQL
+        target: PostgreSQL
+        mapping: /META-INF/clougence/types-mapping/mysql-postgres.yml
+  - mappingConfig:
+      - source: MySQL
+        target: Oracle
+        mapping: /META-INF/clougence/types-mapping/mysql-oracle.yml
+  # Oracle as Source
+  - mappingConfig:
+      - source: Oracle
+        target: AdbForMySQL
+        mapping: /META-INF/clougence/types-mapping/oracle-adbmysql.yml
+  - mappingConfig:
+      - source: Oracle
+        target: MySQL
+        mapping: /META-INF/clougence/types-mapping/oracle-mysql.yml
+  - mappingConfig:
+      - source: Oracle
+        target: PostgreSQL
+        mapping: /META-INF/clougence/types-mapping/oracle-postgres.yml
+  # PostgreSQL as Source
+  - mappingConfig:
+      - source: PostgreSQL
+        target: AdbForMySQL
+        mapping: /META-INF/clougence/types-mapping/postgres-adbmysql.yml
+  - mappingConfig:
+      - source: PostgreSQL
+        target: MySQL
+        mapping: /META-INF/clougence/types-mapping/postgres-mysql.yml
+  - mappingConfig:
+      - source: PostgreSQL
+        target: Oracle
+        mapping: /META-INF/clougence/types-mapping/postgres-oracle.yml

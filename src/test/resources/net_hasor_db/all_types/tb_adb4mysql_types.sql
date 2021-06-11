@@ -56,9 +56,8 @@ create table tb_adbmysql_types
     c_float_z       float zerofill,
     c_float_n       float(10),
     c_float_n_z     float(10) zerofill,
-    c_float_n_n     float(10, 3
-) ,
-    c_float_n_n_z            float(10, 3) zerofill,
+    c_float_n_n     float(10, 3) ,
+    c_float_n_n_z   float(10, 3) zerofill,
 
     c_double                 double,
     c_double_z               double zerofill,

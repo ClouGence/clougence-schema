@@ -36,7 +36,6 @@ public class UmiServiceRegister {
             case PostgreSQL:
                 return new PostgreSqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, connection));
             case Oracle:
-            case Jdbc:
             default:
                 throw new UnsupportedOperationException("");
         }
@@ -50,7 +49,6 @@ public class UmiServiceRegister {
             case PostgreSQL:
                 return new PostgreSqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, dataSource));
             case Oracle:
-            case Jdbc:
             default:
                 throw new UnsupportedOperationException("");
         }

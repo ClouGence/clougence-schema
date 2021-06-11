@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-import com.clougence.schema.DataSourceType;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
@@ -77,11 +76,6 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
                 return version;
             }
         }
-    }
-
-    @Override
-    public DataSourceType getType() {
-        return DataSourceType.Oracle;
     }
 
     @Override

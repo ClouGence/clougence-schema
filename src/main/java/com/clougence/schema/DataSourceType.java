@@ -25,7 +25,6 @@ public enum DataSourceType {
     PostgreSQL("PostgreSQL"), //
     Oracle("Oracle"), //
     DM("DM"), //
-    Jdbc("Jdbc"), //
     ;
     private final String typeName;
 

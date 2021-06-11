@@ -35,7 +35,6 @@ public class MetadataServiceRegister {
                 return (T) new PostgresMetadataProvider(connection);
             case Oracle:
                 return (T) new OracleMetadataProvider(connection);
-            case Jdbc:
             default:
                 return (T) new JdbcMetadataProvider(connection);
         }
@@ -51,7 +50,6 @@ public class MetadataServiceRegister {
                 return (T) new PostgresMetadataProvider(dataSource);
             case Oracle:
                 return (T) new OracleMetadataProvider(dataSource);
-            case Jdbc:
             default:
                 return (T) new JdbcMetadataProvider(dataSource);
         }

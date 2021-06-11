@@ -119,9 +119,9 @@ public enum PostgresTypes implements FieldType {
     BIT_VARYING_ARRAY("bit varying[]", JDBCType.ARRAY, Oid.VARBIT_ARRAY, true),   // varbit、bit varying
     BOOLEAN_ARRAY("boolean[]", JDBCType.ARRAY, Oid.BOOL_ARRAY, true),             // bool、boolean
     //
-    XML_ARRAY("xml", JDBCType.ARRAY, Oid.XML_ARRAY, true),
+    XML_ARRAY("xml[]", JDBCType.ARRAY, Oid.XML_ARRAY, true),
     BYTEA_ARRAY("bytea[]", JDBCType.ARRAY, Oid.BYTEA_ARRAY, true),
-    REF_CURSOR_ARRAY("refcursor", JDBCType.ARRAY, Oid.REF_CURSOR_ARRAY, true),    // refcursor
+    REF_CURSOR_ARRAY("refcursor[]", JDBCType.ARRAY, Oid.REF_CURSOR_ARRAY, true),    // refcursor
     //
     POINT_ARRAY("point[]", JDBCType.ARRAY, Oid.POINT_ARRAY, true),
     LINE_ARRAY("line[]", JDBCType.ARRAY, null, true),             // 629

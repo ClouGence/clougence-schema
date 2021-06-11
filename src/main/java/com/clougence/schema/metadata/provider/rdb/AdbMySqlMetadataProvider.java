@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-import com.clougence.schema.DataSourceType;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
@@ -59,11 +58,6 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
                 return mapObject.get("source_version").toString();
             }
         }
-    }
-
-    @Override
-    public DataSourceType getType() {
-        return DataSourceType.AdbForMySQL;
     }
 
     public CaseSensitivityType getPlain() throws SQLException {

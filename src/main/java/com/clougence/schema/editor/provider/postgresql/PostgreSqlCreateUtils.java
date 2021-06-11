@@ -47,7 +47,7 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         }
         // pk
         EPrimaryKey primaryKey = eTable.getPrimaryKey();
-        if (primaryKey != null) {
+        if (primaryKey != null && !primaryKey.getColumnList().isEmpty()) {
             sqlBuild.append(",\n");
             buildPrimaryKey(sqlBuild, buildContext, primaryKey);
         }
@@ -74,6 +74,9 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         // columns comment
         for (int i = 0; i < columnList.size(); i++) {
             EColumn eColumn = columnList.get(i);
+            if ("".equals(eColumn.getComment())) {
+                continue;
+            }
             StringBuilder columnCommentSql = new StringBuilder();
             this.buildColumnComment(columnCommentSql, buildContext, eTable, eColumn);
             ddlScripts.add(columnCommentSql.toString());

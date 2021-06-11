@@ -1,14 +1,19 @@
 package com.clougence.schema.metadata.typemapping;
+import com.clougence.schema.DataSourceType;
 import com.clougence.schema.metadata.FieldType;
-import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.core.Settings;
+import net.hasor.core.setting.InputStreamSettings;
+import net.hasor.core.setting.SettingNode;
+import net.hasor.core.setting.provider.StreamType;
 import net.hasor.utils.function.ESupplier;
 import net.hasor.utils.supplier.SingleProvider;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * SqlType Mapping Registry
@@ -19,59 +24,62 @@ public final class TypeMapping {
     public static SingleProvider<TypeMapping> DEFAULT     = new SingleProvider<>((ESupplier<TypeMapping, Exception>) TypeMapping::new);
     private final List<MappingEnt>            mappingList = new ArrayList<>();
 
-    public TypeMapping() throws IOException, ClassNotFoundException {
-        InputStream resourceAsStream = ResourcesUtils.getResourceAsStream("/META-INF/clougence/sql-type-mapping.properties");
-        Properties properties = new Properties();
-        properties.load(resourceAsStream);
-        //
-        for (Object key : properties.keySet()) {
-            String mappingKey = key.toString();
-            String property = properties.getProperty(mappingKey);
-            if (StringUtils.isBlank(mappingKey) || StringUtils.isBlank(property)) {
-                continue;
-            }
-            InputStream mappingItem = ResourcesUtils.getResourceAsStream(property);
-            if (mappingItem == null) {
-                continue;
-            }
-            Properties mappingItems = new Properties();
-            mappingItems.load(mappingItem);
-            if (mappingItems.isEmpty()) {
-                continue;
-            }
+    private static Settings loadSetting(String resource) throws IOException {
+        InputStreamSettings settings = new InputStreamSettings();
+        settings.addResource(resource, StreamType.Yaml);
+        settings.loadSettings();
+        return settings;
+    }
+
+    public TypeMapping() throws Exception {
+        SettingNode[] settingNodes = loadSetting("/META-INF/clougence/type-mapping.yml").getNodeArray("config.mappingConfig");
+        for (SettingNode mappingNode : settingNodes) {
+            String mapping = mappingNode.getSubValue("mapping");
+            String source = mappingNode.getSubValue("source");
+            String target = mappingNode.getSubValue("target");
             //
-            this.initMapping(mappingKey, mappingItems);
+            DataSourceType sourceDataSource = DataSourceType.valueOfCode(source);
+            DataSourceType targetDataSource = DataSourceType.valueOfCode(target);
+            MappingDef mappingDef = new MappingDef(sourceDataSource, targetDataSource);
+            this.initMapping(mappingDef, mapping);
         }
     }
 
-    private void initMapping(String mappingKey, Properties mappingItems) throws ClassNotFoundException {
-        String[] mappingSplit = mappingKey.split(",");
-        if (mappingSplit.length < 2 || mappingItems.isEmpty()) {
-            return;
-        }
+    private void initMapping(MappingDef mappingDef, String mappingConfig) throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Settings mappingSettings = loadSetting(mappingConfig);
+        String sourceType = mappingSettings.getString("mappings.source");
+        String targetType = mappingSettings.getString("mappings.target");
         //
-        Class<?> formType = classLoader.loadClass(mappingSplit[0]);
-        Class<?> toType = classLoader.loadClass(mappingSplit[1]);
+        Class<?> formType = classLoader.loadClass(sourceType);
+        Class<?> toType = classLoader.loadClass(targetType);
         if (!formType.isEnum() || !toType.isEnum()) {
             return;
         }
         //
-        List<String> ketList = new ArrayList<>();
-        for (Object src : mappingItems.keySet()) {
-            ketList.add(src.toString());
+        SettingNode mapNode = mappingSettings.getNode("mappings.map");
+        if (mapNode == null) {
+            return;
         }
-        ketList.sort(String::compareTo);
-        for (String srcType : ketList) {
-            String dstType = mappingItems.getProperty(srcType);
-            FieldType sourceTypeDef = (FieldType) ConverterUtils.convert(srcType, formType);
-            FieldType targetTypeDef = (FieldType) ConverterUtils.convert(dstType, toType);
-            this.mappingList.add(new MappingEnt(sourceTypeDef, targetTypeDef));
+        SettingNode[] mappingKeys = mapNode.getSubNodes();
+        for (SettingNode mappingNode : mappingKeys) {
+            String sourceDbType = mappingNode.getName();
+            String targetDbType = mappingNode.getValue();
+            FieldType sourceTypeDef = (FieldType) formType.getMethod("valueOfCode", String.class).invoke(null, sourceDbType);
+            FieldType targetTypeDef = (FieldType) toType.getMethod("valueOfCode", String.class).invoke(null, targetDbType);
+            if (sourceTypeDef == null || targetTypeDef == null) {
+                continue;
+            }
+            this.mappingList.add(new MappingEnt(mappingDef, sourceTypeDef, targetTypeDef));
         }
     }
-    //    public FieldType getTypeDef(DataSourceType dataSourceType, String fieldType) {
-    //        //
-    //    }
+
+    public Map<String, String> getMapping(DataSourceType sourceDsType, DataSourceType targetDsType) {
+        return mappingList.stream().filter(mappingEnt -> {
+            MappingDef mappingDef = mappingEnt.getMappingDef();
+            return mappingDef.getSource() == sourceDsType && mappingDef.getTarget() == targetDsType;
+        }).collect(Collectors.toMap(ent -> ent.getSource().getCodeKey(), ent -> ent.getTarget().getCodeKey()));
+    }
 
     public Map<String, String> getMappingString(Class<? extends FieldType> src, Class<? extends FieldType> dst) {
         Map<String, String> findMappings = new LinkedHashMap<>();
