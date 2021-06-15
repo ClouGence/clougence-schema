@@ -1,0 +1,105 @@
+mappings:
+  source: com.clougence.schema.metadata.domain.rdb.postgres.PostgresTypes
+  target: com.clougence.schema.metadata.domain.rdb.adb.mysql.AdbMySqlTypes
+  map:
+    "smallserial":
+    "serial":
+    "bigserial":
+    "smallint":
+    "integer":
+    "bigint":
+    "oid":
+    "numeric":
+    "real":
+    "double precision":
+    "money":
+    "character":
+    "bpchar":
+    "character varying":
+    "text":
+    "name":
+    "timestamp without time zone":
+    "timestamp with time zone":
+    "time without time zone":
+    "time with time zone":
+    "date":
+    "interval":
+    "bit":
+    "bit varying":
+    "boolean":
+    "xml":
+    "bytea":
+    "refcursor":
+    "point":
+    "line":
+    "lseg":
+    "box":
+    "path":
+    "polygon":
+    "circle":
+    "cidr":
+    "inet":
+    "macaddr":
+    "macaddr8":
+    "tsvector":
+    "tsquery":
+    "uuid":
+    "json":
+    "jsonb":
+    "int4range":
+    "int8range":
+    "numrange":
+    "tsrange":
+    "tstzrange":
+    "daterange":
+    "pg_lsn":
+    "txid_snapshot":
+    "smallint[]":
+    "integer[]":
+    "bigint[]":
+    "oid[]":
+    "numeric[]":
+    "real[]":
+    "double precision[]":
+    "money[]":
+    "character[]":
+    "bpchar[]":
+    "character varying[]":
+    "text[]":
+    "name[]":
+    "timestamp without time zone[]":
+    "timestamp with time zone[]":
+    "time without time zone[]":
+    "time with time zone[]":
+    "date[]":
+    "interval[]":
+    "bit[]":
+    "bit varying[]":
+    "boolean[]":
+    "xml[]":
+    "bytea[]":
+    "refcursor[]":
+    "point[]":
+    "line[]":
+    "lseg[]":
+    "box[]":
+    "path[]":
+    "polygon[]":
+    "circle[]":
+    "cidr[]":
+    "inet[]":
+    "macaddr[]":
+    "macaddr8[]":
+    "tsvector[]":
+    "tsquery[]":
+    "uuid[]":
+    "json[]":
+    "jsonb[]":
+    "int4range[]":
+    "int8range[]":
+    "numrange[]":
+    "tsrange[]":
+    "tstzrange[]":
+    "daterange[]":
+    "pg_lsn[]":
+    "txid_snapshot[]":
