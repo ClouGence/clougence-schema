@@ -1,0 +1,22 @@
+mappings:
+  source: com.clougence.schema.metadata.domain.rdb.adb.mysql.AdbMySqlTypes
+  target: com.clougence.schema.metadata.domain.rdb.oracle.OracleSqlTypes
+  map:
+    "boolean": "number"
+    "tinyint": "number"
+    "smallint": "number"
+    "int": "number"
+    "bigint": "number"
+    "decimal": "number"
+    "float": "float"
+    "double": "number"
+    "date": "date"
+    "datetime": "timestamp"
+    "timestamp": "timestamp"
+    "time": "timestamp"
+    "varchar": "nvarchar2"
+    "binary": "blob"
+    "json": "clob"
+    "array": "clob"
+    "map": "clob"
+    "point": "clob"

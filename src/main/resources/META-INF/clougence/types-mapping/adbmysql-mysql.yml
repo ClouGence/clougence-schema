@@ -1,0 +1,22 @@
+mappings:
+  source: com.clougence.schema.metadata.domain.rdb.adb.mysql.AdbMySqlTypes
+  target: com.clougence.schema.metadata.domain.rdb.mysql.MySqlTypes
+  map:
+    "boolean": "bit"
+    "tinyint": "tinyint"
+    "smallint": "smallint"
+    "int": "int"
+    "bigint": "bigint"
+    "decimal": "decimal"
+    "float": "float"
+    "double": "double"
+    "date": "date"
+    "datetime": "datetime"
+    "timestamp": "timestamp"
+    "time": "time"
+    "varchar": "varchar"
+    "binary": "binary"
+    "json": "json"
+    "array": "varchar"
+    "map": "varchar"
+    "point": "point"

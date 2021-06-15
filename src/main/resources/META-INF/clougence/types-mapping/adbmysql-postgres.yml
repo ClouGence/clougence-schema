@@ -1,0 +1,22 @@
+mappings:
+  source: com.clougence.schema.metadata.domain.rdb.adb.mysql.AdbMySqlTypes
+  target: com.clougence.schema.metadata.domain.rdb.postgres.PostgresTypes
+  map:
+    "boolean": "boolean"
+    "tinyint": "smallint"
+    "smallint": "smallint"
+    "int": "integer"
+    "bigint": "bigint"
+    "decimal": "numeric"
+    "float": "numeric"
+    "double": "numeric"
+    "date": "date"
+    "datetime": "timestamp without time zone"
+    "timestamp": "timestamp without time zone"
+    "time": "time without time zone"
+    "varchar": "character varying"
+    "binary": "bytea"
+    "json": "json"
+    "array": "text"
+    "map": "text"
+    "point": "point"
