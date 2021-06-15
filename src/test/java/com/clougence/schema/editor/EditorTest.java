@@ -43,6 +43,7 @@ public class EditorTest extends AbstractMetadataServiceSupplierTest<MySqlMetadat
         EditorHelper helper = new EditorHelper(DataSourceType.MySQL, this.connection);
         TableEditor tableEditor = helper.editTableEditor(null, repository.getCurrentSchema(), "tb_user", new EditorOptions());
         tableEditor.getColumn("loginName").delete();
+        tableEditor.getColumn("index").rename("except");
         tableEditor.getPrimaryEditor().delete();
         //
         tableEditor.configCaseSensitivity(false, CaseSensitivityType.Upper);

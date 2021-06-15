@@ -29,11 +29,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         //
         StringBuilder sqlBuild = new StringBuilder();
         sqlBuild.append("alter table ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, table));
         return sqlBuild;
     }
 
@@ -44,15 +40,9 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         //
         StringBuilder sqlBuild = new StringBuilder();
         sqlBuild.append("rename table ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-            sqlBuild.append(" to ");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, newName));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
-            sqlBuild.append(" to ");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, newName));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, table));
+        sqlBuild.append(" to ");
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, newName));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -76,7 +66,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
-        sqlBuild.append(" add " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        sqlBuild.append(" add " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
         sqlBuild.append(" " + MySqlProviderUtils.buildColumnType(columnInfo));
         if (StringUtils.isNotBlank(columnInfo.getComment())) {
             sqlBuild.append(" comment '" + columnInfo.getComment() + "'");
@@ -91,7 +81,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
-        sqlBuild.append(" drop column " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        sqlBuild.append(" drop column " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -102,8 +92,8 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
-        sqlBuild.append(" change column " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
-        sqlBuild.append(" " + fmtName(useDelimited, caseSensitivity, newColumnName));
+        sqlBuild.append(" change column " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
+        sqlBuild.append(" " + fmtColumn(useDelimited, caseSensitivity, newColumnName));
         sqlBuild.append(MySqlProviderUtils.buildColumnType(columnInfo));
         if (StringUtils.isNotBlank(columnInfo.getComment())) {
             sqlBuild.append(" comment '" + columnInfo.getComment() + "'");
@@ -118,7 +108,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
-        sqlBuild.append(" modify column " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        sqlBuild.append(" modify column " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
         sqlBuild.append(MySqlProviderUtils.buildColumnType(newInfo));
         if (StringUtils.isNotBlank(newInfo.getComment())) {
             sqlBuild.append(" comment '" + newInfo.getComment() + "'");
@@ -142,16 +132,12 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         //
         StringBuilder sqlBuild = new StringBuilder();
         if (indexInfo.getType() == EIndexType.Unique) {
-            sqlBuild.append("create unique index " + fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
+            sqlBuild.append("create unique index " + fmtIndex(useDelimited, caseSensitivity, indexInfo.getName()));
         } else {
-            sqlBuild.append("create index " + fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
+            sqlBuild.append("create index " + fmtIndex(useDelimited, caseSensitivity, indexInfo.getName()));
         }
         sqlBuild.append(" on ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, table));
         //
         sqlBuild.append("(");
         List<String> columnList = indexInfo.getColumnList();
@@ -160,7 +146,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
             if (i > 0) {
                 sqlBuild.append(", ");
             }
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, column));
+            sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, column));
         }
         sqlBuild.append(");");
         return Collections.singletonList(sqlBuild.toString());
@@ -172,13 +158,9 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         //
         StringBuilder sqlBuild = new StringBuilder("drop index ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
+        sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, indexInfo.getName()));
         sqlBuild.append(" on ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, table));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -190,9 +172,9 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
         sqlBuild.append(" rename index ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
+        sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, indexInfo.getName()));
         sqlBuild.append(" to ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, newIndexName));
+        sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, newIndexName));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -233,7 +215,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
             if (i > 0) {
                 sqlBuild.append(", ");
             }
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, column));
+            sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, column));
         }
         sqlBuild.append(");");
         return Collections.singletonList(sqlBuild.toString());

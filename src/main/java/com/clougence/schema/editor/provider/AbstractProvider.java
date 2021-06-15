@@ -3,22 +3,36 @@ import com.clougence.schema.DataSourceType;
 import com.clougence.schema.dialect.Dialect;
 import com.clougence.schema.dialect.DialectRegister;
 import com.clougence.schema.metadata.CaseSensitivityType;
+import com.clougence.schema.umi.ValueUmiSchema;
+import net.hasor.utils.StringUtils;
 
 public abstract class AbstractProvider {
     public abstract DataSourceType getDataSourceType();
 
-    protected String fmtName(boolean useDelimited, CaseSensitivityType caseSensitivity, String stringData) {
-        if (useDelimited) {
-            Dialect dialect = DialectRegister.findSqlDialect(getDataSourceType());
-            String left = dialect.leftQualifier();
-            String right = dialect.rightQualifier();
-            if (left == null || right == null) {
-                throw new UnsupportedOperationException("Unsupported ds type -> " + getDataSourceType().name());
-            }
-            return left + fmtCaseSensitivity(caseSensitivity, stringData) + right;
-        } else {
-            return fmtCaseSensitivity(caseSensitivity, stringData);
+    protected String fmtTable(boolean useDelimited, CaseSensitivityType caseSensitivity, String schema, String table) {
+        Dialect dialect = DialectRegister.findSqlDialect(getDataSourceType());
+        schema = fmtCaseSensitivity(caseSensitivity, schema);
+        table = fmtCaseSensitivity(caseSensitivity, table);
+        //
+        ValueUmiSchema tableSchema = new ValueUmiSchema();
+        tableSchema.setName(table);
+        if (StringUtils.isNotBlank(schema)) {
+            tableSchema.setParentPath(new String[] { schema });
         }
+        return dialect.tableName(useDelimited, tableSchema);
+    }
+
+    protected String fmtIndex(boolean useDelimited, CaseSensitivityType caseSensitivity, String index) {
+        return fmtTable(useDelimited, caseSensitivity, null, index);
+    }
+
+    protected String fmtColumn(boolean useDelimited, CaseSensitivityType caseSensitivity, String column) {
+        Dialect dialect = DialectRegister.findSqlDialect(getDataSourceType());
+        column = fmtCaseSensitivity(caseSensitivity, column);
+        //
+        ValueUmiSchema columnSchema = new ValueUmiSchema();
+        columnSchema.setName(column);
+        return dialect.columnName(useDelimited, columnSchema);
     }
 
     protected String fmtCaseSensitivity(CaseSensitivityType caseSensitivity, String stringData) {

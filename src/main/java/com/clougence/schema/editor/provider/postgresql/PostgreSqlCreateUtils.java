@@ -29,11 +29,7 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         //
         StringBuilder sqlBuild = new StringBuilder();
         sqlBuild.append("create table ");
-        if (StringUtils.isBlank(eTable.getSchema())) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getName()));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getSchema()) + "." + fmtName(useDelimited, caseSensitivity, eTable.getName()));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, eTable.getSchema(), eTable.getName()));
         sqlBuild.append("(\n");
         //
         // columns
@@ -107,7 +103,7 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         }
         //
         sqlBuild.append("  ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, eColumn.getName()));
+        sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, eColumn.getName()));
         String columnType = PostgreSqlProviderUtils.buildColumnType(eColumn);
         sqlBuild.append("  ");
         sqlBuild.append(columnType);
@@ -121,7 +117,7 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         //
         sqlBuild.append(" constraint ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, primaryKey.getPrimaryKeyName()));
+        sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, primaryKey.getPrimaryKeyName()));
         sqlBuild.append(" primary key(");
         List<String> pkColumns = primaryKey.getColumnList();
         for (int i = 0; i < pkColumns.size(); i++) {
@@ -129,7 +125,7 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
             if (i > 0) {
                 sqlBuild.append(", ");
             }
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, column));
+            sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, column));
         }
         sqlBuild.append(")");
     }
@@ -138,7 +134,7 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         sqlBuild.append("  constraint ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, eIndex.getName()));
+        sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, eIndex.getName()));
         sqlBuild.append(" unique ");
         //
         List<String> idxColumns = eIndex.getColumnList();
@@ -148,7 +144,7 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
             if (i > 0) {
                 sqlBuild.append(", ");
             }
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, column));
+            sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, column));
         }
         sqlBuild.append(")");
     }
@@ -159,21 +155,16 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         String indexName = eIndex.getName();
         List<String> columnName = eIndex.getColumnList();
         //
-        sqlBuild.append("create index " + fmtName(useDelimited, caseSensitivity, indexName));
+        sqlBuild.append("create index " + fmtIndex(useDelimited, caseSensitivity, indexName));
         sqlBuild.append(" on ");
-        if (StringUtils.isBlank(eTable.getSchema())) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getName()));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getSchema()) + "." + fmtName(useDelimited, caseSensitivity, eTable.getName()));
-        }
-        //
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, eTable.getSchema(), eTable.getName()));
         sqlBuild.append("(");
         for (int i = 0; i < columnName.size(); i++) {
             String column = columnName.get(i);
             if (i > 0) {
                 sqlBuild.append(", ");
             }
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, column));
+            sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, column));
         }
         sqlBuild.append(");");
     }
@@ -183,11 +174,7 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         if (eTable.getComment() != null && !"".equals(eTable.getComment())) {
             sqlBuild.append("comment on table ");
-            if (StringUtils.isBlank(eTable.getSchema())) {
-                sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getName()));
-            } else {
-                sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getSchema()) + "." + fmtName(useDelimited, caseSensitivity, eTable.getName()));
-            }
+            sqlBuild.append(fmtTable(useDelimited, caseSensitivity, eTable.getSchema(), eTable.getName()));
             sqlBuild.append(" is '" + eTable.getComment() + "';");
         }
     }
@@ -196,17 +183,9 @@ public class PostgreSqlCreateUtils extends AbstractProvider {
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         sqlBuild.append("comment on column ");
-        if (StringUtils.isBlank(eTable.getSchema())) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getName()));
-            sqlBuild.append(".");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eColumn.getName()));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getSchema()));
-            sqlBuild.append(".");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getName()));
-            sqlBuild.append(".");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eColumn.getName()));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, eTable.getSchema(), eTable.getName()));
+        sqlBuild.append(".");
+        sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, eColumn.getName()));
         sqlBuild.append(" is '" + eColumn.getComment() + "';");
     }
 }

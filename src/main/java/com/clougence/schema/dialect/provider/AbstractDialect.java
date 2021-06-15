@@ -69,7 +69,7 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String tableName(boolean useQualifier, UmiSchema tableSchema) {
         String[] columnSchemaPath = tableSchema.getPath();
-        if (columnSchemaPath.length <= 1) {
+        if (columnSchemaPath == null || columnSchemaPath.length <= 1) {
             return fmtName(useQualifier, tableSchema.getName());
         } else {
             return fmtName(useQualifier, columnSchemaPath[columnSchemaPath.length - 1]) + "." + fmtName(useQualifier, tableSchema.getName());

@@ -27,12 +27,7 @@ public class MySqlCreateUtils extends AbstractProvider {
         //
         StringBuilder sqlBuild = new StringBuilder();
         sqlBuild.append("create table ");
-        if (StringUtils.isBlank(eTable.getSchema())) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getName()));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, eTable.getSchema()) + "." + fmtName(useDelimited, caseSensitivity, eTable.getName()));
-        }
-        //
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, eTable.getSchema(), eTable.getName()));
         sqlBuild.append("(\n");
         //
         // columns
@@ -80,7 +75,7 @@ public class MySqlCreateUtils extends AbstractProvider {
         }
         //
         sqlBuild.append("  ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, eColumn.getName()));
+        sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, eColumn.getName()));
         String columnType = MySqlProviderUtils.buildColumnType(eColumn);
         sqlBuild.append("  ");
         sqlBuild.append(columnType);
@@ -100,7 +95,7 @@ public class MySqlCreateUtils extends AbstractProvider {
             if (i > 0) {
                 sqlBuild.append(", ");
             }
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, column));
+            sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, column));
         }
         sqlBuild.append(")");
     }
@@ -114,7 +109,7 @@ public class MySqlCreateUtils extends AbstractProvider {
         } else {
             sqlBuild.append("  key ");
         }
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, eIndex.getName()));
+        sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, eIndex.getName()));
         List<String> pkColumns = eIndex.getColumnList();
         sqlBuild.append("(");
         for (int i = 0; i < pkColumns.size(); i++) {
@@ -122,7 +117,7 @@ public class MySqlCreateUtils extends AbstractProvider {
             if (i > 0) {
                 sqlBuild.append(", ");
             }
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, column));
+            sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, column));
         }
         sqlBuild.append(")");
     }

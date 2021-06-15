@@ -29,11 +29,7 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         //
         StringBuilder sqlBuild = new StringBuilder();
         sqlBuild.append("alter table ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, table));
         return sqlBuild;
     }
 
@@ -44,7 +40,7 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
         sqlBuild.append(" rename to ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, newName));
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, newName));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -56,11 +52,7 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         //
         StringBuilder sqlBuild = new StringBuilder();
         sqlBuild.append("comment on table ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, table));
         sqlBuild.append(" is '" + comment + "';");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -76,7 +68,7 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
-        sqlBuild.append(" add " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        sqlBuild.append(" add " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
         sqlBuild.append(" " + PostgreSqlProviderUtils.buildColumnType(columnInfo));
         sqlBuild.append(";");
         //
@@ -92,7 +84,7 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         boolean useDelimited = buildContext.isUseDelimited();
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
-        sqlBuild.append(" drop column " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        sqlBuild.append(" drop column " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
         if (buildContext.isCascade()) {
             sqlBuild.append(" cascade");
         }
@@ -106,8 +98,8 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         sqlBuild.append(" rename column ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
-        sqlBuild.append(" to " + fmtName(useDelimited, caseSensitivity, newColumnName));
+        sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
+        sqlBuild.append(" to " + fmtColumn(useDelimited, caseSensitivity, newColumnName));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -118,10 +110,10 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
-        sqlBuild.append(" alter column " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
+        sqlBuild.append(" alter column " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
         String columnType = PostgreSqlProviderUtils.buildColumnType(newInfo);
         sqlBuild.append(" type " + columnType);
-        sqlBuild.append(" using " + fmtName(useDelimited, caseSensitivity, columnInfo.getName()) + "::" + columnType);
+        sqlBuild.append(" using " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()) + "::" + columnType);
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -132,17 +124,9 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = new StringBuilder();
         sqlBuild.append("comment on column ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-            sqlBuild.append(".");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema));
-            sqlBuild.append(".");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-            sqlBuild.append(".");
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, columnInfo.getName()));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, table));
+        sqlBuild.append(".");
+        sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
         sqlBuild.append(" is '" + comment + "';");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -154,16 +138,12 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         //
         StringBuilder sqlBuild = new StringBuilder();
         if (indexInfo.getType() == EIndexType.Unique) {
-            sqlBuild.append("create unique index " + fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
+            sqlBuild.append("create unique index " + fmtIndex(useDelimited, caseSensitivity, indexInfo.getName()));
         } else {
-            sqlBuild.append("create index " + fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
+            sqlBuild.append("create index " + fmtIndex(useDelimited, caseSensitivity, indexInfo.getName()));
         }
         sqlBuild.append(" on ");
-        if (StringUtils.isBlank(schema)) {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, table));
-        } else {
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, schema) + "." + fmtName(useDelimited, caseSensitivity, table));
-        }
+        sqlBuild.append(fmtTable(useDelimited, caseSensitivity, schema, table));
         //
         sqlBuild.append("(");
         List<String> columnList = indexInfo.getColumnList();
@@ -172,7 +152,7 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
             if (i > 0) {
                 sqlBuild.append(", ");
             }
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, column));
+            sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, column));
         }
         sqlBuild.append(");");
         return Collections.singletonList(sqlBuild.toString());
@@ -184,7 +164,7 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         //
         StringBuilder sqlBuild = new StringBuilder("drop index ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
+        sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, indexInfo.getName()));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -195,9 +175,9 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         StringBuilder sqlBuild = new StringBuilder();
         sqlBuild.append("alter index ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, indexInfo.getName()));
+        sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, indexInfo.getName()));
         sqlBuild.append(" to ");
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, newIndexName));
+        sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, newIndexName));
         sqlBuild.append(";");
         return Collections.singletonList(sqlBuild.toString());
     }
@@ -238,7 +218,7 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
             pkName = primaryInfo.getPrimaryKeyName();
         }
         //
-        sqlBuild.append(fmtName(useDelimited, caseSensitivity, pkName));
+        sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, pkName));
         sqlBuild.append(" primary key ");
         sqlBuild.append("(");
         List<String> columnList = primaryInfo.getColumnList();
@@ -247,7 +227,7 @@ public class PostgreSqlEditorProvider extends AbstractProvider implements Builde
             if (i > 0) {
                 sqlBuild.append(", ");
             }
-            sqlBuild.append(fmtName(useDelimited, caseSensitivity, column));
+            sqlBuild.append(fmtColumn(useDelimited, caseSensitivity, column));
         }
         sqlBuild.append(");");
         return Collections.singletonList(sqlBuild.toString());
