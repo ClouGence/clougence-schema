@@ -70,7 +70,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
         List<String> collect = schemas.stream().map(OracleSchema::getSchema).collect(Collectors.toList());
         assert collect.contains("SYSTEM");
         assert collect.contains("SYS");
-        assert collect.contains("SCOTT");
+        assert collect.contains("TESTER");
     }
 
     @Test
@@ -83,11 +83,11 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getTables() throws SQLException {
-        Map<String, List<OracleTable>> tableList = this.repository.getTables(new String[] { "SCOTT", "SYSTEM" });
+        Map<String, List<OracleTable>> tableList = this.repository.getTables(new String[] { "TESTER", "SYSTEM" });
         assert tableList.size() == 2;
-        assert tableList.containsKey("SCOTT");
+        assert tableList.containsKey("TESTER");
         assert tableList.containsKey("SYSTEM");
-        List<String> tableForInformationSchema = tableList.get("SCOTT").stream().map(OracleTable::getTable).collect(Collectors.toList());
+        List<String> tableForInformationSchema = tableList.get("TESTER").stream().map(OracleTable::getTable).collect(Collectors.toList());
         assert tableForInformationSchema.contains("PROC_TABLE_REF");
         assert tableForInformationSchema.contains("TB_USER");
         assert tableForInformationSchema.contains("T1");
@@ -98,7 +98,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void findTables() throws SQLException {
-        List<OracleTable> tableList = this.repository.findTable("SCOTT", new String[] { "PROC_TABLE_REF", "TB_USER_VIEW" });
+        List<OracleTable> tableList = this.repository.findTable("TESTER", new String[] { "PROC_TABLE_REF", "TB_USER_VIEW" });
         Map<String, OracleTable> tableMap = tableList.stream().collect(Collectors.toMap(OracleTable::getTable, o -> o));
         assert tableMap.size() == 2;
         assert tableMap.containsKey("PROC_TABLE_REF");
@@ -109,10 +109,10 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getTable() throws SQLException {
-        OracleTable tableObj1 = this.repository.getTable("SCOTT", "PROC_TABLE_REF");
-        OracleTable tableObj2 = this.repository.getTable("SCOTT", "TB_USER_VIEW");
-        OracleTable tableObj3 = this.repository.getTable("SCOTT", "abc");
-        OracleTable tableObj4 = this.repository.getTable("SCOTT", "TB_USER");
+        OracleTable tableObj1 = this.repository.getTable("TESTER", "PROC_TABLE_REF");
+        OracleTable tableObj2 = this.repository.getTable("TESTER", "TB_USER_VIEW");
+        OracleTable tableObj3 = this.repository.getTable("TESTER", "abc");
+        OracleTable tableObj4 = this.repository.getTable("TESTER", "TB_USER");
         assert tableObj1 != null;
         assert tableObj1.getTableType() == OracleTableType.Table;
         assert tableObj1.getMaterializedLog() == null;
@@ -127,7 +127,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getColumns_1() throws SQLException {
-        List<OracleColumn> columnList = this.repository.getColumns("SCOTT", "TB_ORACLE_TYPES");
+        List<OracleColumn> columnList = this.repository.getColumns("TESTER", "TB_ORACLE_TYPES");
         Map<String, OracleColumn> columnMap = columnList.stream().collect(Collectors.toMap(OracleColumn::getName, c -> c));
         //
         List<FieldType> collect1 = columnList.stream().map(OracleColumn::getSqlType).collect(Collectors.toList());
@@ -167,7 +167,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getColumns_2() throws SQLException {
-        List<OracleColumn> columnList = this.repository.getColumns("SCOTT", "PROC_TABLE_REF");
+        List<OracleColumn> columnList = this.repository.getColumns("TESTER", "PROC_TABLE_REF");
         Map<String, OracleColumn> columnMap = columnList.stream().collect(Collectors.toMap(OracleColumn::getName, c -> c));
         assert columnMap.size() == 6;
         assert columnMap.get("R_INT").isPrimaryKey();
@@ -186,7 +186,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getConstraint1() throws SQLException {
-        List<OracleConstraint> columnList = this.repository.getConstraint("SCOTT", "PROC_TABLE_REF");
+        List<OracleConstraint> columnList = this.repository.getConstraint("TESTER", "PROC_TABLE_REF");
         Map<String, OracleConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(OracleConstraint::getName, OracleConstraint::getConstraintType));
         Set<String> typeNameSet = columnList.stream().map(OracleConstraint::getName).collect(Collectors.toSet());
         Set<OracleConstraintType> typeEnumSet = columnList.stream().map(OracleConstraint::getConstraintType).collect(Collectors.toSet());
@@ -203,7 +203,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getConstraint2() throws SQLException {
-        List<OracleConstraint> columnList = this.repository.getConstraint("SCOTT", "PROC_TABLE_REF", OracleConstraintType.Unique);
+        List<OracleConstraint> columnList = this.repository.getConstraint("TESTER", "PROC_TABLE_REF", OracleConstraintType.Unique);
         Map<String, OracleConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(OracleConstraint::getName, OracleConstraint::getConstraintType));
         Set<OracleConstraintType> typeEnumSet = columnList.stream().map(OracleConstraint::getConstraintType).collect(Collectors.toSet());
         //
@@ -216,7 +216,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getPrimaryKey1() throws SQLException {
-        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "PROC_TABLE_REF");
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("TESTER", "PROC_TABLE_REF");
         assert primaryKey.getConstraintType() == OracleConstraintType.PrimaryKey;
         assert primaryKey.getName().startsWith("SYS_");
         assert primaryKey.getColumns().size() == 1;
@@ -225,7 +225,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getPrimaryKey2() throws SQLException {
-        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "PROC_TABLE");
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("TESTER", "PROC_TABLE");
         assert primaryKey.getConstraintType() == OracleConstraintType.PrimaryKey;
         assert primaryKey.getName().startsWith("SYS_");
         assert primaryKey.getColumns().size() == 2;
@@ -235,16 +235,16 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getPrimaryKey3() throws SQLException {
-        OracleTable table = this.repository.getTable("SCOTT", "T3");
-        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "T3");
+        OracleTable table = this.repository.getTable("TESTER", "T3");
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("TESTER", "T3");
         assert table != null;
         assert primaryKey == null;
     }
 
     @Test
     public void getUniqueKey() throws SQLException {
-        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "TB_USER");
-        List<OracleUniqueKey> uniqueKeyList = this.repository.getUniqueKey("SCOTT", "TB_USER");
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("TESTER", "TB_USER");
+        List<OracleUniqueKey> uniqueKeyList = this.repository.getUniqueKey("TESTER", "TB_USER");
         Map<String, OracleUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(OracleUniqueKey::getName, u -> u));
         assert uniqueKeyMap.size() == 2;
         //
@@ -267,9 +267,9 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getForeignKey() throws SQLException {
-        List<OracleForeignKey> foreignKeyList1 = this.repository.getForeignKey("SCOTT", "TB_USER");
+        List<OracleForeignKey> foreignKeyList1 = this.repository.getForeignKey("TESTER", "TB_USER");
         assert foreignKeyList1.size() == 0;
-        List<OracleForeignKey> foreignKeyList2 = this.repository.getForeignKey("SCOTT", "PROC_TABLE_REF");
+        List<OracleForeignKey> foreignKeyList2 = this.repository.getForeignKey("TESTER", "PROC_TABLE_REF");
         assert foreignKeyList2.size() == 1;
         OracleForeignKey foreignKey = foreignKeyList2.get(0);
         assert foreignKey.getConstraintType() == OracleConstraintType.ForeignKey;
@@ -277,7 +277,7 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
         assert foreignKey.getColumns().get(0).equals("R_K2");
         assert foreignKey.getColumns().get(1).equals("R_K1");
         assert foreignKey.getName().equals("PTR");
-        assert foreignKey.getReferenceSchema().equals("SCOTT");
+        assert foreignKey.getReferenceSchema().equals("TESTER");
         assert foreignKey.getReferenceTable().equals("PROC_TABLE");
         assert foreignKey.getReferenceMapping().get("R_K1").equals("C_NAME");
         assert foreignKey.getReferenceMapping().get("R_K2").equals("C_ID");
@@ -285,8 +285,8 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getIndexes1() throws SQLException {
-        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "TB_USER");
-        List<OracleIndex> indexList = this.repository.getIndexes("SCOTT", "TB_USER");
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("TESTER", "TB_USER");
+        List<OracleIndex> indexList = this.repository.getIndexes("TESTER", "TB_USER");
         Map<String, OracleIndex> indexMap = indexList.stream().collect(Collectors.toMap(OracleIndex::getName, i -> i));
         assert indexMap.size() == 3;
         //
@@ -315,8 +315,8 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getIndexes2() throws SQLException {
-        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("SCOTT", "PROC_TABLE_REF");
-        List<OracleIndex> indexList = this.repository.getIndexes("SCOTT", "PROC_TABLE_REF");
+        OraclePrimaryKey primaryKey = this.repository.getPrimaryKey("TESTER", "PROC_TABLE_REF");
+        List<OracleIndex> indexList = this.repository.getIndexes("TESTER", "PROC_TABLE_REF");
         Map<String, OracleIndex> indexMap = indexList.stream().collect(Collectors.toMap(OracleIndex::getName, i -> i));
         assert indexMap.size() == 3;
         assert indexMap.containsKey(primaryKey.getName());
@@ -341,14 +341,14 @@ public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSu
 
     @Test
     public void getIndexes3() throws SQLException {
-        List<OracleIndex> indexList = this.repository.getIndexes("SCOTT", "PROC_TABLE_REF", OracleIndexType.Bitmap);
+        List<OracleIndex> indexList = this.repository.getIndexes("TESTER", "PROC_TABLE_REF", OracleIndexType.Bitmap);
         Map<String, OracleIndex> indexMap = indexList.stream().collect(Collectors.toMap(OracleIndex::getName, i -> i));
         assert indexMap.size() == 0;
     }
 
     @Test
     public void getIndexes4() throws SQLException {
-        OracleIndex index = this.repository.getIndexes("SCOTT", "PROC_TABLE_REF", "PROC_TABLE_REF_UK");
+        OracleIndex index = this.repository.getIndexes("TESTER", "PROC_TABLE_REF", "PROC_TABLE_REF_UK");
         assert index.getName().equals("PROC_TABLE_REF_UK");
         assert index.getColumns().size() == 1;
         assert index.getColumns().get(0).equals("R_NAME");

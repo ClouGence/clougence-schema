@@ -91,7 +91,7 @@ public class Jdbc4MySqlMetadataServiceSupplierTest extends AbstractMetadataServi
         assert tableObj1.getTableType() == JdbcTableType.SystemView;
         assert tableObj2 == null;
         assert tableObj3 != null;
-        assert tableObj3.getTableType() == JdbcTableType.Table;
+        assert tableObj3.getTableType() == JdbcTableType.SystemTable;
     }
 
     @Test

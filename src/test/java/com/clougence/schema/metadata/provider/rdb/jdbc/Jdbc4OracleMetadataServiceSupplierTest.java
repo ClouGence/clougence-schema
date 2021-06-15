@@ -70,7 +70,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
         List<String> collect = schemas.stream().map(JdbcSchema::getSchema).collect(Collectors.toList());
         assert collect.contains("SYSTEM");
         assert collect.contains("SYS");
-        assert collect.contains("SCOTT");
+        assert collect.contains("TESTER");
     }
 
     @Test
@@ -83,7 +83,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getTables() throws SQLException {
-        List<JdbcTable> tableList = this.repository.findTables(null, "SCOTT", new String[] { "PROC_TABLE_REF", "PROC_TABLE", "T3" });
+        List<JdbcTable> tableList = this.repository.findTables(null, "TESTER", new String[] { "PROC_TABLE_REF", "PROC_TABLE", "T3" });
         assert tableList.size() == 3;
         List<String> tableNames = tableList.stream().map(JdbcTable::getTable).collect(Collectors.toList());
         assert tableNames.contains("PROC_TABLE_REF");
@@ -93,9 +93,9 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getTable() throws SQLException {
-        JdbcTable tableObj1 = this.repository.getTable(null, "SCOTT", "PROC_TABLE_REF");
-        JdbcTable tableObj2 = this.repository.getTable(null, "SCOTT", "ABC");
-        JdbcTable tableObj3 = this.repository.getTable(null, "SCOTT", "T3");
+        JdbcTable tableObj1 = this.repository.getTable(null, "TESTER", "PROC_TABLE_REF");
+        JdbcTable tableObj2 = this.repository.getTable(null, "TESTER", "ABC");
+        JdbcTable tableObj3 = this.repository.getTable(null, "TESTER", "T3");
         assert tableObj1 != null;
         assert tableObj1.getTableType() == JdbcTableType.Table;
         assert tableObj2 == null;
@@ -105,7 +105,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getColumns_1() throws SQLException {
-        List<JdbcColumn> columnList = this.repository.getColumns(null, "SCOTT", "TB_ORACLE_TYPES");
+        List<JdbcColumn> columnList = this.repository.getColumns(null, "TESTER", "TB_ORACLE_TYPES");
         Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
         //
         List<JDBCType> collect2 = columnList.stream().map(JdbcColumn::getJdbcType).filter(Objects::nonNull).collect(Collectors.toList());
@@ -142,7 +142,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getColumns_2() throws SQLException {
-        List<JdbcColumn> columnList = this.repository.getColumns(null, "SCOTT", "PROC_TABLE_REF");
+        List<JdbcColumn> columnList = this.repository.getColumns(null, "TESTER", "PROC_TABLE_REF");
         Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
         assert columnMap.size() == 6;
         assert columnMap.get("R_INT").isPrimaryKey();
@@ -161,7 +161,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getColumns_3() throws SQLException {
-        List<JdbcColumn> columnList = this.repository.getColumns(null, "SCOTT", "TB_USER");
+        List<JdbcColumn> columnList = this.repository.getColumns(null, "TESTER", "TB_USER");
         Map<String, JdbcColumn> columnMap = columnList.stream().collect(Collectors.toMap(JdbcColumn::getName, c -> c));
         assert columnMap.size() == 7;
         assert columnMap.get("USERUUID").isPrimaryKey();
@@ -172,7 +172,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getConstraint1() throws SQLException {
-        List<JdbcConstraint> columnList = this.repository.getConstraint(null, "SCOTT", "PROC_TABLE_REF");
+        List<JdbcConstraint> columnList = this.repository.getConstraint(null, "TESTER", "PROC_TABLE_REF");
         Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
         Set<String> typeNameSet = columnList.stream().map(JdbcConstraint::getName).collect(Collectors.toSet());
         Set<JdbcConstraintType> typeEnumSet = columnList.stream().map(JdbcConstraint::getConstraintType).collect(Collectors.toSet());
@@ -187,7 +187,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getConstraint2() throws SQLException {
-        List<JdbcConstraint> columnList = this.repository.getConstraint(null, "SCOTT", "PROC_TABLE_REF", JdbcConstraintType.ForeignKey);
+        List<JdbcConstraint> columnList = this.repository.getConstraint(null, "TESTER", "PROC_TABLE_REF", JdbcConstraintType.ForeignKey);
         Map<String, JdbcConstraintType> typeMap = columnList.stream().collect(Collectors.toMap(JdbcConstraint::getName, JdbcConstraint::getConstraintType));
         assert typeMap.size() == 1;
         assert typeMap.containsKey("PTR");
@@ -196,7 +196,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getPrimaryKey1() throws SQLException {
-        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "SCOTT", "PROC_TABLE_REF");
+        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "TESTER", "PROC_TABLE_REF");
         assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
         assert primaryKey.getName().startsWith("SYS_");
         assert primaryKey.getColumns().size() == 1;
@@ -205,7 +205,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getPrimaryKey2() throws SQLException {
-        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "SCOTT", "PROC_TABLE");
+        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "TESTER", "PROC_TABLE");
         assert primaryKey.getConstraintType() == JdbcConstraintType.PrimaryKey;
         assert primaryKey.getName().startsWith("SYS_");
         assert primaryKey.getColumns().size() == 2;
@@ -215,15 +215,15 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getPrimaryKey3() throws SQLException {
-        JdbcTable table = this.repository.getTable(null, "SCOTT", "T3");
-        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "SCOTT", "T3");
+        JdbcTable table = this.repository.getTable(null, "TESTER", "T3");
+        JdbcPrimaryKey primaryKey = this.repository.getPrimaryKey(null, "TESTER", "T3");
         assert table != null;
         assert primaryKey == null;
     }
 
     @Test
     public void getUniqueKey() throws SQLException {
-        List<JdbcIndex> uniqueKeyList = this.repository.getUniqueKey(null, "SCOTT", "TB_USER");
+        List<JdbcIndex> uniqueKeyList = this.repository.getUniqueKey(null, "TESTER", "TB_USER");
         JdbcIndex pkIndex = uniqueKeyList.stream().filter(s -> s.getName().startsWith("SYS_")).findFirst().orElse(null);
         Map<String, JdbcIndex> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(JdbcIndex::getName, u -> u));
         //
@@ -240,9 +240,9 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getForeignKey() throws SQLException {
-        List<JdbcForeignKey> foreignKeyList1 = this.repository.getForeignKey(null, "SCOTT", "TB_USER");
+        List<JdbcForeignKey> foreignKeyList1 = this.repository.getForeignKey(null, "TESTER", "TB_USER");
         assert foreignKeyList1.size() == 0;
-        List<JdbcForeignKey> foreignKeyList2 = this.repository.getForeignKey(null, "SCOTT", "PROC_TABLE_REF");
+        List<JdbcForeignKey> foreignKeyList2 = this.repository.getForeignKey(null, "TESTER", "PROC_TABLE_REF");
         assert foreignKeyList2.size() == 1;
         JdbcForeignKey foreignKey = foreignKeyList2.get(0);
         assert foreignKey.getConstraintType() == JdbcConstraintType.ForeignKey;
@@ -258,7 +258,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getIndexes1() throws SQLException {
-        List<JdbcIndex> indexList = this.repository.getIndexes(null, "SCOTT", "TB_USER");
+        List<JdbcIndex> indexList = this.repository.getIndexes(null, "TESTER", "TB_USER");
         JdbcIndex pkIndex = indexList.stream().filter(s -> s.getName().startsWith("SYS_")).findFirst().orElse(null);
         Map<String, JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(JdbcIndex::getName, i -> i));
         assert pkIndex != null;
@@ -281,7 +281,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getIndexes2() throws SQLException {
-        List<JdbcIndex> indexList = this.repository.getIndexes(null, "SCOTT", "PROC_TABLE_REF");
+        List<JdbcIndex> indexList = this.repository.getIndexes(null, "TESTER", "PROC_TABLE_REF");
         JdbcIndex pkIndex = indexList.stream().filter(s -> s.getName().startsWith("SYS_")).findFirst().orElse(null);
         Map<String, JdbcIndex> indexMap = indexList.stream().collect(Collectors.toMap(JdbcIndex::getName, i -> i));
         //
@@ -303,7 +303,7 @@ public class Jdbc4OracleMetadataServiceSupplierTest extends AbstractMetadataServ
 
     @Test
     public void getIndexes4() throws SQLException {
-        JdbcIndex index = this.repository.getIndexes(null, "SCOTT", "PROC_TABLE_REF", "PTR");
+        JdbcIndex index = this.repository.getIndexes(null, "TESTER", "PROC_TABLE_REF", "PTR");
         assert index == null;
     }
 }
