@@ -1,0 +1,59 @@
+mappings:
+  source: com.clougence.schema.metadata.domain.rdb.oracle.OracleSqlTypes
+  target: com.clougence.schema.metadata.domain.rdb.postgres.PostgresTypes
+  map:
+    "char": "character"
+    "nchar": "character"
+    "varchar2": "character varying"
+    "nvarchar": "character varying"
+    "nvarchar2": "character varying"
+    "long": "text"
+    "number": "numeric"
+    "float": "real"
+    "binary float": "numeric"
+    "binary double": "numeric"
+    "clob": "text"
+    "nclob": "text"
+    "blob": "bytea"
+    "bfile":
+    "date": "date"
+    "timestamp": "timestamp without time zone"
+    "timestamp with time zone": "timestamp with time zone"
+    "timestamp with local time zone": "timestamp with time zone"
+    "interval year to month": "interval"
+    "interval day to second": "interval"
+    "raw": "bytea"
+    "long raw": "bytea"
+    "rowid": "character varying"
+    "urowid": "character varying"
+    "object":
+    "ref":
+    "varray":
+    "nested_table":
+    "plsql_boolean":
+    "anytype":
+    "anydata":
+    "anydataset":
+    "xmltype": "xml"
+    "httpuritype":
+    "xdburitype":
+    "dburitype":
+    "sdo_geometry":
+    "sdo_topo_geometry":
+    "sdo_georaster":
+    "ordaudio":
+    "orddicom":
+    "orddoc":
+    "ordimage":
+    "ordvideo":
+    "si_average_color":
+    "si_color":
+    "si_color_histogram":
+    "si_feature_list":
+    "si_positional_color":
+    "si_still_image":
+    "si_texture":
+
+
+
+

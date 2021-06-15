@@ -1,0 +1,56 @@
+mappings:
+  source: com.clougence.schema.metadata.domain.rdb.oracle.OracleSqlTypes
+  target: com.clougence.schema.metadata.domain.rdb.adb.mysql.AdbMySqlTypes
+  map:
+    "char": "varchar"
+    "nchar": "varchar"
+    "varchar2": "varchar"
+    "nvarchar": "varchar"
+    "nvarchar2": "varchar"
+    "long": "longtext"
+    "number": "decimal"
+    "float": "float"
+    "binary float": "decimal"
+    "binary double": "decimal"
+    "clob": "varchar"
+    "nclob": "varchar"
+    "blob": "binary"
+    "bfile":
+    "date": "date"
+    "timestamp": "timestamp"
+    "timestamp with time zone": "timestamp"
+    "timestamp with local time zone": "timestamp"
+    "interval year to month": "timestamp"
+    "interval day to second": "timestamp"
+    "raw": "binary"
+    "long raw": "binary"
+    "rowid": "varchar"
+    "urowid": "varchar"
+    "object":
+    "ref":
+    "varray":
+    "nested_table":
+    "plsql_boolean":
+    "anytype":
+    "anydata":
+    "anydataset":
+    "xmltype": "varchar"
+    "httpuritype":
+    "xdburitype":
+    "dburitype":
+    "sdo_geometry":
+    "sdo_topo_geometry":
+    "sdo_georaster":
+    "ordaudio":
+    "orddicom":
+    "orddoc":
+    "ordimage":
+    "ordvideo":
+    "si_average_color":
+    "si_color":
+    "si_color_histogram":
+    "si_feature_list":
+    "si_positional_color":
+    "si_still_image":
+    "si_texture":
+
