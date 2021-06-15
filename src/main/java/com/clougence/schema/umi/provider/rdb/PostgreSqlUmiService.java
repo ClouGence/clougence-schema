@@ -7,8 +7,9 @@ import com.clougence.schema.umi.ValueUmiSchema;
 import com.clougence.schema.umi.constraint.NonNull;
 import com.clougence.schema.umi.constraint.Primary;
 import com.clougence.schema.umi.constraint.Unique;
-import com.clougence.schema.umi.special.java.JavaTypes;
 import com.clougence.schema.umi.special.rdb.*;
+import com.clougence.schema.umi.types.JavaTypes;
+import com.clougence.schema.umi.types.UmiTypes;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.function.ESupplier;
 import net.hasor.utils.json.JSON;
@@ -38,7 +39,7 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
     }
 
     @Override
-    public UmiSchema getSchemaByPath(String[] parentPath) throws SQLException {
+    public UmiSchema getSchemaByPath(String... parentPath) throws SQLException {
         if (parentPath.length == 0) {
             // same as root
             throw new IndexOutOfBoundsException("path need 1 element.");
@@ -63,7 +64,7 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
     }
 
     @Override
-    public List<UmiSchema> getChildSchemaByPath(String[] parentPath) throws SQLException {
+    public List<UmiSchema> getChildSchemaByPath(String... parentPath) throws SQLException {
         if (parentPath.length == 0) {
             // load catalogs
             return new ArrayList<>(getCatalogs());
@@ -97,9 +98,10 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
 
     @Override
     public List<ValueUmiSchema> getSchemas() throws SQLException {
+        String catalog = this.metadataSupplier.eGet().getCurrentCatalog();
         List<PostgresSchema> pg = this.metadataSupplier.eGet().getSchemas();
         if (pg != null && !pg.isEmpty()) {
-            return pg.stream().map(this::convertSchema).collect(Collectors.toList());
+            return pg.stream().map(s -> convertSchema(catalog, s)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -121,7 +123,7 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
         }
         PostgresSchema pg = this.metadataSupplier.eGet().getSchema(schema);
         if (pg != null) {
-            return this.convertSchema(pg);
+            return this.convertSchema(catalog, pg);
         }
         return null;
     }
@@ -173,7 +175,7 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
         }
         List<PostgresColumn> pg = this.metadataSupplier.eGet().getColumns(schema, table);
         if (pg != null && !pg.isEmpty()) {
-            return pg.stream().map(this::convertColumn).collect(Collectors.toList());
+            return pg.stream().map(c -> convertColumn(catalog, schema, table, c)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -233,14 +235,18 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
     protected ValueUmiSchema convertCatalog(String pgCatalog) {
         ValueUmiSchema schema = new ValueUmiSchema();
         schema.setName(pgCatalog);
+        schema.setParentPath(new String[0]);
+        schema.setTypeDef(UmiTypes.Catalog);
         schema.setDataType(JavaTypes.String);
         //
         return schema;
     }
 
-    protected ValueUmiSchema convertSchema(PostgresSchema pgSchema) {
+    protected ValueUmiSchema convertSchema(String catalogName, PostgresSchema pgSchema) {
         ValueUmiSchema schema = new ValueUmiSchema();
         schema.setName(pgSchema.getSchema());
+        schema.setParentPath(new String[] { catalogName });
+        schema.setTypeDef(UmiTypes.Schema);
         schema.setDataType(JavaTypes.String);
         //
         schema.getAttributes().setValue("owner", pgSchema.getOwner());
@@ -250,6 +256,12 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
     protected ValueUmiSchema convertTable(PostgresTable pgTable) {
         ValueUmiSchema schema = new ValueUmiSchema();
         schema.setName(pgTable.getTable());
+        schema.setParentPath(new String[] { pgTable.getCatalog(), pgTable.getSchema() });
+        if (pgTable.getTableType() == PostgresTableType.View || pgTable.getTableType() == PostgresTableType.Materialized) {
+            schema.setTypeDef(UmiTypes.View);
+        } else {
+            schema.setTypeDef(UmiTypes.Table);
+        }
         schema.setDataType(JavaTypes.String);
         schema.setComment(pgTable.getComment());
         //
@@ -260,11 +272,13 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
         return schema;
     }
 
-    protected RdbColumn convertColumn(PostgresColumn pgColumn) {
+    protected RdbColumn convertColumn(String catalogName, String schemaName, String tableName, PostgresColumn pgColumn) {
         RdbColumn schema = new RdbColumn();
         schema.setName(pgColumn.getName());
-        schema.setDataType(pgColumn.getSqlType());
+        schema.setParentPath(new String[] { catalogName, schemaName, tableName });
         schema.setDefaultValue(pgColumn.getDefaultValue());
+        schema.setTypeDef(UmiTypes.Column);
+        schema.setDataType(pgColumn.getSqlType());
         schema.setComment(pgColumn.getComment());
         //
         if (!pgColumn.isNullable()) {
@@ -368,6 +382,7 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
         RdbIndex schema = new RdbIndex();
         schema.setName(pgIndex.getName());
         schema.setColumnList(pgIndex.getColumns());
+        schema.setType(pgIndex.getIndexType().name());
         //
         schema.getAttributes().setValue("schema", pgIndex.getSchema());
         schema.getAttributes().setValue("indexType", pgIndex.getIndexType().name());

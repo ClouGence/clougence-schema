@@ -33,7 +33,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DsUtils {
-    public static String MYSQL_SCHEMA_NAME    = "mysql";
+    public static String MYSQL_SCHEMA_NAME    = "devtester";
     public static String ADBMYSQL_SCHEMA_NAME = "adb_mysql_4387qyy";
 
     public static DruidDataSource createDs(String dbID) throws Throwable {
@@ -78,7 +78,7 @@ public class DsUtils {
     }
 
     public static Connection localMySQL() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://192.168.0.152:50203/mysql?allowMultiQueries=true", "root", "123456");
+        return DriverManager.getConnection("jdbc:mysql://192.168.0.152:50203/devtester?allowMultiQueries=true", "root", "123456");
     }
 
     public static Connection aliyunAdbMySQL() throws SQLException {

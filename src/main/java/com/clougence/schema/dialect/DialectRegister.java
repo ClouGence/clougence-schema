@@ -16,7 +16,7 @@
 package com.clougence.schema.dialect;
 import com.clougence.schema.DataSourceType;
 import com.clougence.schema.dialect.provider.DmDialect;
-import com.clougence.schema.dialect.provider.MyDialect;
+import com.clougence.schema.dialect.provider.MySqlDialect;
 import com.clougence.schema.dialect.provider.OracleDialect;
 import com.clougence.schema.dialect.provider.PostgreDialect;
 
@@ -32,8 +32,8 @@ public class DialectRegister {
     private static final Map<DataSourceType, Dialect> dialectCache = new HashMap<>();
 
     static {
-        dialectCache.put(DataSourceType.MySQL, new MyDialect());
-        dialectCache.put(DataSourceType.AdbForMySQL, new MyDialect());
+        dialectCache.put(DataSourceType.MySQL, new MySqlDialect());
+        dialectCache.put(DataSourceType.AdbForMySQL, new MySqlDialect());
         dialectCache.put(DataSourceType.PostgreSQL, new PostgreDialect());
         dialectCache.put(DataSourceType.Oracle, new OracleDialect());
         dialectCache.put(DataSourceType.DM, new DmDialect());

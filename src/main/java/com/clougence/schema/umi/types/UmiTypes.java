@@ -13,60 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.umi.special.java;
+package com.clougence.schema.umi.types;
 import com.clougence.schema.metadata.FieldType;
-import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.sql.JDBCType;
 
 /**
- * Java 的 数据类型
+ * 类型
  * @version : 2021-05-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum JavaTypes implements FieldType {
-    Byte(Byte.class),
-    Sort(Short.class),
-    Integer(Integer.class),
-    Long(Long.class),
-    Float(Float.class),
-    Double(Double.class),
-    Character(Character.class),
-    //
-    Null(Void.class),
-    String(String.class),
-    Date(java.util.Date.class),
-    Object(Object.class),
+public enum UmiTypes implements FieldType {
+    Catalog("CATALOG"),
+    Schema("SCHEMA"),
+    Table("TABLE"),
+    View("VIEW"),
+    Column("COLUMN"),
     ;
     //
-    private final Class<?> javaType;
+    private final String typeName;
 
-    JavaTypes(Class<?> javaType) {
-        this.javaType = javaType;
+    UmiTypes(String typeName) {
+        this.typeName = typeName;
     }
 
-    public static JavaTypes valueOfCode(Class<?> code) {
-        for (JavaTypes tableType : JavaTypes.values()) {
-            if (tableType.javaType == code) {
+    public static UmiTypes valueOfCode(String typeName) {
+        for (UmiTypes tableType : UmiTypes.values()) {
+            if (tableType.typeName.equalsIgnoreCase(typeName)) {
                 return tableType;
             }
         }
-        return Object;
+        return null;
     }
 
     @Override
     public java.lang.String getCodeKey() {
-        return javaType.getSimpleName();
+        return this.typeName;
     }
 
     @Override
     public java.lang.Integer getJdbcType() {
-        JDBCType jdbcType = toJDBCType();
-        return (jdbcType == null) ? null : jdbcType.getVendorTypeNumber();
+        return null;
     }
 
     @Override
     public JDBCType toJDBCType() {
-        return TypeHandlerRegistry.toSqlType(this.javaType);
+        return null;
     }
 }

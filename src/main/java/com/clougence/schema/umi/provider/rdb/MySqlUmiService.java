@@ -7,8 +7,9 @@ import com.clougence.schema.umi.ValueUmiSchema;
 import com.clougence.schema.umi.constraint.NonNull;
 import com.clougence.schema.umi.constraint.Primary;
 import com.clougence.schema.umi.constraint.Unique;
-import com.clougence.schema.umi.special.java.JavaTypes;
 import com.clougence.schema.umi.special.rdb.*;
+import com.clougence.schema.umi.types.JavaTypes;
+import com.clougence.schema.umi.types.UmiTypes;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.function.ESupplier;
 import net.hasor.utils.json.JSON;
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 
 /**
  * mysql DsSchemaRService
- *
  * @author mode 2021/1/8 19:56
  */
 public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider> {
@@ -41,7 +41,7 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
     }
 
     @Override
-    public UmiSchema getSchemaByPath(String[] parentPath) throws SQLException {
+    public UmiSchema getSchemaByPath(String... parentPath) throws SQLException {
         if (parentPath.length == 0) {
             // same as root
             throw new IndexOutOfBoundsException("path need 1 element.");
@@ -63,7 +63,7 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
     }
 
     @Override
-    public List<UmiSchema> getChildSchemaByPath(String[] parentPath) throws SQLException {
+    public List<UmiSchema> getChildSchemaByPath(String... parentPath) throws SQLException {
         if (parentPath.length == 0) {
             // load schemas
             return new ArrayList<>(getSchemas());
@@ -138,7 +138,7 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
     public List<RdbColumn> getColumns(String catalog, String schema, String table) throws SQLException {
         List<MySqlColumn> mysql = this.metadataSupplier.eGet().getColumns(schema, table);
         if (mysql != null && !mysql.isEmpty()) {
-            return mysql.stream().map(this::convertColumn).collect(Collectors.toList());
+            return mysql.stream().map(c -> convertColumn(schema, table, c)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -182,6 +182,8 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
     protected ValueUmiSchema convertSchema(MySqlSchema mysqlSchema) {
         ValueUmiSchema schema = new ValueUmiSchema();
         schema.setName(mysqlSchema.getName());
+        schema.setParentPath(new String[0]);
+        schema.setTypeDef(UmiTypes.Schema);
         schema.setDataType(JavaTypes.String);
         //
         schema.getAttributes().setValue("defaultCollationName", mysqlSchema.getDefaultCollationName());
@@ -192,6 +194,12 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
     protected ValueUmiSchema convertTable(MySqlTable mysqlTable) {
         ValueUmiSchema schema = new ValueUmiSchema();
         schema.setName(mysqlTable.getTable());
+        schema.setParentPath(new String[] { mysqlTable.getSchema() });
+        if (mysqlTable.getTableType() == MySqlTableType.View || mysqlTable.getTableType() == MySqlTableType.SystemView) {
+            schema.setTypeDef(UmiTypes.View);
+        } else {
+            schema.setTypeDef(UmiTypes.Table);
+        }
         schema.setDataType(JavaTypes.String);
         schema.setComment(mysqlTable.getComment());
         //
@@ -208,11 +216,13 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
         return schema;
     }
 
-    protected RdbColumn convertColumn(MySqlColumn mysqlColumn) {
+    protected RdbColumn convertColumn(String schemaName, String tableName, MySqlColumn mysqlColumn) {
         RdbColumn schema = new RdbColumn();
         schema.setName(mysqlColumn.getName());
-        schema.setDataType(mysqlColumn.getSqlType());
+        schema.setParentPath(new String[] { schemaName, tableName });
         schema.setDefaultValue(mysqlColumn.getDefaultValue());
+        schema.setTypeDef(UmiTypes.Column);
+        schema.setDataType(mysqlColumn.getSqlType());
         schema.setComment(mysqlColumn.getComment());
         //
         if (!mysqlColumn.isNullable()) {

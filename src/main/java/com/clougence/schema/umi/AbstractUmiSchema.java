@@ -69,26 +69,26 @@ public abstract class AbstractUmiSchema implements UmiSchema {
     }
 
     public <T extends UmiConstraint> boolean hasConstraint(Class<T> classType) {
-        return !getConstraints(classType).isEmpty();
+        return !getConstraint(classType).isEmpty();
     }
 
     public boolean hasConstraint(UmiConstraintType constraintType) {
-        return !getConstraints(constraintType).isEmpty();
+        return !getConstraint(constraintType).isEmpty();
     }
 
-    public <T extends UmiConstraint> List<T> getConstraints(Class<T> classType) {
+    public <T extends UmiConstraint> List<T> getConstraint(Class<T> classType) {
         return this.getConstraints().stream().filter(classType::isInstance).map(c -> {
             return (T) c;
         }).collect(Collectors.toList());
     }
 
-    public List<UmiConstraint> getConstraints(UmiConstraintType constraintType) {
+    public List<UmiConstraint> getConstraint(UmiConstraintType constraintType) {
         return this.getConstraints().stream().filter(c -> {
             return constraintType == c.getType();
         }).collect(Collectors.toList());
     }
 
-    public <T extends UmiConstraint> List<T> getConstraints(Class<T> classType, UmiConstraintType constraintType) {
+    public <T extends UmiConstraint> List<T> getConstraint(Class<T> classType, UmiConstraintType constraintType) {
         return this.getConstraints().stream().filter(c -> {
             return classType.isInstance(c) && constraintType == c.getType();
         }).map(c -> {
@@ -97,7 +97,7 @@ public abstract class AbstractUmiSchema implements UmiSchema {
     }
 
     protected <T extends UmiConstraint> void overwriteConstraint(Class<T> classType, List<T> values) {
-        List<T> constraints = getConstraints(classType);
+        List<T> constraints = getConstraint(classType);
         for (T constraint : constraints) {
             getConstraints().remove(constraint);
         }
@@ -105,7 +105,7 @@ public abstract class AbstractUmiSchema implements UmiSchema {
     }
 
     protected void overwriteConstraint(UmiConstraintType constraintType, List<UmiConstraint> values) {
-        List<UmiConstraint> constraints = getConstraints(constraintType);
+        List<UmiConstraint> constraints = getConstraint(constraintType);
         for (UmiConstraint constraint : constraints) {
             getConstraints().remove(constraint);
         }
@@ -113,7 +113,7 @@ public abstract class AbstractUmiSchema implements UmiSchema {
     }
 
     protected <T extends UmiConstraint> void overwriteConstraint(Class<T> classType, UmiConstraintType constraintType, List<T> values) {
-        List<T> constraints = getConstraints(classType, constraintType);
+        List<T> constraints = getConstraint(classType, constraintType);
         for (T constraint : constraints) {
             getConstraints().remove(constraint);
         }

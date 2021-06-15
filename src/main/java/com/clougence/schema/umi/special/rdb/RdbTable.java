@@ -34,7 +34,7 @@ public class RdbTable extends StrutsUmiSchema {
     private List<RdbIndex> indices = new ArrayList<>();
 
     public RdbPrimaryKey getPrimaryKey() {
-        List<RdbPrimaryKey> primaryKeys = this.getConstraints(RdbPrimaryKey.class, GeneralConstraintType.Primary);
+        List<RdbPrimaryKey> primaryKeys = this.getConstraint(RdbPrimaryKey.class, GeneralConstraintType.Primary);
         return primaryKeys.isEmpty() ? null : primaryKeys.get(0);
     }
 
@@ -43,7 +43,7 @@ public class RdbTable extends StrutsUmiSchema {
     }
 
     public List<RdbUniqueKey> getUniqueKey() {
-        return this.getConstraints(RdbUniqueKey.class, GeneralConstraintType.Unique);
+        return this.getConstraint(RdbUniqueKey.class, GeneralConstraintType.Unique);
     }
 
     public void setUniqueKey(List<RdbUniqueKey> uniqueKeys) {
@@ -51,7 +51,7 @@ public class RdbTable extends StrutsUmiSchema {
     }
 
     public List<RdbForeignKey> getForeignKey() {
-        return this.getConstraints(RdbForeignKey.class);
+        return this.getConstraint(RdbForeignKey.class);
     }
 
     public void setForeignKey(List<RdbForeignKey> foreignKeys) {

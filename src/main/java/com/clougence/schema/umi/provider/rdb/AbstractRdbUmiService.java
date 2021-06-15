@@ -4,6 +4,7 @@ import com.clougence.schema.metadata.provider.rdb.RdbMetaDataService;
 import com.clougence.schema.umi.ValueUmiSchema;
 import com.clougence.schema.umi.provider.AbstractUmiService;
 import com.clougence.schema.umi.special.rdb.*;
+import com.clougence.schema.umi.types.UmiTypes;
 import net.hasor.utils.function.ESupplier;
 
 import java.sql.SQLException;
@@ -42,8 +43,14 @@ public abstract class AbstractRdbUmiService<T extends RdbMetaDataService> extend
     public RdbTable loadTable(String catalog, String schema, String table) throws SQLException {
         RdbTable rdbTable = new RdbTable();
         ValueUmiSchema umiTable = getTable(catalog, schema, table);
+        if (umiTable == null) {
+            return null;
+        }
+        //
         rdbTable.setName(umiTable.getName());
+        rdbTable.setTypeDef(UmiTypes.Table);
         rdbTable.setComment(umiTable.getComment());
+        rdbTable.getAttributes().setValue(RdbTableType.class.getName(), umiTable.getTypeDef().getCodeKey());
         //
         RdbPrimaryKey primaryKey = getPrimaryKey(catalog, schema, table);
         if (primaryKey != null) {

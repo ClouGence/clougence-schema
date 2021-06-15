@@ -16,7 +16,7 @@ public interface UmiService {
 
     public List<UmiSchema> getRootSchemas() throws SQLException;
 
-    public UmiSchema getSchemaByPath(String[] parentPath) throws SQLException;
+    public UmiSchema getSchemaByPath(String... parentPath) throws SQLException;
 
-    public List<UmiSchema> getChildSchemaByPath(String[] parentPath) throws SQLException;
+    public List<UmiSchema> getChildSchemaByPath(String... parentPath) throws SQLException;
 }

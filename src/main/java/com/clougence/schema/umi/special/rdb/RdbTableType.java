@@ -33,7 +33,7 @@ public enum RdbTableType {
 
     public static RdbTableType valueOfCode(String code) {
         for (RdbTableType umiIndexType : RdbTableType.values()) {
-            if (umiIndexType.typeName.equals(code)) {
+            if (umiIndexType.typeName.equalsIgnoreCase(code)) {
                 return umiIndexType;
             }
         }
