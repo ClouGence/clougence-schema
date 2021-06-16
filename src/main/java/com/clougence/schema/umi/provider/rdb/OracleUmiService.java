@@ -1,5 +1,5 @@
 package com.clougence.schema.umi.provider.rdb;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.domain.rdb.oracle.*;
 import com.clougence.schema.metadata.provider.rdb.OracleMetadataProvider;
 import com.clougence.schema.umi.UmiSchema;
@@ -30,8 +30,8 @@ public class OracleUmiService extends AbstractRdbUmiService<OracleMetadataProvid
     }
 
     @Override
-    public DataSourceType getDataSourceType() {
-        return DataSourceType.Oracle;
+    public DsType getDataSourceType() {
+        return DsType.Oracle;
     }
 
     @Override

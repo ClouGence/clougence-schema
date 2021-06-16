@@ -1,5 +1,5 @@
 package com.clougence.schema.editor.provider.postgresql;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.AbstractProvider;
 import com.clougence.schema.editor.triggers.TriggerContext;
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostgreSqlCreateUtils extends AbstractProvider {
     @Override
-    public DataSourceType getDataSourceType() {
-        return DataSourceType.PostgreSQL;
+    public DsType getDataSourceType() {
+        return DsType.PostgreSQL;
     }
 
     public List<String> buildCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {

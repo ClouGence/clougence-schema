@@ -1,5 +1,5 @@
 package com.clougence.schema.metadata.typemapping;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.FieldType;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.InputStreamSettings;
@@ -38,8 +38,8 @@ public final class TypeMapping {
             String source = mappingNode.getSubValue("source");
             String target = mappingNode.getSubValue("target");
             //
-            DataSourceType sourceDataSource = DataSourceType.valueOfCode(source);
-            DataSourceType targetDataSource = DataSourceType.valueOfCode(target);
+            DsType sourceDataSource = DsType.valueOfCode(source);
+            DsType targetDataSource = DsType.valueOfCode(target);
             MappingDef mappingDef = new MappingDef(sourceDataSource, targetDataSource);
             this.initMapping(mappingDef, mapping);
         }
@@ -74,7 +74,7 @@ public final class TypeMapping {
         }
     }
 
-    public Map<String, String> getMapping(DataSourceType sourceDsType, DataSourceType targetDsType) {
+    public Map<String, String> getMapping(DsType sourceDsType, DsType targetDsType) {
         return mappingList.stream().filter(mappingEnt -> {
             MappingDef mappingDef = mappingEnt.getMappingDef();
             return mappingDef.getSource() == sourceDsType && mappingDef.getTarget() == targetDsType;

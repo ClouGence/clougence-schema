@@ -15,7 +15,7 @@
  */
 package com.clougence.schema.umi.provider.rdb;
 import com.clougence.schema.AbstractMetadataServiceSupplierTest;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.DsUtils;
 import com.clougence.schema.metadata.domain.rdb.postgres.PostgresTypes;
 import com.clougence.schema.metadata.provider.rdb.PostgresMetadataProvider;
@@ -79,7 +79,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getRootSchemasTest() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         //
         List<UmiSchema> rootSchemas = umiService.getRootSchemas();
         List<String> collect = rootSchemas.stream().map(UmiSchema::getName).collect(Collectors.toList());
@@ -88,7 +88,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getSchemaTest_01() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         //
         UmiSchema schema1 = umiService.getSchemaByPath("tester_db");
         assert schema1 != null;
@@ -98,7 +98,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getSchemaTest_02() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<UmiSchema> schemaByPath1 = umiService.getChildSchemaByPath("tester_db");
         List<String> tablesOfSchema1 = schemaByPath1.stream().map(UmiSchema::getName).collect(Collectors.toList());
         assert schemaByPath1.isEmpty();
@@ -114,7 +114,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getSchemaTest_03() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<UmiSchema> schemaByPath1 = umiService.getChildSchemaByPath("postgres", "tester");
         List<String> tablesOfSchema1 = schemaByPath1.stream().map(UmiSchema::getName).collect(Collectors.toList());
         //
@@ -126,7 +126,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getSchemaTest_04() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<UmiSchema> columnSchemas = umiService.getChildSchemaByPath("postgres", "tester", "proc_table");
         List<String> columnsOfTable = columnSchemas.stream().map(UmiSchema::getName).collect(Collectors.toList());
         //
@@ -136,7 +136,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getSchemaTest_05() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         UmiSchema columnSchema = umiService.getSchemaByPath("postgres", "tester", "proc_table", "c_id");
         //
         assert columnSchema.getName().equalsIgnoreCase("c_id");
@@ -148,7 +148,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getCatalogsTest() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<ValueUmiSchema> catalogs = umiService.getCatalogs();
         List<String> collect = catalogs.stream().map(ValueUmiSchema::getName).collect(Collectors.toList());
         assert collect.size() >= 1;
@@ -157,7 +157,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getSchemasTest() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<ValueUmiSchema> schemas = umiService.getSchemas();
         List<String> collect = schemas.stream().map(ValueUmiSchema::getName).collect(Collectors.toList());
         assert collect.contains("tester");
@@ -168,7 +168,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getSchemaTest() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         ValueUmiSchema schema1 = umiService.getSchema("postgres", "abc");
         ValueUmiSchema schema2 = umiService.getSchema("postgres", "tester");
         assert schema1 == null;
@@ -177,7 +177,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getTables() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<ValueUmiSchema> pgTables1 = umiService.getTables("postgres", "tester");
         List<ValueUmiSchema> pgTables2 = umiService.getTables("postgres", "public");
         //
@@ -192,7 +192,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void findTables() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<ValueUmiSchema> tableList = umiService.getTables("postgres", "tester", new String[] { "proc_table_ref", "tb_user_view", "tb_user_view_m" });
         //
         List<String> tableNames = tableList.stream().map(ValueUmiSchema::getName).collect(Collectors.toList());
@@ -204,7 +204,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getTable() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         RdbTable tableObj1 = umiService.loadTable("postgres", "tester", "proc_table_ref");
         RdbTable tableObj2 = umiService.loadTable("postgres", "tester", "tb_user_view");
         RdbTable tableObj3 = umiService.loadTable("postgres", "tester", "abc");
@@ -220,7 +220,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getColumns_1() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<RdbColumn> columnList = umiService.getColumns("postgres", "tester", "tb_postgre_types");
         //
         Map<String, RdbColumn> columnMap = columnList.stream().collect(Collectors.toMap(RdbColumn::getName, c -> c));
@@ -249,7 +249,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getColumns_2() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<RdbColumn> columnList = umiService.getColumns("postgres", "tester", "proc_table_ref");
         Map<String, RdbColumn> columnMap = columnList.stream().collect(Collectors.toMap(RdbColumn::getName, c -> c));
         assert columnMap.size() == 6;
@@ -269,7 +269,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getConstraint1() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         RdbTable rdbTable = umiService.loadTable("postgres", "tester", "proc_table_ref");
         //
         assert rdbTable.hasConstraint(Primary.class);
@@ -281,7 +281,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getConstraint2() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         RdbTable rdbTable = umiService.loadTable("postgres", "tester", "proc_table_ref");
         //
         List<Primary> constraints1 = rdbTable.getConstraint(Primary.class);
@@ -313,7 +313,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getPrimaryKey1() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         RdbPrimaryKey primaryKey = umiService.getPrimaryKey("postgres", "tester", "proc_table_ref");
         assert primaryKey.getType() == GeneralConstraintType.Primary;
         assert primaryKey.getName().startsWith("proc_table_ref_pkey");
@@ -323,7 +323,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getPrimaryKey2() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         RdbPrimaryKey primaryKey = umiService.getPrimaryKey("postgres", "tester", "proc_table");
         assert primaryKey.getType() == GeneralConstraintType.Primary;
         assert primaryKey.getName().startsWith("proc_table_pkey");
@@ -334,7 +334,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getPrimaryKey3() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         RdbTable table = umiService.loadTable("postgres", "tester", "t3");
         RdbPrimaryKey primaryKey = umiService.getPrimaryKey("postgres", "tester", "t3");
         assert table != null;
@@ -343,7 +343,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getUniqueKey() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<RdbUniqueKey> uniqueKeyList = umiService.getUniqueKey("postgres", "tester", "tb_user");
         Map<String, RdbUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(RdbUniqueKey::getName, u -> u));
         assert uniqueKeyMap.size() == 2;
@@ -362,7 +362,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getForeignKey() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<RdbForeignKey> foreignKeyList1 = umiService.getForeignKey("postgres", "tester", "tb_user");
         assert foreignKeyList1.size() == 0;
         List<RdbForeignKey> foreignKeyList2 = umiService.getForeignKey("postgres", "tester", "proc_table_ref");
@@ -381,7 +381,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getIndexes1() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<RdbIndex> indexList = umiService.getIndexes("postgres", "tester", "tb_user");
         Map<String, RdbIndex> indexMap = indexList.stream().collect(Collectors.toMap(RdbIndex::getName, i -> i));
         assert indexMap.size() == 3;
@@ -406,7 +406,7 @@ public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTes
 
     @Test
     public void getIndexes2() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DataSourceType.PostgreSQL, this.connection);
+        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.PostgreSQL, this.connection);
         List<RdbIndex> indexList = umiService.getIndexes("postgres", "tester", "proc_table_ref");
         Map<String, RdbIndex> indexMap = indexList.stream().collect(Collectors.toMap(RdbIndex::getName, i -> i));
         //

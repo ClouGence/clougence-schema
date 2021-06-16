@@ -1,7 +1,7 @@
 package com.clougence.schema.editor.provider;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.editor.triggers.*;
 
 public interface BuilderProvider extends TableTriggers, ColumnTriggers, IndexTriggers, PrimaryKeyTriggers, ForeignKeyTriggers {
-    public DataSourceType getDataSourceType();
+    public DsType getDataSourceType();
 }

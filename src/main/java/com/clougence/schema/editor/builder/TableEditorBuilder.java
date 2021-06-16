@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.NoColumnException;
@@ -230,7 +230,7 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
     }
 
     @Override
-    public List<Action> buildCreate(DataSourceType targetDsType) {
+    public List<Action> buildCreate(DsType targetDsType) {
         if (StringUtils.isBlank(this.eTable.getName())) {
             throw new NullPointerException("table name is null.");
         }
@@ -243,7 +243,7 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
         //
         BuilderProvider provider = null;
         Function<EColumn, String> columnTypeMapping = null;
-        DataSourceType sourceDsType = this.context.getBuilderProvider().getDataSourceType();
+        DsType sourceDsType = this.context.getBuilderProvider().getDataSourceType();
         if (targetDsType != sourceDsType) {
             provider = EditorProviderRegister.findProvider(targetDsType);
             //

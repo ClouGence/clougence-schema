@@ -19,7 +19,7 @@ package com.clougence.schema;
  *
  * @author wanshao create time is 2019/12/12 3:36 下午
  */
-public enum DataSourceType {
+public enum DsType {
     MySQL("MySQL"), //
     AdbForMySQL("AdbForMySQL"), //
     PostgreSQL("PostgreSQL"), //
@@ -28,7 +28,7 @@ public enum DataSourceType {
     ;
     private final String typeName;
 
-    DataSourceType(String typeName) {
+    DsType(String typeName) {
         this.typeName = typeName;
     }
 
@@ -36,8 +36,8 @@ public enum DataSourceType {
         return this.typeName;
     }
 
-    public static DataSourceType valueOfCode(String code) {
-        for (DataSourceType constraintType : DataSourceType.values()) {
+    public static DsType valueOfCode(String code) {
+        for (DsType constraintType : DsType.values()) {
             if (constraintType.typeName != null && constraintType.typeName.equalsIgnoreCase(code)) {
                 return constraintType;
             }

@@ -1,6 +1,6 @@
 package com.clougence.schema.editor;
 import com.clougence.schema.AbstractMetadataServiceSupplierTest;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.DsUtils;
 import com.clougence.schema.editor.builder.actions.Action;
 import com.clougence.schema.metadata.CaseSensitivityType;
@@ -40,14 +40,14 @@ public class EditorTest extends AbstractMetadataServiceSupplierTest<MySqlMetadat
 
     @Test
     public void editorInit() throws SQLException {
-        EditorHelper helper = new EditorHelper(DataSourceType.MySQL, this.connection);
+        EditorHelper helper = new EditorHelper(DsType.MySQL, this.connection);
         TableEditor tableEditor = helper.editTableEditor(null, repository.getCurrentSchema(), "tb_user", new EditorOptions());
         tableEditor.getColumn("loginName").delete();
         tableEditor.getColumn("index").rename("except");
         tableEditor.getPrimaryEditor().delete();
         //
         tableEditor.configCaseSensitivity(false, CaseSensitivityType.Upper);
-        List<Action> actions = tableEditor.buildCreate(DataSourceType.PostgreSQL);
+        List<Action> actions = tableEditor.buildCreate(DsType.PostgreSQL);
         //
         System.out.println(StringUtils.join(actions.stream().map(action -> {
             return StringUtils.join(action.getSqlString().toArray(), '\n');

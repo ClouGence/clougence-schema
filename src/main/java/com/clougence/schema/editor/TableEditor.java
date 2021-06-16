@@ -1,5 +1,5 @@
 package com.clougence.schema.editor;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.editor.builder.actions.Action;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.metadata.CaseSensitivityType;
@@ -33,7 +33,7 @@ public interface TableEditor extends EditorSource<ETable> {
 
     public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, RdbForeignKeyRule updateRule, RdbForeignKeyRule deleteRule, Map<String, String> referenceMapping);
 
-    public List<Action> buildCreate(DataSourceType targetDsType);
+    public List<Action> buildCreate(DsType targetDsType);
 
     public interface PrimaryEditor extends EditorSource<EPrimaryKey> {
         public void addColumn(String[] columnName);

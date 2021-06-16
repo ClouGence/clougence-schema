@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi.provider;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.MetadataServiceRegister;
 import com.clougence.schema.umi.provider.rdb.MySqlUmiService;
 import com.clougence.schema.umi.provider.rdb.OracleUmiService;
@@ -29,29 +29,29 @@ import java.sql.Connection;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class UmiServiceRegister {
-    public static RdbUmiService createRdbUmiService(DataSourceType dataSourceType, Connection connection) {
-        switch (dataSourceType) {
+    public static RdbUmiService createRdbUmiService(DsType dsType, Connection connection) {
+        switch (dsType) {
             case AdbForMySQL:
             case MySQL:
-                return new MySqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, connection));
+                return new MySqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dsType, connection));
             case PostgreSQL:
-                return new PostgreSqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, connection));
+                return new PostgreSqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dsType, connection));
             case Oracle:
-                return new OracleUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, connection));
+                return new OracleUmiService(() -> MetadataServiceRegister.createMetaDataService(dsType, connection));
             default:
                 throw new UnsupportedOperationException("");
         }
     }
 
-    public static RdbUmiService createRdbUmiService(DataSourceType dataSourceType, DataSource dataSource) {
-        switch (dataSourceType) {
+    public static RdbUmiService createRdbUmiService(DsType dsType, DataSource dataSource) {
+        switch (dsType) {
             case AdbForMySQL:
             case MySQL:
-                return new MySqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, dataSource));
+                return new MySqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dsType, dataSource));
             case PostgreSQL:
-                return new PostgreSqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, dataSource));
+                return new PostgreSqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dsType, dataSource));
             case Oracle:
-                return new OracleUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, dataSource));
+                return new OracleUmiService(() -> MetadataServiceRegister.createMetaDataService(dsType, dataSource));
             default:
                 throw new UnsupportedOperationException("");
         }

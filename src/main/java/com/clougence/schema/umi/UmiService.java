@@ -1,5 +1,5 @@
 package com.clougence.schema.umi;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * @author mode 2020/12/8 15:21
  */
 public interface UmiService {
-    public DataSourceType getDataSourceType();
+    public DsType getDataSourceType();
 
     /** 获取版本信息 */
     public String getVersion() throws SQLException;

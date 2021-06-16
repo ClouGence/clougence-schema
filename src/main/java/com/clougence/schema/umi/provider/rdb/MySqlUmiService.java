@@ -1,5 +1,5 @@
 package com.clougence.schema.umi.provider.rdb;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.domain.rdb.mysql.*;
 import com.clougence.schema.metadata.provider.rdb.MySqlMetadataProvider;
 import com.clougence.schema.umi.UmiSchema;
@@ -31,8 +31,8 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
     }
 
     @Override
-    public DataSourceType getDataSourceType() {
-        return DataSourceType.MySQL;
+    public DsType getDataSourceType() {
+        return DsType.MySQL;
     }
 
     @Override

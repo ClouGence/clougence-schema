@@ -1,5 +1,5 @@
 package com.clougence.schema.editor;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.editor.builder.TableEditorBuilder;
 import com.clougence.schema.editor.domain.EIndexType;
 import com.clougence.schema.editor.domain.ETable;
@@ -27,12 +27,12 @@ import java.util.Objects;
 public class EditorHelper {
     private final RdbUmiService rdbUmiService;
 
-    public EditorHelper(DataSourceType dataSourceType, Connection connection) {
-        this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dataSourceType, connection);
+    public EditorHelper(DsType dsType, Connection connection) {
+        this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dsType, connection);
     }
 
-    public EditorHelper(DataSourceType dataSourceType, DataSource dataSource) {
-        this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dataSourceType, dataSource);
+    public EditorHelper(DsType dsType, DataSource dataSource) {
+        this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dsType, dataSource);
     }
 
     public EditorHelper(RdbUmiService rdbUmiService) {

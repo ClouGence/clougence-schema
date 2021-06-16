@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.domain;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,8 +26,8 @@ import java.util.Objects;
 @Getter
 @Setter
 public class EType extends EChange<EType> {
-    private String         typeName;
-    private DataSourceType dsType;
+    private String typeName;
+    private DsType dsType;
 
     @Override
     public EType clone() {

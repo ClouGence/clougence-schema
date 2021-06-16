@@ -1,5 +1,5 @@
 package com.clougence.schema.editor.provider.mysql;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.AbstractProvider;
 import com.clougence.schema.editor.provider.BuilderProvider;
@@ -19,8 +19,8 @@ import java.util.function.Function;
 @Slf4j
 public class MySqlEditorProvider extends AbstractProvider implements BuilderProvider {
     @Override
-    public DataSourceType getDataSourceType() {
-        return DataSourceType.MySQL;
+    public DsType getDataSourceType() {
+        return DsType.MySQL;
     }
 
     protected StringBuilder buildAlterTable(TriggerContext buildContext, String catalog, String schema, String table) {

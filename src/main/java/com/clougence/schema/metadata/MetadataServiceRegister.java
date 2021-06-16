@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.provider.rdb.*;
 
 import javax.sql.DataSource;
@@ -25,8 +25,8 @@ import java.sql.Connection;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MetadataServiceRegister {
-    public static <T extends RdbMetaDataService> T createMetaDataService(DataSourceType dataSourceType, Connection connection) {
-        switch (dataSourceType) {
+    public static <T extends RdbMetaDataService> T createMetaDataService(DsType dsType, Connection connection) {
+        switch (dsType) {
             case AdbForMySQL:
                 return (T) new AdbMySqlMetadataProvider(connection);
             case MySQL:
@@ -40,8 +40,8 @@ public class MetadataServiceRegister {
         }
     }
 
-    public static <T extends RdbMetaDataService> T createMetaDataService(DataSourceType dataSourceType, DataSource dataSource) {
-        switch (dataSourceType) {
+    public static <T extends RdbMetaDataService> T createMetaDataService(DsType dsType, DataSource dataSource) {
+        switch (dsType) {
             case AdbForMySQL:
                 return (T) new AdbMySqlMetadataProvider(dataSource);
             case MySQL:

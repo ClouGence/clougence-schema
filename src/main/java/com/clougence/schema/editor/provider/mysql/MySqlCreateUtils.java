@@ -1,5 +1,5 @@
 package com.clougence.schema.editor.provider.mysql;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.AbstractProvider;
 import com.clougence.schema.editor.triggers.TriggerContext;
@@ -17,8 +17,8 @@ import java.util.function.Function;
 @Slf4j
 public class MySqlCreateUtils extends AbstractProvider {
     @Override
-    public DataSourceType getDataSourceType() {
-        return DataSourceType.MySQL;
+    public DsType getDataSourceType() {
+        return DsType.MySQL;
     }
 
     public List<String> buildCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {

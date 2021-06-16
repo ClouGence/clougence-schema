@@ -1,5 +1,5 @@
 package com.clougence.schema.editor;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.editor.builder.actions.Action;
 import com.clougence.schema.editor.provider.BuilderProvider;
 import com.clougence.schema.editor.provider.EditorProviderRegister;
@@ -21,7 +21,7 @@ public class EditorContext {
     private       boolean             useDelimited;
     private       boolean             cascade;
 
-    public EditorContext(DataSourceType dataSourceType) {
-        this.builderProvider = EditorProviderRegister.findProvider(dataSourceType);
+    public EditorContext(DsType dsType) {
+        this.builderProvider = EditorProviderRegister.findProvider(dsType);
     }
 }

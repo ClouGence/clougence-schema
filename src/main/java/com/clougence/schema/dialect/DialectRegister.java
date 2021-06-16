@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.dialect;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.dialect.provider.DmDialect;
 import com.clougence.schema.dialect.provider.MySqlDialect;
 import com.clougence.schema.dialect.provider.OracleDialect;
@@ -29,21 +29,21 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DialectRegister {
-    private static final Map<DataSourceType, Dialect> dialectCache = new HashMap<>();
+    private static final Map<DsType, Dialect> dialectCache = new HashMap<>();
 
     static {
-        dialectCache.put(DataSourceType.MySQL, new MySqlDialect());
-        dialectCache.put(DataSourceType.AdbForMySQL, new MySqlDialect());
-        dialectCache.put(DataSourceType.PostgreSQL, new PostgreDialect());
-        dialectCache.put(DataSourceType.Oracle, new OracleDialect());
-        dialectCache.put(DataSourceType.DM, new DmDialect());
+        dialectCache.put(DsType.MySQL, new MySqlDialect());
+        dialectCache.put(DsType.AdbForMySQL, new MySqlDialect());
+        dialectCache.put(DsType.PostgreSQL, new PostgreDialect());
+        dialectCache.put(DsType.Oracle, new OracleDialect());
+        dialectCache.put(DsType.DM, new DmDialect());
     }
 
-    public static Dialect findSqlDialect(DataSourceType dataSourceType) {
-        if (dataSourceType == null) {
+    public static Dialect findSqlDialect(DsType dsType) {
+        if (dsType == null) {
             return DefaultDialect.DEFAULT;
         }
-        return dialectCache.getOrDefault(dataSourceType, DefaultDialect.DEFAULT);
+        return dialectCache.getOrDefault(dsType, DefaultDialect.DEFAULT);
     }
 }
 

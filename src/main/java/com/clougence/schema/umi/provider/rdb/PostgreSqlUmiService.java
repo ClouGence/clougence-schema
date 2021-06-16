@@ -1,5 +1,5 @@
 package com.clougence.schema.umi.provider.rdb;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.domain.rdb.postgres.*;
 import com.clougence.schema.metadata.provider.rdb.PostgresMetadataProvider;
 import com.clougence.schema.umi.UmiSchema;
@@ -29,8 +29,8 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
     }
 
     @Override
-    public DataSourceType getDataSourceType() {
-        return DataSourceType.PostgreSQL;
+    public DsType getDataSourceType() {
+        return DsType.PostgreSQL;
     }
 
     @Override

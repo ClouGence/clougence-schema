@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.provider;
-import com.clougence.schema.DataSourceType;
+import com.clougence.schema.DsType;
 import com.clougence.schema.editor.provider.mysql.MySqlEditorProvider;
 import com.clougence.schema.editor.provider.postgresql.PostgreSqlEditorProvider;
 
@@ -26,20 +26,20 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class EditorProviderRegister {
-    private static final Map<DataSourceType, BuilderProvider> dialectCache = new HashMap<>();
+    private static final Map<DsType, BuilderProvider> dialectCache = new HashMap<>();
 
     static {
-        dialectCache.put(DataSourceType.MySQL, new MySqlEditorProvider());
-        dialectCache.put(DataSourceType.PostgreSQL, new PostgreSqlEditorProvider());
+        dialectCache.put(DsType.MySQL, new MySqlEditorProvider());
+        dialectCache.put(DsType.PostgreSQL, new PostgreSqlEditorProvider());
     }
 
-    public static BuilderProvider findProvider(DataSourceType dataSourceType) {
-        if (dataSourceType == null) {
+    public static BuilderProvider findProvider(DsType dsType) {
+        if (dsType == null) {
             throw new IllegalArgumentException("dataSourceType is null.");
         }
-        BuilderProvider orDefault = dialectCache.getOrDefault(dataSourceType, null);
+        BuilderProvider orDefault = dialectCache.getOrDefault(dsType, null);
         if (orDefault == null) {
-            throw new UnsupportedOperationException("dataSource " + dataSourceType.name() + " Unsupported.");
+            throw new UnsupportedOperationException("dataSource " + dsType.name() + " Unsupported.");
         }
         return orDefault;
     }
