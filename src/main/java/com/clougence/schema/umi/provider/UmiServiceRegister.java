@@ -17,6 +17,7 @@ package com.clougence.schema.umi.provider;
 import com.clougence.schema.DataSourceType;
 import com.clougence.schema.metadata.MetadataServiceRegister;
 import com.clougence.schema.umi.provider.rdb.MySqlUmiService;
+import com.clougence.schema.umi.provider.rdb.OracleUmiService;
 import com.clougence.schema.umi.provider.rdb.PostgreSqlUmiService;
 import com.clougence.schema.umi.provider.rdb.RdbUmiService;
 
@@ -36,6 +37,7 @@ public class UmiServiceRegister {
             case PostgreSQL:
                 return new PostgreSqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, connection));
             case Oracle:
+                return new OracleUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, connection));
             default:
                 throw new UnsupportedOperationException("");
         }
@@ -49,6 +51,7 @@ public class UmiServiceRegister {
             case PostgreSQL:
                 return new PostgreSqlUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, dataSource));
             case Oracle:
+                return new OracleUmiService(() -> MetadataServiceRegister.createMetaDataService(dataSourceType, dataSource));
             default:
                 throw new UnsupportedOperationException("");
         }
