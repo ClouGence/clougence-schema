@@ -223,15 +223,28 @@
         </plugins>
     </build>
 
-    <!-- 发布使用的版本库 -->
     <distributionManagement>
         <snapshotRepository>
             <id>rdc-snapshots</id>
             <url>https://packages.aliyun.com/maven/repository/2012878-snapshot-wXHWRP</url>
         </snapshotRepository>
-        <!--        <snapshotRepository>-->
-        <!--            <id>ossrh</id>-->
-        <!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-        <!--        </snapshotRepository>-->
     </distributionManagement>
+    <repositories>
+        <repository>
+            <id>rdc-snapshots</id>
+            <url>https://packages.aliyun.com/maven/repository/2012878-snapshot-wXHWRP</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>rdc-snapshots</id>
+            <url>https://packages.aliyun.com/maven/repository/2012878-snapshot-wXHWRP</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
