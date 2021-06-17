@@ -1,4 +1,12 @@
 package com.clougence.schema.umi.provider.rdb;
+
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.domain.rdb.mysql.*;
 import com.clougence.schema.metadata.provider.rdb.MySqlMetadataProvider;
@@ -14,31 +22,22 @@ import net.hasor.utils.StringUtils;
 import net.hasor.utils.function.ESupplier;
 import net.hasor.utils.json.JSON;
 
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * mysql DsSchemaRService
+ * 
  * @author mode 2021/1/8 19:56
  */
 public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider> {
-    public MySqlUmiService(ESupplier<MySqlMetadataProvider, SQLException> metadataSupplier) {
+
+    public MySqlUmiService(ESupplier<MySqlMetadataProvider, SQLException> metadataSupplier){
         super(metadataSupplier);
     }
 
     @Override
-    public DsType getDataSourceType() {
-        return DsType.MySQL;
-    }
+    public DsType getDataSourceType() { return DsType.MySQL; }
 
     @Override
-    public List<UmiSchema> getRootSchemas() throws SQLException {
-        return new ArrayList<>(getSchemas());
-    }
+    public List<UmiSchema> getRootSchemas() throws SQLException { return new ArrayList<>(getSchemas()); }
 
     @Override
     public UmiSchema getSchemaByPath(String... parentPath) throws SQLException {
@@ -79,14 +78,7 @@ public class MySqlUmiService extends AbstractRdbUmiService<MySqlMetadataProvider
     }
 
     @Override
-    public List<ValueUmiSchema> getCatalogs() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public ValueUmiSchema getCatalog(String catalog) throws SQLException {
-        return null;
-    }
+    public List<ValueUmiSchema> getCatalogs() { return Collections.emptyList(); }
 
     @Override
     public List<ValueUmiSchema> getSchemas() throws SQLException {

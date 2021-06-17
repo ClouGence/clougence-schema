@@ -1,4 +1,11 @@
 package com.clougence.schema.umi.provider.rdb;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.domain.rdb.postgres.*;
 import com.clougence.schema.metadata.provider.rdb.PostgresMetadataProvider;
@@ -14,29 +21,20 @@ import net.hasor.utils.StringUtils;
 import net.hasor.utils.function.ESupplier;
 import net.hasor.utils.json.JSON;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * @author mode 2021/1/8 19:56
  */
 public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadataProvider> {
-    public PostgreSqlUmiService(ESupplier<PostgresMetadataProvider, SQLException> metadataSupplier) {
+
+    public PostgreSqlUmiService(ESupplier<PostgresMetadataProvider, SQLException> metadataSupplier){
         super(metadataSupplier);
     }
 
     @Override
-    public DsType getDataSourceType() {
-        return DsType.PostgreSQL;
-    }
+    public DsType getDataSourceType() { return DsType.PostgreSQL; }
 
     @Override
-    public List<UmiSchema> getRootSchemas() throws SQLException {
-        return new ArrayList<>(getCatalogs());
-    }
+    public List<UmiSchema> getRootSchemas() throws SQLException { return new ArrayList<>(getCatalogs()); }
 
     @Override
     public UmiSchema getSchemaByPath(String... parentPath) throws SQLException {
@@ -87,7 +85,6 @@ public class PostgreSqlUmiService extends AbstractRdbUmiService<PostgresMetadata
         return this.metadataSupplier.eGet().getCatalogs().stream().map(this::convertCatalog).collect(Collectors.toList());
     }
 
-    @Override
     public ValueUmiSchema getCatalog(String catalog) throws SQLException {
         List<String> pg = this.metadataSupplier.eGet().getCatalogs();
         if (pg.contains(catalog)) {

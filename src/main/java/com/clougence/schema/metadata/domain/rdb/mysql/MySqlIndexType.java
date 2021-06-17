@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.mysql;
+
 /**
  * MySQL 索引类型
+ * 
  * @version : 2021-03-30
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum MySqlIndexType {
+
     /** 普通索引 */
     Normal,
     /** 唯一索引 */
@@ -27,5 +30,14 @@ public enum MySqlIndexType {
     /** 主键索引 */
     Primary,
     /** 外建索引 */
-    Foreign
+    Foreign,;
+
+    public static MySqlIndexType valueOfCode(String code) {
+        for (MySqlIndexType indexType : MySqlIndexType.values()) {
+            if (indexType.name().equalsIgnoreCase(code)) {
+                return indexType;
+            }
+        }
+        return null;
+    }
 }

@@ -1,4 +1,13 @@
 package com.clougence.schema.editor;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import javax.sql.DataSource;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.builder.TableEditorBuilder;
 import com.clougence.schema.editor.domain.EIndexType;
@@ -15,27 +24,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.hasor.utils.ExceptionUtils;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 @Slf4j
 public class EditorHelper {
+
     private final RdbUmiService rdbUmiService;
 
-    public EditorHelper(DsType dsType, Connection connection) {
+    public EditorHelper(DsType dsType, Connection connection){
         this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dsType, connection);
     }
 
-    public EditorHelper(DsType dsType, DataSource dataSource) {
+    public EditorHelper(DsType dsType, DataSource dataSource){
         this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dsType, dataSource);
     }
 
-    public EditorHelper(RdbUmiService rdbUmiService) {
+    public EditorHelper(RdbUmiService rdbUmiService){
         this.rdbUmiService = Objects.requireNonNull(rdbUmiService, "rdbUmiService must not null.");
     }
 
@@ -138,6 +140,34 @@ public class EditorHelper {
     public TableEditor restoreTableEditor(String editorData, EditorOptions options) throws SQLException {
         EditorContext editorContext = createEditorContext(options);
         editorContext.setUseDelimited(options.isUseDelimited());
+        //
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ETable eTable = objectMapper.readValue(editorData, new TypeReference<ETable>() {
+            });
+            //
+            if (eTable == null) {
+                throw new NullPointerException("ETable data deserialization failed. data is null.");
+            }
+            return new TableEditorBuilder(eTable, editorContext);
+        } catch (Exception e) {
+            String msg = "editorData to TableEditor error.msg:" + ExceptionUtils.getRootCauseMessage(e);
+            throw new RuntimeException(msg, e);
+        }
+    }
+
+    public static TableEditor restoreTableEditor(String editorData, EditorOptions options, EditorContext editorContext) {
+        if (options != null) {
+            editorContext.setIncludeAffected(options.isIncludeAffected());
+            if (options.getCaseSensitivity() != null) {
+                if (options.isUseDelimited()) {
+                    editorContext.setDelimitedCaseSensitivity(options.getCaseSensitivity());
+                } else {
+                    editorContext.setPlainCaseSensitivity(options.getCaseSensitivity());
+                }
+            }
+            editorContext.setUseDelimited(options.isUseDelimited());
+        }
         //
         try {
             ObjectMapper objectMapper = new ObjectMapper();
