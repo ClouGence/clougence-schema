@@ -69,8 +69,9 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
                 case 0://表名按你写的SQL大小写存储，大写就大写小写就小写，比较时大小写敏感。
                     return CaseSensitivityType.Exact;
                 case 1://表名转小写后存储到硬盘，比较时大小写不敏感。
-                case 2://表名按你写的SQL大小写存储，大写就大写小写就小写，比较时统一转小写比较。
                     return CaseSensitivityType.Lower;
+                case 2://表名按你写的SQL大小写存储，大写就大写小写就小写，比较时统一转小写比较。
+                    return CaseSensitivityType.Fuzzy;
                 default:
                     return super.getPlain();
             }
