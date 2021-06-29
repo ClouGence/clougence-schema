@@ -1,12 +1,4 @@
 package com.clougence.schema.metadata.typemapping;
-import com.clougence.schema.DsType;
-import com.clougence.schema.metadata.FieldType;
-import net.hasor.core.Settings;
-import net.hasor.core.setting.InputStreamSettings;
-import net.hasor.core.setting.SettingNode;
-import net.hasor.core.setting.provider.StreamType;
-import net.hasor.utils.function.ESupplier;
-import net.hasor.utils.supplier.SingleProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,12 +7,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.clougence.config.InputStreamSettings;
+import com.clougence.config.SettingNode;
+import com.clougence.config.Settings;
+import com.clougence.config.provider.StreamType;
+import com.clougence.schema.DsType;
+import com.clougence.schema.metadata.FieldType;
+import net.hasor.utils.function.ESupplier;
+import net.hasor.utils.supplier.SingleProvider;
+
 /**
  * SqlType Mapping Registry
  *
  * @author mode create time is 2020-05-07
  */
 public final class TypeMapping {
+
     public static SingleProvider<TypeMapping> DEFAULT     = new SingleProvider<>((ESupplier<TypeMapping, Exception>) TypeMapping::new);
     private final List<MappingEnt>            mappingList = new ArrayList<>();
 
@@ -31,7 +33,7 @@ public final class TypeMapping {
         return settings;
     }
 
-    public TypeMapping() throws Exception {
+    public TypeMapping() throws Exception{
         SettingNode[] settingNodes = loadSetting("/META-INF/clougence/type-mapping.yml").getNodeArray("config.mappingConfig");
         for (SettingNode mappingNode : settingNodes) {
             String mapping = mappingNode.getSubValue("mapping");
