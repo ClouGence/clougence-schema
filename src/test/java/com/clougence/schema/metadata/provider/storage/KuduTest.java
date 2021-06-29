@@ -51,7 +51,7 @@ public class KuduTest {
     private static ColumnSchema newColumn(String name, Type type, Boolean isKey) {
         ColumnSchema.ColumnSchemaBuilder column = new ColumnSchema.ColumnSchemaBuilder(name, type);
         column.key(isKey);
-        column.
+//        column.
         return column.build();
     }
 
