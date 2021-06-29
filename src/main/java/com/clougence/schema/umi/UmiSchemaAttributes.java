@@ -4,9 +4,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.clougence.schema.utils.CollectionUtils;
 import lombok.Getter;
 import lombok.Setter;
-import net.hasor.utils.CollectionUtils;
 
 @Getter
 @Setter

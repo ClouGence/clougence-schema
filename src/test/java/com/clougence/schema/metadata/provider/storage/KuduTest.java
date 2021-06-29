@@ -44,40 +44,39 @@ public class KuduTest {
         ListTablesResponse.TableInfo tableInfo = tableInfosList.get(0);
         tableInfo.getTableName();
 
-        //        client.openTable("aa").newInsert().setRow();
+        // client.openTable("aa").newInsert().setRow();
 
     }
 
     private static ColumnSchema newColumn(String name, Type type, Boolean isKey) {
         ColumnSchema.ColumnSchemaBuilder column = new ColumnSchema.ColumnSchemaBuilder(name, type);
         column.key(isKey);
-//        column.
+        // column.
         return column.build();
     }
 
     private void aa() {
-        //设置表的schema
+        // 设置表的schema
         LinkedList<ColumnSchema> columns = new LinkedList<>();
 
         /*
-         *和RDBMS不同的是，Kudu不提供自动递增列功能，因此应用程序必须始终
-         * 在插入期间提供完整的主键
+         * 和RDBMS不同的是，Kudu不提供自动递增列功能，因此应用程序必须始终 在插入期间提供完整的主键
          */
         columns.add(newColumn("id", Type.INT32, true));
         columns.add(newColumn("name", Type.STRING, false));
         Schema schema = new Schema(columns);
 
-        //创建表时提供的所有选项
+        // 创建表时提供的所有选项
         CreateTableOptions options = new CreateTableOptions();
 
-        //设置表的replica备份和分区规则
+        // 设置表的replica备份和分区规则
         LinkedList<String> parcols = new LinkedList<>();
         parcols.add("id");
 
-        //设置表的备份数
+        // 设置表的备份数
         options.setNumReplicas(1);
 
-        //设置hash分区和数量
+        // 设置hash分区和数量
         options.addHashPartitions(parcols, 3);
     }
 }

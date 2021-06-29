@@ -17,7 +17,7 @@
         <jacoco.version>0.8.5</jacoco.version>
         <!--<maven.test.skip>true</maven.test.skip>-->
         <!--<skipTests>true</skipTests>-->
-        <hasor.version>4.2.6-SNAPSHOT</hasor.version>
+        <hasor.version>4.2.5</hasor.version>
         <kudu.version>1.15.0</kudu.version>
     </properties>
 
