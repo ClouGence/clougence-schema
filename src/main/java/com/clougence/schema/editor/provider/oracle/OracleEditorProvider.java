@@ -1,4 +1,4 @@
-package com.clougence.schema.editor.provider.mysql;
+package com.clougence.schema.editor.provider.oracle;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,10 +18,10 @@ import net.hasor.utils.StringUtils;
  * @author mode 2021/1/8 19:56
  */
 @Slf4j
-public class MySqlEditorProvider extends AbstractProvider implements BuilderProvider {
+public class OracleEditorProvider extends AbstractProvider implements BuilderProvider {
 
     @Override
-    public DsType getDataSourceType() { return DsType.MySQL; }
+    public DsType getDataSourceType() { return DsType.Oracle; }
 
     protected StringBuilder buildAlterTable(TriggerContext buildContext, String catalog, String schema, String table) {
         boolean useDelimited = buildContext.isUseDelimited();
@@ -57,7 +57,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
 
     @Override
     public List<String> tableCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {
-        return new MySqlCreateUtils().buildCreate(buildContext, catalog, schema, table, eTable, columnTypeMapping);
+        return new OracleCreateUtils().buildCreate(buildContext, catalog, schema, table, eTable, columnTypeMapping);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
         sqlBuild.append(" add " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
-        sqlBuild.append(" " + MySqlProviderUtils.buildColumnType(columnInfo));
+        sqlBuild.append(" " + OracleProviderUtils.buildColumnType(columnInfo));
         if (StringUtils.isNotBlank(columnInfo.getComment())) {
             sqlBuild.append(" comment '" + columnInfo.getComment() + "'");
         }
@@ -94,7 +94,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         //
         sqlBuild.append(" change column " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
         sqlBuild.append(" " + fmtColumn(useDelimited, caseSensitivity, newColumnName));
-        sqlBuild.append(MySqlProviderUtils.buildColumnType(columnInfo));
+        sqlBuild.append(OracleProviderUtils.buildColumnType(columnInfo));
         if (StringUtils.isNotBlank(columnInfo.getComment())) {
             sqlBuild.append(" comment '" + columnInfo.getComment() + "'");
         }
@@ -109,7 +109,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
         sqlBuild.append(" modify column " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
-        sqlBuild.append(MySqlProviderUtils.buildColumnType(newInfo));
+        sqlBuild.append(OracleProviderUtils.buildColumnType(newInfo));
         if (StringUtils.isNotBlank(newInfo.getComment())) {
             sqlBuild.append(" comment '" + newInfo.getComment() + "'");
         }

@@ -1,9 +1,11 @@
 package com.clougence.schema.umi;
-import com.clougence.schema.metadata.FieldType;
 
 import java.util.List;
 
-public interface UmiSchema {
+import com.clougence.schema.metadata.FieldType;
+
+public interface UmiSchema extends UmiAttributes {
+
     public String getName();
 
     public String getComment();
@@ -14,5 +16,4 @@ public interface UmiSchema {
 
     public List<UmiConstraint> getConstraints();
 
-    public UniSchemaAttributes getAttributes();
 }

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,39 +14,37 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi;
-import com.clougence.schema.metadata.FieldType;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.clougence.schema.metadata.FieldType;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 参数类型
+ * 
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2020-05-21
  */
 @Getter
 @Setter
-public abstract class AbstractUmiSchema implements UmiSchema {
+public abstract class AbstractUmiSchema extends AbstractUmiAttributes implements UmiSchema {
+
     private String              name;
     private String              comment;
     private FieldType           typeDef;
     private String[]            parentPath;
     private List<UmiConstraint> constraints = new ArrayList<>();
-    private UniSchemaAttributes attributes  = new UniSchemaAttributes();
 
     @Override
-    public String getName() {
-        return this.name;
-    }
+    public String getName() { return this.name; }
 
     @Override
-    public String getComment() {
-        return this.comment;
-    }
+    public String getComment() { return this.comment; }
 
     @Override
     public String[] getPath() {
@@ -59,14 +57,7 @@ public abstract class AbstractUmiSchema implements UmiSchema {
     }
 
     @Override
-    public List<UmiConstraint> getConstraints() {
-        return this.constraints;
-    }
-
-    @Override
-    public UniSchemaAttributes getAttributes() {
-        return this.attributes;
-    }
+    public List<UmiConstraint> getConstraints() { return this.constraints; }
 
     public <T extends UmiConstraint> boolean hasConstraint(Class<T> classType) {
         return !getConstraint(classType).isEmpty();

@@ -13,27 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.umi;
+package com.clougence.schema.metadata.domain.storage.kudu;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.clougence.schema.metadata.FieldType;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 结构类型
+ * Kudu Index
+ * @version : 2021-06-24
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-05-21
  */
 @Getter
 @Setter
-public class StrutsUmiSchema extends AbstractUmiSchema {
+public class KuduIndex {
 
-    /** 每个字段Map */
-    private Map<String, AbstractUmiSchema> properties = new LinkedHashMap<>();
-
-    @Override
-    public final FieldType getDataType() { return UmiStrutsTypes.Struts; }
+    private List<String> columns = new ArrayList<>();
 }

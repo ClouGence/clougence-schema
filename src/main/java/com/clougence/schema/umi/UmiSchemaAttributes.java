@@ -10,9 +10,18 @@ import net.hasor.utils.CollectionUtils;
 
 @Getter
 @Setter
-public class UniSchemaAttributes {
+public class UmiSchemaAttributes {
 
     private Map<String, String> attribute = new HashMap<>();
+
+    public UmiSchemaAttributes(){
+    }
+
+    public UmiSchemaAttributes(Map<String, String> attribute){
+        if (attribute != null) {
+            this.attribute.putAll(attribute);
+        }
+    }
 
     public Enumeration<String> keys() {
         return CollectionUtils.asEnumeration(this.attribute.keySet().iterator());
@@ -30,11 +39,12 @@ public class UniSchemaAttributes {
         this.attribute.put(attrName, value);
     }
 
-    public void setAttributes(UniSchemaAttributes attributes) {
+    public void setAttributes(UmiSchemaAttributes attributes) {
         this.attribute.putAll(attributes.attribute);
     }
 
     public Map<String, String> toMap() {
         return this.attribute;
     }
+
 }
