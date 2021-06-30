@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+
+import static com.clougence.schema.metadata.domain.rdb.oracle.OracleSqlTypes.TIMESTAMP;
+
+import java.sql.Connection;
+import java.sql.JDBCType;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.sql.DataSource;
+
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.oracle.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.JDBCType;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.clougence.schema.metadata.domain.rdb.oracle.OracleSqlTypes.TIMESTAMP;
 
 /**
  * Oracle 元信息获取，参考资料：
@@ -37,24 +38,23 @@ import static com.clougence.schema.metadata.domain.rdb.oracle.OracleSqlTypes.TIM
  * @author 赵永春 (zyc@hasor.net)
  */
 public class OracleMetadataProvider extends AbstractMetadataProvider implements RdbMetaDataService {
-    private static final String SCHEMA  = "select USERNAME,ACCOUNT_STATUS,LOCK_DATE,EXPIRY_DATE,DEFAULT_TABLESPACE,TEMPORARY_TABLESPACE,CREATED,PROFILE,AUTHENTICATION_TYPE,LAST_LOGIN from SYS.DBA_USERS";
-    private static final String TABLE   = ""//
-            + "select TAB.OWNER,TAB.TABLE_NAME,TABLESPACE_NAME,READ_ONLY,TAB.TABLE_TYPE,LOG_TABLE,COMMENTS from (\n"//
-            + "  select OWNER,TABLE_NAME,TABLESPACE_NAME,READ_ONLY,'TABLE' TABLE_TYPE,LOG_TABLE from SYS.DBA_TABLES\n"//
-            + "  left join SYS.DBA_MVIEW_LOGS on LOG_OWNER = OWNER and MASTER = TABLE_NAME\n"//
-            + "  union all\n"//
-            + "  select OWNER,VIEW_NAME, null TABLESPACE_NAME,READ_ONLY,'VIEW' TABLE_TYPE,null LOG_TABLE from SYS.DBA_VIEWS\n"//
-            + ") TAB\n"//
-            + "left join DBA_TAB_COMMENTS on TAB.OWNER = DBA_TAB_COMMENTS.OWNER and TAB.TABLE_NAME = DBA_TAB_COMMENTS.TABLE_NAME and TAB.TABLE_TYPE = DBA_TAB_COMMENTS.TABLE_TYPE";
-    private static final String COLUMNS = ""//
-            + "select COLS.COLUMN_NAME,DATA_TYPE,DATA_TYPE_OWNER,DATA_LENGTH,CHAR_LENGTH,DATA_PRECISION,DATA_SCALE,NULLABLE,DATA_DEFAULT,CHARACTER_SET_NAME,HIDDEN_COLUMN,VIRTUAL_COLUMN,IDENTITY_COLUMN,SENSITIVE_COLUMN,COMM.COMMENTS from DBA_TAB_COLS COLS\n"//
-            + "left join DBA_COL_COMMENTS COMM on COLS.OWNER = COMM.OWNER and COLS.TABLE_NAME = COMM.TABLE_NAME and COLS.COLUMN_NAME = COMM.COLUMN_NAME\n";
 
-    public OracleMetadataProvider(Connection connection) {
+    private static final String SCHEMA  = "select USERNAME,ACCOUNT_STATUS,LOCK_DATE,EXPIRY_DATE,DEFAULT_TABLESPACE,TEMPORARY_TABLESPACE,CREATED,PROFILE,AUTHENTICATION_TYPE,LAST_LOGIN from SYS.DBA_USERS";
+    private static final String TABLE   = "select TAB.OWNER,TAB.TABLE_NAME,TABLESPACE_NAME,READ_ONLY,TAB.TABLE_TYPE,LOG_TABLE,LOG_ROWIDS,LOG_PK,LOG_SEQ,COMMENTS from (\n"                                                                                                                      //
+                                          + "  select OWNER,TABLE_NAME,TABLESPACE_NAME,READ_ONLY,'TABLE' TABLE_TYPE,LOG.LOG_TABLE,LOG.ROWIDS LOG_ROWIDS,LOG.PRIMARY_KEY LOG_PK,LOG.SEQUENCE LOG_SEQ from SYS.DBA_TABLES\n"                                                                      //
+                                          + "  left join SYS.DBA_MVIEW_LOGS LOG on LOG_OWNER = OWNER and MASTER = TABLE_NAME\n"                                                                                                                                                                 //
+                                          + "  union all\n"                                                                                                                                                                                                                                     //
+                                          + "  select OWNER,VIEW_NAME, null TABLESPACE_NAME,READ_ONLY,'VIEW' TABLE_TYPE,null LOG_TABLE,null LOG_ROWIDS,null LOG_PK,null LOG_SEQ from SYS.DBA_VIEWS\n"                                                                                           //
+                                          + ") TAB\n"                                                                                                                                                                                                                                           //
+                                          + "left join DBA_TAB_COMMENTS on TAB.OWNER = DBA_TAB_COMMENTS.OWNER and TAB.TABLE_NAME = DBA_TAB_COMMENTS.TABLE_NAME and TAB.TABLE_TYPE = DBA_TAB_COMMENTS.TABLE_TYPE";
+    private static final String COLUMNS = "select COLS.COLUMN_NAME,DATA_TYPE,DATA_TYPE_OWNER,DATA_LENGTH,CHAR_LENGTH,DATA_PRECISION,DATA_SCALE,NULLABLE,DATA_DEFAULT,CHARACTER_SET_NAME,HIDDEN_COLUMN,VIRTUAL_COLUMN,IDENTITY_COLUMN,SENSITIVE_COLUMN,COMM.COMMENTS from DBA_TAB_COLS COLS\n"   //
+                                          + "left join DBA_COL_COMMENTS COMM on COLS.OWNER = COMM.OWNER and COLS.TABLE_NAME = COMM.TABLE_NAME and COLS.COLUMN_NAME = COMM.COLUMN_NAME\n";
+
+    public OracleMetadataProvider(Connection connection){
         super(connection);
     }
 
-    public OracleMetadataProvider(DataSource dataSource) {
+    public OracleMetadataProvider(DataSource dataSource){
         super(dataSource);
     }
 
@@ -256,10 +256,10 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
             }
             // UK、PK
             String primaryUniqueKeyQuery = ""//
-                    + "select COLUMN_NAME,COLS.CONSTRAINT_NAME,CON.CONSTRAINT_TYPE from ALL_CONS_COLUMNS COLS\n"//
-                    + "left join DBA_CONSTRAINTS CON on COLS.CONSTRAINT_NAME = CON.CONSTRAINT_NAME\n"//
-                    + "where (CON.CONSTRAINT_TYPE = 'P' or CON.CONSTRAINT_TYPE = 'U') and COLS.OWNER = ? and COLS.TABLE_NAME = ?\n"//
-                    + "order by COLS.POSITION asc";
+                                           + "select COLUMN_NAME,COLS.CONSTRAINT_NAME,CON.CONSTRAINT_TYPE from ALL_CONS_COLUMNS COLS\n"//
+                                           + "left join DBA_CONSTRAINTS CON on COLS.CONSTRAINT_NAME = CON.CONSTRAINT_NAME\n"//
+                                           + "where (CON.CONSTRAINT_TYPE = 'P' or CON.CONSTRAINT_TYPE = 'U') and COLS.OWNER = ? and COLS.TABLE_NAME = ?\n"//
+                                           + "order by COLS.POSITION asc";
             primaryUniqueKeyList = new JdbcTemplate(conn).queryForList(primaryUniqueKeyQuery, schemaName, tableName);
         }
         List<String> primaryKeyColumnNameList = primaryUniqueKeyList.stream().filter(recordMap -> {
@@ -292,7 +292,7 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         }
         //
         String queryString = "select OWNER,CONSTRAINT_NAME,CONSTRAINT_TYPE,STATUS,VALIDATED,GENERATED from DBA_CONSTRAINTS " //
-                + "where OWNER = ? and TABLE_NAME = ?";
+                             + "where OWNER = ? and TABLE_NAME = ?";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
@@ -329,23 +329,25 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         }
         //
         String queryString = "" //
-                + "select CON.OWNER,CON.CONSTRAINT_NAME,CONSTRAINT_TYPE,STATUS,VALIDATED,GENERATED,COLUMN_NAME from DBA_CONS_COLUMNS CC\n" //
-                + "left join DBA_CONSTRAINTS CON on CC.CONSTRAINT_NAME = CON.CONSTRAINT_NAME\n" //
-                + "where CONSTRAINT_TYPE = 'P' and CC.OWNER = ? and CC.TABLE_NAME = ? order by POSITION asc"; //
+                             + "select CON.OWNER,CON.CONSTRAINT_NAME,CONSTRAINT_TYPE,STATUS,VALIDATED,GENERATED,COLUMN_NAME from DBA_CONS_COLUMNS CC\n" //
+                             + "left join DBA_CONSTRAINTS CON on CC.CONSTRAINT_NAME = CON.CONSTRAINT_NAME\n" //
+                             + "where CONSTRAINT_TYPE = 'P' and CC.OWNER = ? and CC.TABLE_NAME = ? order by POSITION asc"; //
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return null;
             }
             //
-            Map<String, Optional<OraclePrimaryKey>> pkMap = mapList.stream().map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((pk1, pk2) -> {
-                // reducing group by data in to one.
-                pk1.getColumns().addAll(pk2.getColumns());
-                return pk1;
-            })));
+            Map<String, Optional<OraclePrimaryKey>> pkMap = mapList.stream()
+                .map(this::convertPrimaryKey)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((pk1, pk2) -> {
+                    // reducing group by data in to one.
+                    pk1.getColumns().addAll(pk2.getColumns());
+                    return pk1;
+                })));
             if (pkMap.size() > 1) {
                 throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
             }
@@ -367,25 +369,32 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         }
         //
         String queryString = "" //
-                + "select CON.OWNER,CON.CONSTRAINT_NAME,CONSTRAINT_TYPE,STATUS,VALIDATED,GENERATED,COLUMN_NAME from DBA_CONS_COLUMNS CC\n" //
-                + "left join DBA_CONSTRAINTS CON on CC.CONSTRAINT_NAME = CON.CONSTRAINT_NAME\n" //
-                + "where CONSTRAINT_TYPE in ('U','P') and CC.OWNER = ? and CC.TABLE_NAME = ? order by POSITION asc"; //
+                             + "select CON.OWNER,CON.CONSTRAINT_NAME,CONSTRAINT_TYPE,STATUS,VALIDATED,GENERATED,COLUMN_NAME from DBA_CONS_COLUMNS CC\n" //
+                             + "left join DBA_CONSTRAINTS CON on CC.CONSTRAINT_NAME = CON.CONSTRAINT_NAME\n" //
+                             + "where CONSTRAINT_TYPE in ('U','P') and CC.OWNER = ? and CC.TABLE_NAME = ? order by POSITION asc"; //
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return null;
             }
             //
-            return mapList.stream().map(this::convertUniqueKey).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((uk1, uk2) -> {
-                // reducing group by data in to one.
-                uk1.getColumns().addAll(uk2.getColumns());
-                return uk1;
-            }))).values().stream().map(o -> {
-                return o.orElse(null);
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            return mapList.stream()
+                .map(this::convertUniqueKey)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((uk1, uk2) -> {
+                    // reducing group by data in to one.
+                    uk1.getColumns().addAll(uk2.getColumns());
+                    return uk1;
+                })))
+                .values()
+                .stream()
+                .map(o -> {
+                    return o.orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         }
     }
 
@@ -401,32 +410,39 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         }
         //
         String queryString = "" //
-                + "select CON.OWNER,CON.CONSTRAINT_NAME,STATUS,VALIDATED,GENERATED,DELETE_RULE,\n" //
-                + "       C2.OWNER TARGET_OWNER,C2.TABLE_NAME TARGET_TABLE,\n" //
-                + "       C1.COLUMN_NAME SOURCE_COLUMN,C2.COLUMN_NAME TARGET_COLUMN\n" //
-                + "from DBA_CONSTRAINTS CON,DBA_CONS_COLUMNS C1,DBA_CONS_COLUMNS C2\n" //
-                + "where\n" //
-                + "    CON.R_OWNER = C1.OWNER and CON.CONSTRAINT_NAME = C1.CONSTRAINT_NAME and\n" //
-                + "    CON.R_OWNER = C2.OWNER and CON.R_CONSTRAINT_NAME = C2.CONSTRAINT_NAME and\n" //
-                + "    C1.POSITION = C2.POSITION and\n" //
-                + "    CONSTRAINT_TYPE = 'R' and CON.OWNER = ? and CON.TABLE_NAME = ? order by C1.POSITION";
+                             + "select CON.OWNER,CON.CONSTRAINT_NAME,STATUS,VALIDATED,GENERATED,DELETE_RULE,\n" //
+                             + "       C2.OWNER TARGET_OWNER,C2.TABLE_NAME TARGET_TABLE,\n" //
+                             + "       C1.COLUMN_NAME SOURCE_COLUMN,C2.COLUMN_NAME TARGET_COLUMN\n" //
+                             + "from DBA_CONSTRAINTS CON,DBA_CONS_COLUMNS C1,DBA_CONS_COLUMNS C2\n" //
+                             + "where\n" //
+                             + "    CON.R_OWNER = C1.OWNER and CON.CONSTRAINT_NAME = C1.CONSTRAINT_NAME and\n" //
+                             + "    CON.R_OWNER = C2.OWNER and CON.R_CONSTRAINT_NAME = C2.CONSTRAINT_NAME and\n" //
+                             + "    C1.POSITION = C2.POSITION and\n" //
+                             + "    CONSTRAINT_TYPE = 'R' and CON.OWNER = ? and CON.TABLE_NAME = ? order by C1.POSITION";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return Collections.emptyList();
             }
             //
-            return mapList.stream().map(this::convertForeignKey).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((fk1, fk2) -> {
-                // reducing group by data in to one.
-                fk1.getColumns().addAll(fk2.getColumns());
-                fk1.getReferenceMapping().putAll(fk2.getReferenceMapping());
-                return fk1;
-            }))).values().stream().map(o -> {
-                return o.orElse(null);
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            return mapList.stream()
+                .map(this::convertForeignKey)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((fk1, fk2) -> {
+                    // reducing group by data in to one.
+                    fk1.getColumns().addAll(fk2.getColumns());
+                    fk1.getReferenceMapping().putAll(fk2.getReferenceMapping());
+                    return fk1;
+                })))
+                .values()
+                .stream()
+                .map(o -> {
+                    return o.orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         }
     }
 
@@ -442,29 +458,36 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         }
         //
         String queryString = ""//
-                + "select IDX.OWNER,IDX.INDEX_NAME,IDX.INDEX_TYPE,CON.CONSTRAINT_TYPE,IDX.UNIQUENESS,IDX.GENERATED,DESCEND,PARTITIONED,TEMPORARY,COL.COLUMN_NAME,COL.DESCEND\n" //
-                + "from DBA_INDEXES IDX\n" //
-                + "left join DBA_IND_COLUMNS COL on IDX.OWNER = COL.INDEX_OWNER and IDX.INDEX_NAME = COL.INDEX_NAME\n" //
-                + "left join DBA_CONSTRAINTS CON on IDX.OWNER = CON.INDEX_OWNER and IDX.INDEX_NAME = CON.INDEX_NAME\n" //
-                + "where IDX.TABLE_OWNER = ? and IDX.TABLE_NAME = ?\n" //
-                + "order by COL.COLUMN_POSITION asc";
+                             + "select IDX.OWNER,IDX.INDEX_NAME,IDX.INDEX_TYPE,CON.CONSTRAINT_TYPE,IDX.UNIQUENESS,IDX.GENERATED,DESCEND,PARTITIONED,TEMPORARY,COL.COLUMN_NAME,COL.DESCEND\n" //
+                             + "from DBA_INDEXES IDX\n" //
+                             + "left join DBA_IND_COLUMNS COL on IDX.OWNER = COL.INDEX_OWNER and IDX.INDEX_NAME = COL.INDEX_NAME\n" //
+                             + "left join DBA_CONSTRAINTS CON on IDX.OWNER = CON.INDEX_OWNER and IDX.INDEX_NAME = CON.INDEX_NAME\n" //
+                             + "where IDX.TABLE_OWNER = ? and IDX.TABLE_NAME = ?\n" //
+                             + "order by COL.COLUMN_POSITION asc";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return Collections.emptyList();
             }
             //
-            return mapList.stream().map(this::convertIndex).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((idx1, idx2) -> {
-                // reducing group by data in to one.
-                idx1.getColumns().addAll(idx2.getColumns());
-                idx1.getStorageType().putAll(idx2.getStorageType());
-                return idx1;
-            }))).values().stream().map(o -> {
-                return o.orElse(null);
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            return mapList.stream()
+                .map(this::convertIndex)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((idx1, idx2) -> {
+                    // reducing group by data in to one.
+                    idx1.getColumns().addAll(idx2.getColumns());
+                    idx1.getStorageType().putAll(idx2.getStorageType());
+                    return idx1;
+                })))
+                .values()
+                .stream()
+                .map(o -> {
+                    return o.orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         }
     }
 
@@ -519,7 +542,16 @@ public class OracleMetadataProvider extends AbstractMetadataProvider implements 
         table.setTableSpace(safeToString(recordMap.get("TABLESPACE_NAME")));
         table.setReadOnly(safeToBoolean(recordMap.get("READ_ONLY")));
         table.setTableType(OracleTableType.valueOfCode(safeToString(recordMap.get("TABLE_TYPE"))));
-        table.setMaterializedLog(safeToString(recordMap.get("LOG_TABLE")));
+        //
+        String logTable = safeToString(recordMap.get("LOG_TABLE"));
+        if (StringUtils.isNotBlank(logTable)) {
+            OracleMaterializedLog materializedLog = new OracleMaterializedLog();
+            materializedLog.setLogTable(logTable);
+            materializedLog.setLogRowIds("YES".equalsIgnoreCase(safeToString(recordMap.get("LOG_ROWIDS"))));
+            materializedLog.setLogPk("YES".equalsIgnoreCase(safeToString(recordMap.get("LOG_PK"))));
+            materializedLog.setLogSeq("YES".equalsIgnoreCase(safeToString(recordMap.get("LOG_SEQ"))));
+            table.setMaterializedLog(materializedLog);
+        }
         table.setComment(safeToString(recordMap.get("COMMENTS")));
         return table;
     }

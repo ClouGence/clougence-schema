@@ -1,4 +1,5 @@
 package com.clougence.schema.metadata.domain.rdb.oracle;
+
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,30 +12,23 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OracleTable implements TableDef {
-    private String          schema;
-    private String          table;
-    private String          tableSpace;
-    private Boolean         readOnly;
-    private OracleTableType tableType;
-    private String          materializedLog;
-    private String          comment;
+
+    private String                schema;
+    private String                table;
+    private String                tableSpace;
+    private Boolean               readOnly;
+    private OracleTableType       tableType;
+    private OracleMaterializedLog materializedLog;
+    private String                comment;
 
     @Override
-    public String getCatalog() {
-        return null;
-    }
+    public String getCatalog() { return null; }
 
     @Override
-    public String getSchema() {
-        return this.schema;
-    }
+    public String getSchema() { return this.schema; }
 
     @Override
-    public String getTable() {
-        return this.table;
-    }
+    public String getTable() { return this.table; }
 
-    public OracleTableType getTableType() {
-        return this.tableType;
-    }
+    public OracleTableType getTableType() { return this.tableType; }
 }

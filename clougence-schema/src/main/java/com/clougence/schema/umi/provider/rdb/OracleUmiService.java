@@ -219,7 +219,12 @@ public class OracleUmiService extends AbstractRdbUmiService<OracleMetadataProvid
         schema.getAttributes().setValue("tableSpace", oracleTable.getTableSpace());
         schema.getAttributes().setValue("readOnly", String.valueOf(oracleTable.getReadOnly()));
         schema.getAttributes().setValue("tableType", oracleTable.getTableType().name());
-        schema.getAttributes().setValue("materializedLog", oracleTable.getMaterializedLog());
+        if (oracleTable.getMaterializedLog() != null) {
+            schema.getAttributes().setValue("logTable", oracleTable.getMaterializedLog().getLogTable());
+            schema.getAttributes().setValue("logRowIds", oracleTable.getMaterializedLog().getLogTable());
+            schema.getAttributes().setValue("logPk", oracleTable.getMaterializedLog().getLogTable());
+            schema.getAttributes().setValue("logSeq", oracleTable.getMaterializedLog().getLogTable());
+        }
         return schema;
     }
 
