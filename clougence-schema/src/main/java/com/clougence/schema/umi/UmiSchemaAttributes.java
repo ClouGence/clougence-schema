@@ -1,5 +1,4 @@
 package com.clougence.schema.umi;
-
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;

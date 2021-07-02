@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi.types;
+import java.sql.JDBCType;
+
 import com.clougence.schema.metadata.FieldType;
 import net.hasor.db.types.TypeHandlerRegistry;
-
-import java.sql.JDBCType;
 
 /**
  * Java 的 数据类型
@@ -25,6 +25,7 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum JavaTypes implements FieldType {
+
     Byte(Byte.class),
     Sort(Short.class),
     Integer(Integer.class),
@@ -36,12 +37,12 @@ public enum JavaTypes implements FieldType {
     Null(Void.class),
     String(String.class),
     Date(java.util.Date.class),
-    Object(Object.class),
-    ;
+    Object(Object.class),;
+
     //
     private final Class<?> javaType;
 
-    JavaTypes(Class<?> javaType) {
+    JavaTypes(Class<?> javaType){
         this.javaType = javaType;
     }
 
@@ -55,9 +56,7 @@ public enum JavaTypes implements FieldType {
     }
 
     @Override
-    public java.lang.String getCodeKey() {
-        return javaType.getSimpleName();
-    }
+    public java.lang.String getCodeKey() { return javaType.getSimpleName(); }
 
     @Override
     public java.lang.Integer getJdbcType() {

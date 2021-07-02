@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.jdbc;
+
 import java.sql.DatabaseMetaData;
 
 /**
@@ -22,6 +23,7 @@ import java.sql.DatabaseMetaData;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum JdbcIndexType {
+
     /** Indicates that this column contains table statistics that are returned in conjunction with a table's index descriptions. */
     TableIndexStatistic(DatabaseMetaData.tableIndexStatistic),
     /** this is a clustered index */
@@ -30,15 +32,14 @@ public enum JdbcIndexType {
     TableIndexHashed(DatabaseMetaData.tableIndexHashed),
     /** this is some other style of index */
     TableIndexOther(DatabaseMetaData.tableIndexOther);
+
     private final int typeNumber;
 
-    JdbcIndexType(int typeNumber) {
+    JdbcIndexType(int typeNumber){
         this.typeNumber = typeNumber;
     }
 
-    public int getTypeNumber() {
-        return this.typeNumber;
-    }
+    public int getTypeNumber() { return this.typeNumber; }
 
     public static JdbcIndexType valueOfCode(Integer typeNumber) {
         if (typeNumber == null) {

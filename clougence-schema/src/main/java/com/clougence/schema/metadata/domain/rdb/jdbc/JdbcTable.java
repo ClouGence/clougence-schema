@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,6 +26,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JdbcTable implements TableDef {
+
     private String        catalog;
     private String        schema;
     private String        table;
@@ -40,22 +41,14 @@ public class JdbcTable implements TableDef {
     private String        refGeneration;
 
     @Override
-    public String getCatalog() {
-        return this.catalog;
-    }
+    public String getCatalog() { return this.catalog; }
 
     @Override
-    public String getSchema() {
-        return this.schema;
-    }
+    public String getSchema() { return this.schema; }
 
     @Override
-    public String getTable() {
-        return this.table;
-    }
+    public String getTable() { return this.table; }
 
     @Override
-    public JdbcTableType getTableType() {
-        return this.tableType;
-    }
+    public JdbcTableType getTableType() { return this.tableType; }
 }

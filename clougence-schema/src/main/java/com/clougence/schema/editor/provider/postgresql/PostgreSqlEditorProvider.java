@@ -1,4 +1,9 @@
 package com.clougence.schema.editor.provider.postgresql;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.AbstractProvider;
@@ -8,20 +13,14 @@ import com.clougence.schema.metadata.CaseSensitivityType;
 import lombok.extern.slf4j.Slf4j;
 import net.hasor.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-
 /**
  * @author mode 2021/1/8 19:56
  */
 @Slf4j
 public class PostgreSqlEditorProvider extends AbstractProvider implements BuilderProvider {
+
     @Override
-    public DsType getDataSourceType() {
-        return DsType.PostgreSQL;
-    }
+    public DsType getDataSourceType() { return DsType.PostgreSQL; }
 
     protected StringBuilder buildAlterTable(TriggerContext buildContext, String catalog, String schema, String table) {
         boolean useDelimited = buildContext.isUseDelimited();

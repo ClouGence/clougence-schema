@@ -1,8 +1,10 @@
 package com.clougence.schema.editor.provider.mysql;
+
 import com.clougence.schema.editor.domain.EColumn;
 import com.clougence.schema.metadata.domain.rdb.mysql.MySqlTypes;
 
 class MySqlProviderUtils {
+
     public static String buildColumnType(EColumn columnInfo) {
         MySqlTypes sqlTypes = MySqlTypes.valueOfCode(columnInfo.getDbType());
         return buildColumnType(sqlTypes, columnInfo) + " " + buildNullable(columnInfo.isNullable()) + " " + buildDefault(sqlTypes, columnInfo.getDefaultValue());

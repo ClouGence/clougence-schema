@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi.special.rdb;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.clougence.schema.umi.StrutsUmiSchema;
 import com.clougence.schema.umi.constraint.GeneralConstraintType;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 结构类型
@@ -31,6 +31,7 @@ import java.util.List;
 @Getter
 @Setter
 public class RdbTable extends StrutsUmiSchema {
+
     private List<RdbIndex> indices = new ArrayList<>();
 
     public RdbPrimaryKey getPrimaryKey() {
@@ -42,17 +43,13 @@ public class RdbTable extends StrutsUmiSchema {
         this.overwriteConstraint(RdbPrimaryKey.class, GeneralConstraintType.Primary, Collections.singletonList(primaryKey));
     }
 
-    public List<RdbUniqueKey> getUniqueKey() {
-        return this.getConstraint(RdbUniqueKey.class, GeneralConstraintType.Unique);
-    }
+    public List<RdbUniqueKey> getUniqueKey() { return this.getConstraint(RdbUniqueKey.class, GeneralConstraintType.Unique); }
 
     public void setUniqueKey(List<RdbUniqueKey> uniqueKeys) {
         this.overwriteConstraint(RdbUniqueKey.class, GeneralConstraintType.Unique, uniqueKeys);
     }
 
-    public List<RdbForeignKey> getForeignKey() {
-        return this.getConstraint(RdbForeignKey.class);
-    }
+    public List<RdbForeignKey> getForeignKey() { return this.getConstraint(RdbForeignKey.class); }
 
     public void setForeignKey(List<RdbForeignKey> foreignKeys) {
         this.overwriteConstraint(RdbForeignKey.class, foreignKeys);

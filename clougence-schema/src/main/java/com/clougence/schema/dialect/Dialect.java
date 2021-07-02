@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.dialect;
-import com.clougence.schema.umi.UmiSchema;
 
 import java.util.Set;
+
+import com.clougence.schema.umi.UmiSchema;
 
 /**
  * 方言
@@ -24,6 +25,7 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Dialect {
+
     /** Cannot be used as a key for column names. when column name is key words, Generate SQL using Qualifier warp it. */
     public Set<String> keywords();
 

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+import java.sql.Connection;
+import java.sql.JDBCType;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.sql.DataSource;
+
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
@@ -23,13 +30,6 @@ import com.clougence.schema.metadata.domain.rdb.mysql.driver.MysqlType;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.JDBCType;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 /**
  * MySQL 元信息获取，参考资料：
  *   <li>https://dev.mysql.com/doc/refman/8.0/en/information-schema.html</li>
@@ -37,13 +37,14 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MySqlMetadataProvider extends AbstractMetadataProvider implements RdbMetaDataService {
+
     private static final String TABLE = "select TABLE_CATALOG,TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,CREATE_TIME,UPDATE_TIME,TABLE_COMMENT from INFORMATION_SCHEMA.TABLES";
 
-    public MySqlMetadataProvider(Connection connection) {
+    public MySqlMetadataProvider(Connection connection){
         super(connection);
     }
 
-    public MySqlMetadataProvider(DataSource dataSource) {
+    public MySqlMetadataProvider(DataSource dataSource){
         super(dataSource);
     }
 
@@ -85,9 +86,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
         }
     }
 
-    public String getCurrentSchema() throws SQLException {
-        return null;
-    }
+    public String getCurrentSchema() throws SQLException { return null; }
 
     @Override
     public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
@@ -249,13 +248,13 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
         List<Map<String, Object>> columnList = null;
         try (Connection conn = this.connectSupplier.eGet()) {
             String queryStringColumn = "select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,NUMERIC_SCALE,NUMERIC_PRECISION,DATETIME_PRECISION,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE,COLUMN_DEFAULT,COLUMN_COMMENT from INFORMATION_SCHEMA.COLUMNS " //
-                    + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
+                                       + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
             columnList = new JdbcTemplate(conn).queryForList(queryStringColumn, schemaName, tableName);
             if (columnList == null) {
                 return Collections.emptyList();
             }
             String queryStringPrimaryAndUnique = "select INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
-                    + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = 'PRIMARY' or INDEX_NAME in (select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where TABLE_SCHEMA = ? and TABLE_NAME = ? and CONSTRAINT_TYPE = 'UNIQUE') order by SEQ_IN_INDEX asc";
+                                                 + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = 'PRIMARY' or INDEX_NAME in (select CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where TABLE_SCHEMA = ? and TABLE_NAME = ? and CONSTRAINT_TYPE = 'UNIQUE') order by SEQ_IN_INDEX asc";
             primaryKeyList = new JdbcTemplate(conn).queryForList(queryStringPrimaryAndUnique, schemaName, tableName, schemaName, tableName);
         }
         List<String> primaryKeyColumnNameList = primaryKeyList.stream().filter(recordMap -> {
@@ -288,7 +287,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
         }
         //
         String queryString = "select CONSTRAINT_SCHEMA,CONSTRAINT_NAME,TABLE_SCHEMA,TABLE_NAME,CONSTRAINT_TYPE from INFORMATION_SCHEMA.TABLE_CONSTRAINTS " //
-                + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
+                             + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
         try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
@@ -331,22 +330,24 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
         MySqlConstraint constraintPrimaryKey = constraintList.get(0);// pk have only ones
         String pkConstraintName = constraintPrimaryKey.getName();
         String queryString = "select INDEX_SCHEMA,INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
-                + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = ? order by SEQ_IN_INDEX asc";
+                             + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = ? order by SEQ_IN_INDEX asc";
         try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName, pkConstraintName);
             if (mapList == null) {
                 return null;
             }
             //
-            Map<String, Optional<MySqlPrimaryKey>> pkMap = mapList.stream().map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((pk1, pk2) -> {
-                // reducing group by data in to one.
-                pk1.getColumns().addAll(pk2.getColumns());
-                pk1.getStorageType().putAll(pk2.getStorageType());
-                return pk1;
-            })));
+            Map<String, Optional<MySqlPrimaryKey>> pkMap = mapList.stream()
+                .map(this::convertPrimaryKey)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((pk1, pk2) -> {
+                    // reducing group by data in to one.
+                    pk1.getColumns().addAll(pk2.getColumns());
+                    pk1.getStorageType().putAll(pk2.getStorageType());
+                    return pk1;
+                })));
             if (pkMap.size() > 1) {
                 throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
             }
@@ -376,24 +377,31 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
         queryParam.add(tableName);
         queryParam.addAll(constraintList.stream().map(MySqlConstraint::getName).collect(Collectors.toList()));
         String queryString = "select INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
-                + "where NON_UNIQUE = 0 and TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME in " + buildWhereIn(constraintList) + " order by SEQ_IN_INDEX asc";
+                             + "where NON_UNIQUE = 0 and TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME in " + buildWhereIn(constraintList) + " order by SEQ_IN_INDEX asc";
         try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, queryParam.toArray());
             if (mapList == null) {
                 return Collections.emptyList();
             }
             //
-            return mapList.stream().map(this::convertUniqueKey).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((uk1, uk2) -> {
-                // reducing group by data in to one.
-                uk1.getColumns().addAll(uk2.getColumns());
-                uk1.getStorageType().putAll(uk2.getStorageType());
-                return uk1;
-            }))).values().stream().map(o -> {
-                return o.orElse(null);
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            return mapList.stream()
+                .map(this::convertUniqueKey)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((uk1, uk2) -> {
+                    // reducing group by data in to one.
+                    uk1.getColumns().addAll(uk2.getColumns());
+                    uk1.getStorageType().putAll(uk2.getStorageType());
+                    return uk1;
+                })))
+                .values()
+                .stream()
+                .map(o -> {
+                    return o.orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         }
     }
 
@@ -417,7 +425,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
         Set<String> constraintNameList = constraintList.stream().map(MySqlConstraint::getName).collect(Collectors.toCollection(HashSet::new));
         String constraintNameWhereIn = buildWhereIn(constraintNameList);
         String queryFkAttrs = "select CONSTRAINT_SCHEMA,CONSTRAINT_NAME,TABLE_NAME,UPDATE_RULE,DELETE_RULE,REFERENCED_TABLE_NAME from INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS " //
-                + "where CONSTRAINT_SCHEMA in " + constraintSchemaWhereIn + " and CONSTRAINT_NAME in " + constraintNameWhereIn + " and TABLE_NAME = ?";
+                              + "where CONSTRAINT_SCHEMA in " + constraintSchemaWhereIn + " and CONSTRAINT_NAME in " + constraintNameWhereIn + " and TABLE_NAME = ?";
         ArrayList<String> queryAttrsParam = new ArrayList<>();
         queryAttrsParam.addAll(constraintSchemaList);
         queryAttrsParam.addAll(constraintNameList);
@@ -447,8 +455,9 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
             // all fk columns and group by fk name
             // where c.TABLE_SCHEMA = 'devtester' and c.TABLE_NAME = 'proc_table_ref'
             String queryFkColumns = "select c.CONSTRAINT_SCHEMA,c.CONSTRAINT_NAME,c.COLUMN_NAME,c.REFERENCED_TABLE_SCHEMA,c.REFERENCED_TABLE_NAME,c.REFERENCED_COLUMN_NAME,s.INDEX_TYPE" //
-                    + " from INFORMATION_SCHEMA.KEY_COLUMN_USAGE c left join INFORMATION_SCHEMA.STATISTICS s on s.TABLE_SCHEMA = c.TABLE_SCHEMA and s.TABLE_NAME = c.TABLE_NAME and s.INDEX_NAME = c.CONSTRAINT_NAME and s.COLUMN_NAME = c.COLUMN_NAME"//
-                    + " where c.CONSTRAINT_SCHEMA in " + constraintSchemaWhereIn + " and c.CONSTRAINT_NAME in " + constraintNameWhereIn + " and c.TABLE_SCHEMA = ? and c.TABLE_NAME = ? order by c.POSITION_IN_UNIQUE_CONSTRAINT asc";
+                                    + " from INFORMATION_SCHEMA.KEY_COLUMN_USAGE c left join INFORMATION_SCHEMA.STATISTICS s on s.TABLE_SCHEMA = c.TABLE_SCHEMA and s.TABLE_NAME = c.TABLE_NAME and s.INDEX_NAME = c.CONSTRAINT_NAME and s.COLUMN_NAME = c.COLUMN_NAME"//
+                                    + " where c.CONSTRAINT_SCHEMA in " + constraintSchemaWhereIn + " and c.CONSTRAINT_NAME in " + constraintNameWhereIn
+                                    + " and c.TABLE_SCHEMA = ? and c.TABLE_NAME = ? order by c.POSITION_IN_UNIQUE_CONSTRAINT asc";
             ArrayList<String> queryFkColumnsParam = new ArrayList<>();
             queryFkColumnsParam.addAll(constraintSchemaList);
             queryFkColumnsParam.addAll(constraintNameList);
@@ -489,7 +498,7 @@ public class MySqlMetadataProvider extends AbstractMetadataProvider implements R
         }
         //
         String queryString = "select TABLE_CATALOG,TABLE_SCHEMA,TABLE_NAME,INDEX_NAME,INDEX_TYPE,NON_UNIQUE,COLUMN_NAME FROM INFORMATION_SCHEMA.STATISTICS "//
-                + "where TABLE_SCHEMA = ? and TABLE_NAME = ? order by SEQ_IN_INDEX asc";
+                             + "where TABLE_SCHEMA = ? and TABLE_NAME = ? order by SEQ_IN_INDEX asc";
         try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {

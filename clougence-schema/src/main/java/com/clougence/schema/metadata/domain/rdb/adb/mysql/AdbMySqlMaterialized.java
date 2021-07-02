@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.adb.mysql;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * https://help.aliyun.com/document_detail/200653.html
@@ -28,6 +29,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class AdbMySqlMaterialized extends AdbMySqlTable {
+
     private Date   firstRefreshTime;
     private String nextRefreshTimeFunc;
     private String owner;

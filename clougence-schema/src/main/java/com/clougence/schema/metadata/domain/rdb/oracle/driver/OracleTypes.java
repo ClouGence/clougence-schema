@@ -1,10 +1,12 @@
 package com.clougence.schema.metadata.domain.rdb.oracle.driver;
+
 import java.sql.Types;
 
 /**
  * 参考 ojdbc8-19.8.0.0.jar
  */
 public class OracleTypes {
+
     public static final int BIT               = Types.BIT;
     public static final int TINYINT           = Types.TINYINT;
     public static final int SMALLINT          = Types.SMALLINT;

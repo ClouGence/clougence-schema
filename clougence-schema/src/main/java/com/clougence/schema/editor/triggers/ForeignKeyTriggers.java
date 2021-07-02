@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.triggers;
-import com.clougence.schema.editor.domain.EForeignKey;
 
 import java.util.List;
+
+import com.clougence.schema.editor.domain.EForeignKey;
 
 /**
  * @author mode 2021/5/21 19:56
  */
 public interface ForeignKeyTriggers extends java.util.EventListener {
+
     public List<String> createForeignKey(TriggerContext buildContext, String catalog, String schema, String table, //
-            EForeignKey foreignKeyInfo);
+                                         EForeignKey foreignKeyInfo);
 
     public List<String> dropForeignKey(TriggerContext buildContext, String catalog, String schema, String table, //
-            EForeignKey foreignKeyInfo);
+                                       EForeignKey foreignKeyInfo);
 
     public default boolean supportForeignRename() {
         return true;
     }
 
-    public List<String> foreignKeyRename(TriggerContext buildContext, String catalog, String schema, String table,//
-            EForeignKey foreignKeyInfo, String newForeignKeyName);
+    public List<String> foreignKeyRename(TriggerContext buildContext, String catalog, String schema, String table, //
+                                         EForeignKey foreignKeyInfo, String newForeignKeyName);
 }

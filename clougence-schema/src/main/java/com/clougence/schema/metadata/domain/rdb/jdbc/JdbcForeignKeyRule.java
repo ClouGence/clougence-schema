@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.jdbc;
+
 import java.sql.DatabaseMetaData;
 
 /**
@@ -22,6 +23,7 @@ import java.sql.DatabaseMetaData;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum JdbcForeignKeyRule {
+
     /** do not allow update of primary key if it has been imported. */
     ImportedKeyNoAction(DatabaseMetaData.importedKeyNoAction),
     /** change imported key to agree with primary key update */
@@ -32,15 +34,14 @@ public enum JdbcForeignKeyRule {
     ImportedKeySetDefault(DatabaseMetaData.importedKeySetDefault),
     /** same as importedKeyNoAction (for ODBC 2.x compatibility). */
     ImportedKeyRestrict(DatabaseMetaData.importedKeyRestrict);
+
     private final int typeNumber;
 
-    JdbcForeignKeyRule(int typeNumber) {
+    JdbcForeignKeyRule(int typeNumber){
         this.typeNumber = typeNumber;
     }
 
-    public int getTypeNumber() {
-        return this.typeNumber;
-    }
+    public int getTypeNumber() { return this.typeNumber; }
 
     public static JdbcForeignKeyRule valueOfCode(Integer typeNumber) {
         if (typeNumber == null) {

@@ -41,11 +41,7 @@ public enum KuduEncoding {
         this.encodingType = encodingType;
     }
 
-    public String getCodeKey() {
-        return codeKey;
-    }
+    public String getCodeKey() { return codeKey; }
 
-    public Encoding getEncodingType() {
-        return encodingType;
-    }
+    public Encoding getEncodingType() { return encodingType; }
 }

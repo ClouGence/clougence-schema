@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata;
+import java.sql.Connection;
+import javax.sql.DataSource;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.provider.rdb.*;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
 
 /**
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MetadataServiceRegister {
+
     public static <T extends RdbMetaDataService> T createMetaDataService(DsType dsType, Connection connection) {
         switch (dsType) {
             case AdbForMySQL:

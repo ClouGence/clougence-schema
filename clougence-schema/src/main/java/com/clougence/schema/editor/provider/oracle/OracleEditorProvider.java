@@ -1,5 +1,4 @@
 package com.clougence.schema.editor.provider.oracle;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

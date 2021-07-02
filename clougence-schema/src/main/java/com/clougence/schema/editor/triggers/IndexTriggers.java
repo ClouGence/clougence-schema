@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.triggers;
-import com.clougence.schema.editor.domain.EIndex;
 
 import java.util.List;
+
+import com.clougence.schema.editor.domain.EIndex;
 
 /**
  * @author mode 2021/5/21 19:56
  */
 public interface IndexTriggers extends java.util.EventListener {
-    public List<String> createIndex(TriggerContext buildContext, String catalog, String schema, String table,//
-            EIndex indexInfo);
 
-    public List<String> dropIndex(TriggerContext buildContext, String catalog, String schema, String table,//
-            EIndex indexInfo);
+    public List<String> createIndex(TriggerContext buildContext, String catalog, String schema, String table, //
+                                    EIndex indexInfo);
+
+    public List<String> dropIndex(TriggerContext buildContext, String catalog, String schema, String table, //
+                                  EIndex indexInfo);
 
     public default boolean supportIndexRename() {
         return true;
     }
 
-    public List<String> indexRename(TriggerContext buildContext, String catalog, String schema, String table,//
-            EIndex indexInfo, String newIndexName);
+    public List<String> indexRename(TriggerContext buildContext, String catalog, String schema, String table, //
+                                    EIndex indexInfo, String newIndexName);
 
     public List<String> indexAddColumn(TriggerContext buildContext, String catalog, String schema, String table, //
-            EIndex indexInfo, List<String> needAddColumns);
+                                       EIndex indexInfo, List<String> needAddColumns);
 
     public List<String> indexDropColumn(TriggerContext buildContext, String catalog, String schema, String table, //
-            EIndex indexInfo, List<String> needRemoveColumns);
+                                        EIndex indexInfo, List<String> needRemoveColumns);
 }

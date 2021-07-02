@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,6 +26,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostgresTable implements TableDef {
+
     private String            schema;
     private String            table;
     private PostgresTableType tableType;
@@ -33,21 +34,13 @@ public class PostgresTable implements TableDef {
     private String            comment;
 
     @Override
-    public String getCatalog() {
-        return null;
-    }
+    public String getCatalog() { return null; }
 
     @Override
-    public String getSchema() {
-        return this.schema;
-    }
+    public String getSchema() { return this.schema; }
 
     @Override
-    public String getTable() {
-        return this.table;
-    }
+    public String getTable() { return this.table; }
 
-    public PostgresTableType getTableType() {
-        return this.tableType;
-    }
+    public PostgresTableType getTableType() { return this.tableType; }
 }

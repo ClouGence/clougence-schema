@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.adb.mysql;
-import com.clougence.schema.metadata.FieldType;
 
 import java.sql.JDBCType;
+
+import com.clougence.schema.metadata.FieldType;
 
 /**
  * <li>https://dev.mysql.com/doc/refman/5.7/en/data-types.html</li>
@@ -26,6 +27,7 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum AdbMySqlTypes implements FieldType {
+
     /**
      * BOOLEAN The last two statements display the results shown because 2 is equal to neither 1 nor 0.
      */
@@ -115,10 +117,11 @@ public enum AdbMySqlTypes implements FieldType {
      * POINT MySQL has spatial data types that correspond to OpenGIS classes. The basis for these types is described in Section 11.4.2, “The OpenGIS Geometry Model”.
      */
     POINT("POINT", JDBCType.BINARY);
+
     private final String   codeKey;
     private final JDBCType jdbcType;
 
-    AdbMySqlTypes(String codeKey, JDBCType jdbcType) {
+    AdbMySqlTypes(String codeKey, JDBCType jdbcType){
         this.codeKey = codeKey;
         this.jdbcType = jdbcType;
     }
@@ -133,14 +136,10 @@ public enum AdbMySqlTypes implements FieldType {
     }
 
     @Override
-    public String getCodeKey() {
-        return this.codeKey;
-    }
+    public String getCodeKey() { return this.codeKey; }
 
     @Override
-    public Integer getJdbcType() {
-        return this.jdbcType.getVendorTypeNumber();
-    }
+    public Integer getJdbcType() { return this.jdbcType.getVendorTypeNumber(); }
 
     @Override
     public JDBCType toJDBCType() {

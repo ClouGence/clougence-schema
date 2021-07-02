@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+import java.sql.*;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.sql.DataSource;
+
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.jdbc.*;
@@ -22,24 +29,18 @@ import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.utils.StringUtils;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * 基于 JDBC 接口的元信息获取
  * @version : 2020-04-23
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcMetadataProvider extends AbstractMetadataProvider implements RdbMetaDataService {
-    public JdbcMetadataProvider(Connection connection) {
+
+    public JdbcMetadataProvider(Connection connection){
         super(connection);
     }
 
-    public JdbcMetadataProvider(DataSource dataSource) {
+    public JdbcMetadataProvider(DataSource dataSource){
         super(dataSource);
     }
 
@@ -305,14 +306,16 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Rd
                     } else {
                         return 0;
                     }
-                }).map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
-                    // group by (schema + name)
-                    return o.getSchema() + "," + o.getName();
-                }, Collectors.reducing((pk1, pk2) -> {
-                    // reducing group by data in to one.
-                    pk1.getColumns().addAll(pk2.getColumns());
-                    return pk1;
-                })));
+                })
+                    .map(this::convertPrimaryKey)
+                    .collect(Collectors.groupingBy(o -> {
+                        // group by (schema + name)
+                        return o.getSchema() + "," + o.getName();
+                    }, Collectors.reducing((pk1, pk2) -> {
+                        // reducing group by data in to one.
+                        pk1.getColumns().addAll(pk2.getColumns());
+                        return pk1;
+                    })));
                 if (pkMap.size() > 1) {
                     throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
                 }
@@ -344,28 +347,37 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Rd
                     return Collections.emptyList();
                 }
                 //
-                return mapList.stream().filter(recordMap -> {
-                    // Oracle 数据库使用 JDBC，可能出现一个 null 名字的索引。
-                    return StringUtils.isNotBlank(safeToString(recordMap.get("INDEX_NAME")));
-                }).sorted((o1, o2) -> {
-                    // sort by ORDINAL_POSITION
-                    Integer o1Index = safeToInteger(o1.get("ORDINAL_POSITION"));
-                    Integer o2Index = safeToInteger(o2.get("ORDINAL_POSITION"));
-                    if (o1Index != null && o2Index != null) {
-                        return Integer.compare(o1Index, o2Index);
-                    }
-                    return 0;
-                }).map(this::convertIndex).collect(Collectors.groupingBy(o -> {
-                    // group by (tableName + indexName)
-                    return o.getTableName() + "," + o.getName();
-                }, Collectors.reducing((idx1, idx2) -> {
-                    // reducing group by data in to one.
-                    idx1.getColumns().addAll(idx2.getColumns());
-                    idx1.getStorageType().putAll(idx2.getStorageType());
-                    return idx1;
-                }))).values().stream().map(o -> {
-                    return o.orElse(null);
-                }).filter(Objects::nonNull).collect(Collectors.toList());
+                return mapList.stream()
+                    .filter(recordMap -> {
+                        // Oracle 数据库使用 JDBC，可能出现一个 null 名字的索引。
+                        return StringUtils.isNotBlank(safeToString(recordMap.get("INDEX_NAME")));
+                    })
+                    .sorted((o1, o2) -> {
+                        // sort by ORDINAL_POSITION
+                        Integer o1Index = safeToInteger(o1.get("ORDINAL_POSITION"));
+                        Integer o2Index = safeToInteger(o2.get("ORDINAL_POSITION"));
+                        if (o1Index != null && o2Index != null) {
+                            return Integer.compare(o1Index, o2Index);
+                        }
+                        return 0;
+                    })
+                    .map(this::convertIndex)
+                    .collect(Collectors.groupingBy(o -> {
+                        // group by (tableName + indexName)
+                        return o.getTableName() + "," + o.getName();
+                    }, Collectors.reducing((idx1, idx2) -> {
+                        // reducing group by data in to one.
+                        idx1.getColumns().addAll(idx2.getColumns());
+                        idx1.getStorageType().putAll(idx2.getStorageType());
+                        return idx1;
+                    })))
+                    .values()
+                    .stream()
+                    .map(o -> {
+                        return o.orElse(null);
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
             }
         }
     }
@@ -442,17 +454,24 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Rd
                     } else {
                         return 0;
                     }
-                }).map(this::convertForeignKey).collect(Collectors.groupingBy(o -> {
-                    // group by (schema + name)
-                    return o.getSchema() + "," + o.getName();
-                }, Collectors.reducing((fk1, fk2) -> {
-                    // reducing group by data in to one.
-                    fk1.getColumns().addAll(fk2.getColumns());
-                    fk1.getReferenceMapping().putAll(fk2.getReferenceMapping());
-                    return fk1;
-                }))).values().stream().map(o -> {
-                    return o.orElse(null);
-                }).filter(Objects::nonNull).collect(Collectors.toList());
+                })
+                    .map(this::convertForeignKey)
+                    .collect(Collectors.groupingBy(o -> {
+                        // group by (schema + name)
+                        return o.getSchema() + "," + o.getName();
+                    }, Collectors.reducing((fk1, fk2) -> {
+                        // reducing group by data in to one.
+                        fk1.getColumns().addAll(fk2.getColumns());
+                        fk1.getReferenceMapping().putAll(fk2.getReferenceMapping());
+                        return fk1;
+                    })))
+                    .values()
+                    .stream()
+                    .map(o -> {
+                        return o.orElse(null);
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
             }
         }
     }
@@ -546,7 +565,8 @@ public class JdbcMetadataProvider extends AbstractMetadataProvider implements Rd
         JDBCType jdbcType = null;
         try {
             jdbcType = JDBCType.valueOf(safeToInteger(rs.get("DATA_TYPE")));
-        } catch (Exception e) { /**/ }
+        } catch (Exception e) {
+            /**/ }
         jdbcColumn.setJdbcType(jdbcType);
         jdbcColumn.setSqlType(JdbcSqlTypes.valueOfCode(jdbcColumn.getJdbcNumber()));
         //

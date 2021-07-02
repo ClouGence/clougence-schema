@@ -1,14 +1,16 @@
 package com.clougence.schema.editor;
+
+import java.util.List;
+import java.util.Map;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.builder.actions.Action;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 
-import java.util.List;
-import java.util.Map;
-
 public interface TableEditor extends EditorSource<ETable> {
+
     public void rename(String newName);
 
     public void setComment(String comment);
@@ -21,7 +23,8 @@ public interface TableEditor extends EditorSource<ETable> {
 
     public void createPrimaryEditor(String primaryName, List<String> columns);
 
-    public ColumnEditor addColumn(String columnName, String dbType, boolean nullable, Long length, Integer numericPrecision, Integer numericScale, Integer datetimePrecision, String defaultValue, boolean autoGenerate, String comment);
+    public ColumnEditor addColumn(String columnName, String dbType, boolean nullable, Long length, Integer numericPrecision, Integer numericScale, Integer datetimePrecision,
+                                  String defaultValue, boolean autoGenerate, String comment);
 
     public ColumnEditor getColumn(String columnName);
 
@@ -31,11 +34,13 @@ public interface TableEditor extends EditorSource<ETable> {
 
     public ForeignKeyEditor getForeignKeyEditor(String fkName);
 
-    public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, RdbForeignKeyRule updateRule, RdbForeignKeyRule deleteRule, Map<String, String> referenceMapping);
+    public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, RdbForeignKeyRule updateRule, RdbForeignKeyRule deleteRule,
+                                                Map<String, String> referenceMapping);
 
     public List<Action> buildCreate(DsType targetDsType);
 
     public interface PrimaryEditor extends EditorSource<EPrimaryKey> {
+
         public void addColumn(String[] columnName);
 
         public void removeColumn(String[] columnName);
@@ -44,9 +49,11 @@ public interface TableEditor extends EditorSource<ETable> {
     }
 
     public interface ColumnEditor extends EditorSource<EColumn> {
+
         public void rename(String newName);
 
-        public void change(String dbType, boolean nullable, Long length, Integer numericPrecision, Integer numericScale, Integer datetimePrecision, String defaultValue, boolean autoGenerate, String comment);
+        public void change(String dbType, boolean nullable, Long length, Integer numericPrecision, Integer numericScale, Integer datetimePrecision, String defaultValue,
+                           boolean autoGenerate, String comment);
 
         public void changeType(String dbType);
 
@@ -68,6 +75,7 @@ public interface TableEditor extends EditorSource<ETable> {
     }
 
     public interface IndexEditor extends EditorSource<EIndex> {
+
         public void rename(String newName);
 
         public void addColumn(String[] columnName);
@@ -78,6 +86,7 @@ public interface TableEditor extends EditorSource<ETable> {
     }
 
     public interface ForeignKeyEditor extends EditorSource<EForeignKey> {
+
         public void rename(String newName);
 
         public void addColumn(String columnName, String referenceColumn);

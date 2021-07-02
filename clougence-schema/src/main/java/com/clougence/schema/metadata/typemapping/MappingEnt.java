@@ -4,11 +4,12 @@ import lombok.Getter;
 
 @Getter
 class MappingEnt {
+
     private final MappingDef mappingDef;
     private final FieldType  source;
     private final FieldType  target;
 
-    public MappingEnt(MappingDef mappingDef, FieldType sourceTypeDef, FieldType targetTypeDef) {
+    public MappingEnt(MappingDef mappingDef, FieldType sourceTypeDef, FieldType targetTypeDef){
         this.mappingDef = mappingDef;
         this.source = sourceTypeDef;
         this.target = targetTypeDef;

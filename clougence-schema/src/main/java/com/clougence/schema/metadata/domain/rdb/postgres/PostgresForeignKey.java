@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.postgres;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Postgres 外键
@@ -30,6 +31,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class PostgresForeignKey extends PostgresConstraint {
+
     private List<String>               columns          = new ArrayList<>();
     private String                     referenceSchema;
     private String                     referenceTable;

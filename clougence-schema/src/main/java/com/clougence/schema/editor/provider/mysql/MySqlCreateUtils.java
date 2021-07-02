@@ -1,4 +1,8 @@
 package com.clougence.schema.editor.provider.mysql;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.AbstractProvider;
@@ -7,19 +11,14 @@ import com.clougence.schema.metadata.CaseSensitivityType;
 import lombok.extern.slf4j.Slf4j;
 import net.hasor.utils.StringUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-
 /**
  * @author mode 2021/1/8 19:56
  */
 @Slf4j
 public class MySqlCreateUtils extends AbstractProvider {
+
     @Override
-    public DsType getDataSourceType() {
-        return DsType.MySQL;
-    }
+    public DsType getDataSourceType() { return DsType.MySQL; }
 
     public List<String> buildCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {
         boolean useDelimited = buildContext.isUseDelimited();

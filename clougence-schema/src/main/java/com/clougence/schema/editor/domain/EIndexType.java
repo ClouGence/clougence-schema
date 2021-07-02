@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.domain;
+
 /**
  * @author mode 2021/5/21 19:56
  */
 public enum EIndexType {
+
     Unique("Unique"),
-    Normal("Normal"),
-    ;
+    Normal("Normal"),;
+
     private final String typeName;
 
-    EIndexType(String typeName) {
+    EIndexType(String typeName){
         this.typeName = typeName;
     }
 
-    public String getTypeName() {
-        return this.typeName;
-    }
+    public String getTypeName() { return this.typeName; }
 
     public static EIndexType valueOfCode(String code) {
         for (EIndexType foreignKeyRule : EIndexType.values()) {

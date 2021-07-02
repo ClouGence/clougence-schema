@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+import java.util.*;
+
 import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.TableEditor.ForeignKeyEditor;
@@ -22,25 +24,22 @@ import com.clougence.schema.editor.domain.ETable;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 import net.hasor.utils.StringUtils;
 
-import java.util.*;
-
 /**
  * @author mode 2021/5/21 19:56
  */
 class ForeignEditorBuilder extends AbstractBuilder implements ForeignKeyEditor {
+
     private final ETable      eTable;
     private final EForeignKey eForeignKey;
 
-    public ForeignEditorBuilder(boolean beAffected, EditorContext context, ETable eTable, EForeignKey eForeignKey) {
+    public ForeignEditorBuilder(boolean beAffected, EditorContext context, ETable eTable, EForeignKey eForeignKey){
         super(beAffected, context);
         this.eTable = eTable;
         this.eForeignKey = eForeignKey;
     }
 
     @Override
-    public EForeignKey getSource() {
-        return this.eForeignKey;
-    }
+    public EForeignKey getSource() { return this.eForeignKey; }
 
     @Override
     public void rename(String newName) {
@@ -67,7 +66,8 @@ class ForeignEditorBuilder extends AbstractBuilder implements ForeignKeyEditor {
             String refToColumn = oldFk.getReferenceMapping().get(column);
             referenceMapping.put(column, refToColumn);
         }
-        new TableEditorBuilder(this.beAffected, this.context, this.eTable).addForeignKeyEditor(newName, oldFk.getReferenceSchema(), oldFk.getReferenceTable(), oldFk.getUpdateRule(), oldFk.getDeleteRule(), referenceMapping);
+        new TableEditorBuilder(this.beAffected, this.context, this.eTable)
+            .addForeignKeyEditor(newName, oldFk.getReferenceSchema(), oldFk.getReferenceTable(), oldFk.getUpdateRule(), oldFk.getDeleteRule(), referenceMapping);
     }
 
     @Override
@@ -138,7 +138,8 @@ class ForeignEditorBuilder extends AbstractBuilder implements ForeignKeyEditor {
         }
         //
         triggerForeignKeyDrop(this.beAffected, this.eTable.getCatalog(), this.eTable.getSchema(), this.eTable.getName(), this.eForeignKey.clone());
-        new TableEditorBuilder(this.beAffected, this.context, this.eTable).addForeignKeyEditor(this.eForeignKey.getName(), this.eForeignKey.getReferenceSchema(), this.eForeignKey.getReferenceTable(), this.eForeignKey.getUpdateRule(), this.eForeignKey.getDeleteRule(), referenceMapping);
+        new TableEditorBuilder(this.beAffected, this.context, this.eTable).addForeignKeyEditor(this.eForeignKey.getName(), this.eForeignKey.getReferenceSchema(), this.eForeignKey
+            .getReferenceTable(), this.eForeignKey.getUpdateRule(), this.eForeignKey.getDeleteRule(), referenceMapping);
     }
 
     public void delete() {

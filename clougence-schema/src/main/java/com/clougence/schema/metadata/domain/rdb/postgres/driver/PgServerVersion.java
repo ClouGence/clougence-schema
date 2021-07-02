@@ -3,6 +3,7 @@
  * See the LICENSE file in the project root for more information.
  */
 package com.clougence.schema.metadata.domain.rdb.postgres.driver;
+
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
@@ -10,6 +11,7 @@ import java.text.ParsePosition;
  * Enumeration for PostgreSQL versions.
  */
 public enum PgServerVersion implements PgVersion {
+
     INVALID("0.0.0"),
     v8_2("8.2.0"),
     v8_3("8.3.0"),
@@ -24,9 +26,10 @@ public enum PgServerVersion implements PgVersion {
     v10("10"),
     v11("11"),
     v12("12");
+
     private final int version;
 
-    PgServerVersion(String version) {
+    PgServerVersion(String version){
         this.version = parseServerVersionStr(version);
     }
 
@@ -36,9 +39,7 @@ public enum PgServerVersion implements PgVersion {
      * @return the version in numeric XXYYZZ form, e.g. 90401 for 9.4.1
      */
     @Override
-    public int getVersionNum() {
-        return version;
-    }
+    public int getVersionNum() { return version; }
 
     /**
      * <p>Attempt to parse the server version string into an XXYYZZ form version number into a
@@ -52,10 +53,9 @@ public enum PgServerVersion implements PgVersion {
     public static PgVersion from(String version) {
         final int versionNum = parseServerVersionStr(version);
         return new PgVersion() {
+
             @Override
-            public int getVersionNum() {
-                return versionNum;
-            }
+            public int getVersionNum() { return versionNum; }
 
             @Override
             public boolean equals(Object obj) {
@@ -129,11 +129,11 @@ public enum PgServerVersion implements PgVersion {
             }
         }
 
-    /* #667 - Allow for versions with greater than 3 parts.
-      For versions with more than 3 parts, still return 3 parts (4th part ignored for now
-      as no functionality is dependent on the 4th part .
-      Allows for future versions of the server to utilize more than 3 part version numbers
-      without upgrading the jdbc driver */
+        /* #667 - Allow for versions with greater than 3 parts.
+          For versions with more than 3 parts, still return 3 parts (4th part ignored for now
+          as no functionality is dependent on the 4th part .
+          Allows for future versions of the server to utilize more than 3 part version numbers
+          without upgrading the jdbc driver */
         if (versionParts >= 3) {
             if (parts[1] > 99) {
                 throw new NumberFormatException("Unsupported second part of major version > 99 in invalid version string: " + serverVersion);

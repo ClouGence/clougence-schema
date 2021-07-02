@@ -1,10 +1,12 @@
 package com.clougence.schema.metadata.domain.rdb.oracle.driver;
+
 import java.sql.SQLType;
 
 /**
  * 参考 ojdbc8-19.8.0.0.jar
  */
 public enum OracleType implements SQLType {
+
     VARCHAR2("VARCHAR2", OracleTypes.VARCHAR),
     NVARCHAR("NVARCHAR", OracleTypes.NVARCHAR, true),
     NUMBER("NUMBER", OracleTypes.NUMERIC),
@@ -54,8 +56,8 @@ public enum OracleType implements SQLType {
     SI_FEATURE_LIST("SI_FEATURE_LIST"),
     SI_POSITIONAL_COLOR("SI_POSITIONAL_COLOR"),
     SI_STILL_IMAGE("SI_STILL_IMAGE"),
-    SI_TEXTURE("SI_TEXTURE"),
-    ;
+    SI_TEXTURE("SI_TEXTURE"),;
+
     private final boolean isSupported;
     private final String  typeName;
     private final int     code;
@@ -74,44 +76,34 @@ public enum OracleType implements SQLType {
         return null;
     }
 
-    OracleType(String oracleType) {
+    OracleType(String oracleType){
         this.isSupported = false;
         this.typeName = oracleType;
         this.code = -2147483648;
         this.isNationalCharacterSet = false;
     }
 
-    OracleType(String oracleType, int jdbcType) {
+    OracleType(String oracleType, int jdbcType){
         this.isSupported = true;
         this.typeName = oracleType;
         this.code = jdbcType;
         this.isNationalCharacterSet = false;
     }
 
-    OracleType(String oracleType, int jdbcType, boolean var5) {
+    OracleType(String oracleType, int jdbcType, boolean var5){
         this.isSupported = true;
         this.typeName = oracleType;
         this.code = jdbcType;
         this.isNationalCharacterSet = var5;
     }
 
-    public String getName() {
-        return this.typeName;
-    }
+    public String getName() { return this.typeName; }
 
-    public String getVendor() {
-        return "Oracle Database";
-    }
+    public String getVendor() { return "Oracle Database"; }
 
-    public Integer getVendorTypeNumber() {
-        return this.code;
-    }
+    public Integer getVendorTypeNumber() { return this.code; }
 
-    public boolean isNationalCharacterSet() {
-        return this.isNationalCharacterSet;
-    }
+    public boolean isNationalCharacterSet() { return this.isNationalCharacterSet; }
 
-    public boolean isSupported() {
-        return this.isSupported;
-    }
+    public boolean isSupported() { return this.isSupported; }
 }

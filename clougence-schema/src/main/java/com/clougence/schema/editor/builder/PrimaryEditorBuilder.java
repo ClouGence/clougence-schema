@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.NoColumnException;
 import com.clougence.schema.editor.TableEditor.PrimaryEditor;
@@ -21,27 +26,22 @@ import com.clougence.schema.editor.domain.EColumn;
 import com.clougence.schema.editor.domain.EPrimaryKey;
 import com.clougence.schema.editor.domain.ETable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * @author mode 2021/5/21 19:56
  */
 class PrimaryEditorBuilder extends AbstractBuilder implements PrimaryEditor {
+
     private final ETable      eTable;
     private final EPrimaryKey primaryKey;
 
-    public PrimaryEditorBuilder(boolean beAffected, EditorContext context, ETable eTable, EPrimaryKey primaryKey) {
+    public PrimaryEditorBuilder(boolean beAffected, EditorContext context, ETable eTable, EPrimaryKey primaryKey){
         super(beAffected, context);
         this.eTable = eTable;
         this.primaryKey = primaryKey;
     }
 
     @Override
-    public EPrimaryKey getSource() {
-        return this.primaryKey;
-    }
+    public EPrimaryKey getSource() { return this.primaryKey; }
 
     @Override
     public void addColumn(String[] columnName) {

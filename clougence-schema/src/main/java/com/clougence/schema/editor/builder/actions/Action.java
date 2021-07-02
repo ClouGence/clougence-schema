@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder.actions;
-import lombok.Getter;
 
 import java.util.List;
+
+import lombok.Getter;
 
 /**
  * @author mode 2021/6/8 19:56
  */
 @Getter
 public abstract class Action {
+
     private final List<String> sqlString;
     private final String       catalog;
     private final String       schema;
     private final String       table;
 
-    public Action(List<String> sqlString, String catalog, String schema, String table) {
+    public Action(List<String> sqlString, String catalog, String schema, String table){
         this.sqlString = sqlString;
         this.catalog = catalog;
         this.schema = schema;
         this.table = table;
     }
 
-    public final WarnLevel getWarnLevel() {
-        return WarnLevel.Normal;
-    }
+    public final WarnLevel getWarnLevel() { return WarnLevel.Normal; }
 }

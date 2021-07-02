@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+import java.util.*;
+
 import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.TableEditor.ColumnEditor;
@@ -25,25 +27,22 @@ import com.clougence.schema.editor.domain.EIndex;
 import com.clougence.schema.editor.domain.ETable;
 import net.hasor.utils.StringUtils;
 
-import java.util.*;
-
 /**
  * @author mode 2021/5/21 19:56
  */
 class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
+
     private final ETable  eTable;
     private final EColumn eColumn;
 
-    public ColumnEditorBuilder(boolean beAffected, EditorContext context, ETable eTable, EColumn eColumn) {
+    public ColumnEditorBuilder(boolean beAffected, EditorContext context, ETable eTable, EColumn eColumn){
         super(beAffected, context);
         this.eTable = eTable;
         this.eColumn = eColumn;
     }
 
     @Override
-    public EColumn getSource() {
-        return this.eColumn;
-    }
+    public EColumn getSource() { return this.eColumn; }
 
     @Override
     public void rename(String newName) {
@@ -111,7 +110,8 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
             EForeignKey oldFk = oldFkInfo.get(fkName);
             Map<String, String> referenceMapping = new LinkedHashMap<>();
             referenceMapping.put(oldName, refColumn);
-            new TableEditorBuilder(true, this.context, this.eTable).addForeignKeyEditor(fkName, oldFk.getReferenceSchema(), oldFk.getReferenceTable(), oldFk.getUpdateRule(), oldFk.getDeleteRule(), referenceMapping);
+            new TableEditorBuilder(true, this.context, this.eTable)
+                .addForeignKeyEditor(fkName, oldFk.getReferenceSchema(), oldFk.getReferenceTable(), oldFk.getUpdateRule(), oldFk.getDeleteRule(), referenceMapping);
         });
     }
 
@@ -158,7 +158,8 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
     }
 
     @Override
-    public void change(String dbType, boolean nullable, Long length, Integer numericPrecision, Integer numericScale, Integer datetimePrecision, String defaultValue, boolean autoGenerate, String comment) {
+    public void change(String dbType, boolean nullable, Long length, Integer numericPrecision, Integer numericScale, Integer datetimePrecision, String defaultValue,
+                       boolean autoGenerate, String comment) {
         boolean compareTypeDef = Objects.equals(dbType, this.eColumn.getDbType());
         boolean compareNullable = this.eColumn.isNullable() == nullable;
         boolean compareLength = Objects.equals(length, this.eColumn.getLength());
@@ -200,7 +201,8 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
         if (Objects.equals(this.eColumn.getDbType(), dbType)) {
             return;
         }
-        this.change(dbType, this.eColumn.isNullable(), this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn.getDatetimePrecision(), this.eColumn.getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
+        this.change(dbType, this.eColumn.isNullable(), this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn
+            .getDatetimePrecision(), this.eColumn.getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
     }
 
     @Override
@@ -208,7 +210,8 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
         if (this.eColumn.isNullable() == isNullable) {
             return;
         }
-        this.change(this.eColumn.getDbType(), isNullable, this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn.getDatetimePrecision(), this.eColumn.getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
+        this.change(this.eColumn.getDbType(), isNullable, this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn
+            .getDatetimePrecision(), this.eColumn.getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
     }
 
     @Override
@@ -216,7 +219,8 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
         if (Long.valueOf(length).equals(this.eColumn.getLength())) {
             return;
         }
-        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), length, this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn.getDatetimePrecision(), this.eColumn.getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
+        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), length, this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn
+            .getDatetimePrecision(), this.eColumn.getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
     }
 
     @Override
@@ -224,7 +228,8 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
         if (Integer.valueOf(numericPrecision).equals(this.eColumn.getNumericPrecision()) && Integer.valueOf(numericScale).equals(this.eColumn.getNumericScale())) {
             return;
         }
-        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), this.eColumn.getLength(), numericPrecision, numericScale, this.eColumn.getDatetimePrecision(), this.eColumn.getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
+        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), this.eColumn.getLength(), numericPrecision, numericScale, this.eColumn.getDatetimePrecision(), this.eColumn
+            .getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
     }
 
     @Override
@@ -232,7 +237,8 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
         if (Integer.valueOf(datetimePrecision).equals(this.eColumn.getDatetimePrecision())) {
             return;
         }
-        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), datetimePrecision, this.eColumn.getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
+        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn
+            .getNumericScale(), datetimePrecision, this.eColumn.getDefaultValue(), this.eColumn.isAutoGenerate(), this.eColumn.getComment());
     }
 
     @Override
@@ -240,7 +246,8 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
         if (Objects.equals(this.eColumn.getDefaultValue(), defaultValue)) {
             return;
         }
-        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn.getDatetimePrecision(), defaultValue, this.eColumn.isAutoGenerate(), this.eColumn.getComment());
+        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn
+            .getDatetimePrecision(), defaultValue, this.eColumn.isAutoGenerate(), this.eColumn.getComment());
     }
 
     @Override
@@ -248,6 +255,7 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
         if (this.eColumn.isAutoGenerate() == autoGenerate) {
             return;
         }
-        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn.getDatetimePrecision(), this.eColumn.getDefaultValue(), autoGenerate, this.eColumn.getComment());
+        this.change(this.eColumn.getDbType(), this.eColumn.isNullable(), this.eColumn.getLength(), this.eColumn.getNumericPrecision(), this.eColumn.getNumericScale(), this.eColumn
+            .getDatetimePrecision(), this.eColumn.getDefaultValue(), autoGenerate, this.eColumn.getComment());
     }
 }

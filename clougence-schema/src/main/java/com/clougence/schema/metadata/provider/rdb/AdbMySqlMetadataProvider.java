@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+import java.sql.Connection;
+import java.sql.JDBCType;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.sql.DataSource;
+
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
@@ -21,13 +28,6 @@ import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.adb.mysql.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.JDBCType;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Adb For MySql 3.0 元信息获取，参考资料：
@@ -37,15 +37,16 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implements RdbMetaDataService {
-    private static final String TABLE = "select TABLE_CATALOG,TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,TABLES.CREATE_TIME,TABLES.UPDATE_TIME,TABLE_COMMENT, " //
-            + "MV_NAME,FIRST_REFRESH_TIME,NEXT_REFRESH_TIME_FUNC,OWNER,QUERY_REWRITE_ENABLED,REFRESH_CONDITION,REFRESH_STATE " //
-            + "from INFORMATION_SCHEMA.TABLES left join INFORMATION_SCHEMA.MV_INFO on TABLES.TABLE_NAME = MV_INFO.MV_NAME and TABLES.TABLE_SCHEMA = MV_INFO.MV_SCHEMA";
 
-    public AdbMySqlMetadataProvider(Connection connection) {
+    private static final String TABLE = "select TABLE_CATALOG,TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COLLATION,TABLES.CREATE_TIME,TABLES.UPDATE_TIME,TABLE_COMMENT, " //
+                                        + "MV_NAME,FIRST_REFRESH_TIME,NEXT_REFRESH_TIME_FUNC,OWNER,QUERY_REWRITE_ENABLED,REFRESH_CONDITION,REFRESH_STATE " //
+                                        + "from INFORMATION_SCHEMA.TABLES left join INFORMATION_SCHEMA.MV_INFO on TABLES.TABLE_NAME = MV_INFO.MV_NAME and TABLES.TABLE_SCHEMA = MV_INFO.MV_SCHEMA";
+
+    public AdbMySqlMetadataProvider(Connection connection){
         super(connection);
     }
 
-    public AdbMySqlMetadataProvider(DataSource dataSource) {
+    public AdbMySqlMetadataProvider(DataSource dataSource){
         super(dataSource);
     }
 
@@ -92,9 +93,7 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
         }
     }
 
-    public String getCurrentSchema() throws SQLException {
-        return null;
-    }
+    public String getCurrentSchema() throws SQLException { return null; }
 
     @Override
     public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
@@ -253,13 +252,13 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
         List<Map<String, Object>> columnList = null;
         try (Connection conn = this.connectSupplier.eGet()) {
             String queryStringColumn = "select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,NUMERIC_SCALE,NUMERIC_PRECISION,DATETIME_PRECISION,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE,COLUMN_DEFAULT,COLUMN_COMMENT from INFORMATION_SCHEMA.COLUMNS " //
-                    + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
+                                       + "where TABLE_SCHEMA = ? and TABLE_NAME = ?";
             columnList = new JdbcTemplate(conn).queryForList(queryStringColumn, schemaName, tableName);
             if (columnList == null) {
                 return Collections.emptyList();
             }
             String queryStringPrimary = "select INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
-                    + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = 'PRIMARY' order by SEQ_IN_INDEX asc";
+                                        + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = 'PRIMARY' order by SEQ_IN_INDEX asc";
             primaryKeyList = new JdbcTemplate(conn).queryForList(queryStringPrimary, schemaName, tableName);
         }
         List<String> primaryKeyColumnNameList = primaryKeyList.stream().filter(recordMap -> {
@@ -286,21 +285,23 @@ public class AdbMySqlMetadataProvider extends AbstractMetadataProvider implement
         }
         //
         String queryString = "select INDEX_SCHEMA,INDEX_NAME,COLUMN_NAME,INDEX_TYPE FROM INFORMATION_SCHEMA.STATISTICS " //
-                + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = 'PRIMARY' order by SEQ_IN_INDEX asc";
+                             + "where TABLE_SCHEMA = ? and TABLE_NAME = ? and INDEX_NAME = 'PRIMARY' order by SEQ_IN_INDEX asc";
         try (Connection conn = this.connectSupplier.eGet()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
                 return null;
             }
             //
-            Map<String, Optional<AdbMySqlPrimaryKey>> pkMap = mapList.stream().map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((pk1, pk2) -> {
-                // reducing group by data in to one.
-                pk1.getColumns().addAll(pk2.getColumns());
-                return pk1;
-            })));
+            Map<String, Optional<AdbMySqlPrimaryKey>> pkMap = mapList.stream()
+                .map(this::convertPrimaryKey)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((pk1, pk2) -> {
+                    // reducing group by data in to one.
+                    pk1.getColumns().addAll(pk2.getColumns());
+                    return pk1;
+                })));
             if (pkMap.size() > 1) {
                 throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
             }

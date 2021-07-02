@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+
+import java.util.List;
+import java.util.function.Function;
+
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.builder.actions.*;
 import com.clougence.schema.editor.domain.*;
@@ -21,18 +25,16 @@ import com.clougence.schema.editor.provider.BuilderProvider;
 import com.clougence.schema.editor.triggers.TriggerContext;
 import com.clougence.schema.metadata.CaseSensitivityType;
 
-import java.util.List;
-import java.util.function.Function;
-
 /**
  * @author mode 2021/5/21 19:56
  */
 public class AbstractBuilder {
-    protected final EditorContext context;
-    protected       List<Action>  actions;
-    protected       boolean       beAffected;
 
-    AbstractBuilder(boolean beAffected, EditorContext context) {
+    protected final EditorContext context;
+    protected List<Action>        actions;
+    protected boolean             beAffected;
+
+    AbstractBuilder(boolean beAffected, EditorContext context){
         this.beAffected = beAffected;
         this.context = context;
         this.actions = context.getActions();
@@ -82,7 +84,8 @@ public class AbstractBuilder {
         }
     }
 
-    protected void triggerTableCreate(BuilderProvider provider, boolean beAffected, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {
+    protected void triggerTableCreate(BuilderProvider provider, boolean beAffected, String catalog, String schema, String table, ETable eTable,
+                                      Function<EColumn, String> columnTypeMapping) {
         if (provider == null) {
             return;
         }

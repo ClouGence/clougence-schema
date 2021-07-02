@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.jdbc;
-import com.clougence.schema.metadata.FieldType;
 
 import java.sql.JDBCType;
+
+import com.clougence.schema.metadata.FieldType;
 
 /**
  * Jdbc 的 数据类型
@@ -24,6 +25,7 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum JdbcSqlTypes implements FieldType {
+
     /**
      * Identifies the generic SQL type {@code BIT}.
      */
@@ -190,11 +192,12 @@ public enum JdbcSqlTypes implements FieldType {
      * Identifies the generic SQL type {@code TIMESTAMP_WITH_TIMEZONE}.
      */
     TIMESTAMP_WITH_TIMEZONE(JDBCType.TIMESTAMP_WITH_TIMEZONE);
+
     //
     private final String   codeKey;
     private final JDBCType jdbcType;
 
-    JdbcSqlTypes(JDBCType jdbcType) {
+    JdbcSqlTypes(JDBCType jdbcType){
         this.codeKey = jdbcType.name();
         this.jdbcType = jdbcType;
     }
@@ -221,14 +224,10 @@ public enum JdbcSqlTypes implements FieldType {
     }
 
     @Override
-    public String getCodeKey() {
-        return this.codeKey;
-    }
+    public String getCodeKey() { return this.codeKey; }
 
     @Override
-    public Integer getJdbcType() {
-        return this.jdbcType.getVendorTypeNumber();
-    }
+    public Integer getJdbcType() { return this.jdbcType.getVendorTypeNumber(); }
 
     @Override
     public JDBCType toJDBCType() {

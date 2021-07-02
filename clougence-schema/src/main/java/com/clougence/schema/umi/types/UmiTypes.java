@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi.types;
-import com.clougence.schema.metadata.FieldType;
 
 import java.sql.JDBCType;
+
+import com.clougence.schema.metadata.FieldType;
 
 /**
  * 类型
@@ -24,16 +25,17 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum UmiTypes implements FieldType {
+
     Catalog("CATALOG"),
     Schema("SCHEMA"),
     Table("TABLE"),
     View("VIEW"),
-    Column("COLUMN"),
-    ;
+    Column("COLUMN"),;
+
     //
     private final String typeName;
 
-    UmiTypes(String typeName) {
+    UmiTypes(String typeName){
         this.typeName = typeName;
     }
 
@@ -47,14 +49,10 @@ public enum UmiTypes implements FieldType {
     }
 
     @Override
-    public java.lang.String getCodeKey() {
-        return this.typeName;
-    }
+    public java.lang.String getCodeKey() { return this.typeName; }
 
     @Override
-    public java.lang.Integer getJdbcType() {
-        return null;
-    }
+    public java.lang.Integer getJdbcType() { return null; }
 
     @Override
     public JDBCType toJDBCType() {

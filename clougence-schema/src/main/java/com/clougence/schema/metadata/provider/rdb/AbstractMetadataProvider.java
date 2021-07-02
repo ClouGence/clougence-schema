@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-import com.clougence.schema.metadata.CaseSensitivityType;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.convert.ConverterUtils;
-import net.hasor.utils.function.EFunction;
-import net.hasor.utils.function.ESupplier;
-
-import javax.sql.DataSource;
 import java.io.Closeable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +25,13 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.*;
+import javax.sql.DataSource;
+
+import com.clougence.schema.metadata.CaseSensitivityType;
+import net.hasor.utils.StringUtils;
+import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.function.EFunction;
+import net.hasor.utils.function.ESupplier;
 
 /**
  * MetadataSupplier 系列的公共类。
@@ -39,18 +39,19 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AbstractMetadataProvider {
+
     protected final ESupplier<Connection, SQLException> connectSupplier;
-    private         CaseSensitivityType                 plainCaseSensitivityType;
-    private         CaseSensitivityType                 delimitedCaseSensitivityType;
+    private CaseSensitivityType                         plainCaseSensitivityType;
+    private CaseSensitivityType                         delimitedCaseSensitivityType;
 
     /** Connection will be proxy, Calling the close method in an AbstractMetadatasupplier subclass will be invalid. */
-    public AbstractMetadataProvider(Connection connection) {
+    public AbstractMetadataProvider(Connection connection){
         Connection conn = newProxyConnection(connection);
         this.connectSupplier = () -> conn;
     }
 
     /** Each time data is requested in the AbstractMetadatasupplier subclass a new Connection is created and then closed. */
-    public AbstractMetadataProvider(DataSource dataSource) {
+    public AbstractMetadataProvider(DataSource dataSource){
         this.connectSupplier = dataSource::getConnection;
     }
 
@@ -107,9 +108,10 @@ public class AbstractMetadataProvider {
 
     /** Connection 接口代理，目的是拦截 close 方法，使其失效。 */
     private static class CloseIsNothingInvocationHandler implements InvocationHandler {
+
         private final Connection connection;
 
-        CloseIsNothingInvocationHandler(Connection connection) {
+        CloseIsNothingInvocationHandler(Connection connection){
             this.connection = connection;
         }
 

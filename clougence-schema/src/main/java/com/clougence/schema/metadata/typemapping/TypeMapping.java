@@ -1,5 +1,4 @@
 package com.clougence.schema.metadata.typemapping;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

@@ -1,5 +1,4 @@
 package com.clougence.schema.editor.provider.mysql;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

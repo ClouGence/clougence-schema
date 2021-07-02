@@ -1,4 +1,9 @@
 package com.clougence.schema.editor.provider.postgresql;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.AbstractProvider;
@@ -7,20 +12,14 @@ import com.clougence.schema.metadata.CaseSensitivityType;
 import lombok.extern.slf4j.Slf4j;
 import net.hasor.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 /**
  * @author mode 2021/1/8 19:56
  */
 @Slf4j
 public class PostgreSqlCreateUtils extends AbstractProvider {
+
     @Override
-    public DsType getDataSourceType() {
-        return DsType.PostgreSQL;
-    }
+    public DsType getDataSourceType() { return DsType.PostgreSQL; }
 
     public List<String> buildCreate(TriggerContext buildContext, String catalog, String schema, String table, ETable eTable, Function<EColumn, String> columnTypeMapping) {
         boolean useDelimited = buildContext.isUseDelimited();

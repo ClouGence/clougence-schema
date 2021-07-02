@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+import java.sql.Connection;
+import java.sql.JDBCType;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.sql.DataSource;
+
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.postgres.*;
 import com.clougence.schema.metadata.domain.rdb.postgres.driver.PgServerVersion;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.JDBCType;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Postgres 元信息获取，参考资料：
@@ -35,143 +35,144 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class PostgresMetadataProvider extends AbstractMetadataProvider implements RdbMetaDataService {
+
     private static final List<String> HIDE_SCHEMA = Arrays.asList("pg_toast", "pg_temp_1", "pg_toast_temp_1");
     private static final String       SCHEMA      = "select schema_name,schema_owner from information_schema.schemata";
-    private static final String       TABLE       = ""//
-            + "select t.*, c.comment from (\n"//
-            + "    select schemaname as table_schema, matviewname as table_name, 'MATERIALIZED VIEW' as table_type, null as is_typed from pg_matviews\n"//
-            + "    union\n"//
-            + "    select table_schema, table_name, table_type, is_typed from information_schema.tables\n"//
-            + ") t\n"//
-            + "left join (\n"//
-            + "    select n.nspname, c.relname, cast(obj_description(c.relfilenode, 'pg_class') as varchar) as comment from pg_class c\n"//
-            + "    left join pg_namespace n on c.relnamespace = n.oid\n"//
-            + ") as c on c.nspname = table_schema and c.relname = table_name";
-    private static final String       COLUMNS     = ""//
-            + "select * from (\n"//
-            + "    select n.nspname                                                                                                                               as schema_name,\n"//
-            + "           c.relname                                                                                                                               as table_name,\n"//
-            + "           a.attname                                                                                                                               as column_name,\n"//
-            + "           a.atttypid                                                                                                                              as type_oid,\n"//
-            + "           a.atttypmod                                                                                                                             as type_mod,\n"//
-            + "           case\n"//
-            + "               when t.typtype = 'd' then format_type(t.typbasetype, NULL::integer)\n"//
-            + "               else format_type(a.atttypid, NULL::integer) end                                                                                     as type_name,\n"//
-            + "           (t.typelem <> 0::oid and t.typlen = '-1'::integer)                                                                                      as type_is_array,\n"//
-            + "           t.typbasetype,\n"//
-            + "           t.typtype,\n"//
-            + "           a.attnotnull or (t.typtype = 'd' and t.typnotnull)                                                                                      as not_null,\n"//
-            //            + "           case\n"//
-            //            + "               when a.attidentity = any (array ['a'::\"char\", 'd'::\"char\"]) then 'YES'::text\n"//
-            //            + "               else 'NO'::text\n"//
-            //            + "               end                                                                                                                                 as is_identity,\n"//
-            + "           a.attlen,\n"//
-            + "           information_schema._pg_char_max_length(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))         as character_maximum_length,\n"//
-            + "           information_schema._pg_char_octet_length(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))       as character_octet_length,\n"//
-            + "           information_schema._pg_numeric_precision(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))       as numeric_precision,\n"//
-            + "           information_schema._pg_numeric_precision_radix(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*)) as numeric_precision_radix,\n"//
-            + "           information_schema._pg_numeric_scale(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))           as numeric_scale,\n"//
-            + "           information_schema._pg_datetime_precision(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))      as datetime_precision,\n"//
-            + "           t.typtypmod,\n"//
-            + "           row_number() over (partition by a.attrelid order by a.attnum)                                                                           as attnum,\n"//
-            + "           pg_catalog.pg_get_expr(def.adbin, def.adrelid)                                                                                          as column_default,\n"//
-            + "           dsc.description                                                                                                                         as comments\n"//
-            + "    from pg_catalog.pg_namespace n\n"//
-            + "             join pg_catalog.pg_class c on (c.relnamespace = n.oid)\n"//
-            + "             join pg_catalog.pg_attribute a on (a.attrelid = c.oid)\n"//
-            + "             left join pg_catalog.pg_type t on (a.atttypid = t.oid)\n"//
-            + "             left join pg_catalog.pg_attrdef def on (a.attrelid = def.adrelid and a.attnum = def.adnum)\n"//
-            + "             left join pg_catalog.pg_description dsc on (c.oid = dsc.objoid and a.attnum = dsc.objsubid)\n"//
-            + "             left join pg_catalog.pg_class dc on (dc.oid = dsc.classoid and dc.relname = 'pg_class')\n"//
-            + "             left join pg_catalog.pg_namespace dn on (dc.relnamespace = dn.oid and dn.nspname = 'pg_catalog')\n"//
-            + "    where c.relkind in ('r', 'p', 'v', 'f', 'm')\n"//
-            + "      and a.attnum > 0\n"//
-            + "      and not a.attisdropped\n"//
-            + "      and n.nspname = ?\n"//
-            + "      and c.relname =?\n"//
-            + ") c where true\n"//
-            + "order by schema_name, c.table_name, attnum";//
-    private static final String       PK          = ""//
-            + "select result.table_schema, result.table_name, result.column_name, result.key_seq, result.pk_name\n"//
-            + "from (select n.nspname                                        as table_schema,\n"//
-            + "             ct.relname                                       as table_name,\n"//
-            + "             a.attname                                        as column_name,\n"//
-            + "             (information_schema._pg_expandarray(i.indkey)).n as key_seq,\n"//
-            + "             ci.relname                                       as pk_name,\n"//
-            + "             information_schema._pg_expandarray(i.indkey)     as keys,\n"//
-            + "             a.attnum                                         as a_attnum\n"//
-            + "      from pg_catalog.pg_class ct\n"//
-            + "               join pg_catalog.pg_attribute a on (ct.oid = a.attrelid)\n"//
-            + "               join pg_catalog.pg_namespace n on (ct.relnamespace = n.oid)\n"//
-            + "               join pg_catalog.pg_index i on (a.attrelid = i.indrelid)\n"//
-            + "               join pg_catalog.pg_class ci on (ci.oid = i.indexrelid)\n"//
-            + "      where true\n"//
-            + "        and n.nspname = ? and ct.relname = ? and i.indisprimary) result\n"//
-            + "where result.a_attnum = (result.keys).x\n"//
-            + "order by result.table_name, result.pk_name, result.key_seq";
-    private static final String       FK          = ""//
-            + "select pkic.relname as pk_name, pkn.nspname as pk_table_schema, pkc.relname as pk_table_name, pka.attname as pk_column_name,\n"//
-            + "       con.conname  as fk_name, fkn.nspname as fk_table_schema, fkc.relname as fk_table_name, fka.attname as fk_column_name,\n"//
-            + "       pos.n        as key_seq,\n"//
-            + "       case con.confmatchtype when 'f' then 'FULL' when 'p' then 'PARTIAL' when 's' then 'NONE' else null end as match_option,\n"//
-            + "       case con.confupdtype   when 'c' then 'CASCADE' when 'n' then 'SET NULL' when 'd' then 'SET DEFAULT' when 'r' then 'RESTRICT' when 'a' then 'NO ACTION' else null end as update_rule,\n"//
-            + "       case con.confdeltype   when 'c' then 'CASCADE' when 'n' then 'SET NULL' when 'd' then 'SET DEFAULT' when 'r' then 'RESTRICT' when 'a' then 'NO ACTION' else null end as delete_rule\n"//
-            + "from pg_catalog.pg_namespace pkn, pg_catalog.pg_class pkc, pg_catalog.pg_attribute pka,\n"//
-            + "     pg_catalog.pg_namespace fkn, pg_catalog.pg_class fkc, pg_catalog.pg_attribute fka,\n"//
-            + "     pg_catalog.pg_constraint con,\n"//
-            + "     pg_catalog.generate_series(1, 32) pos(n),\n"//
-            + "     pg_catalog.pg_class pkic\n"//
-            + "where pkn.oid = pkc.relnamespace\n"//
-            + "  and pkc.oid = pka.attrelid\n"//
-            + "  and pka.attnum = con.confkey[pos.n]\n"//
-            + "  and con.confrelid = pkc.oid\n"//
-            + "  and fkn.oid = fkc.relnamespace\n"//
-            + "  and fkc.oid = fka.attrelid\n"//
-            + "  and fka.attnum = con.conkey[pos.n]\n"//
-            + "  and con.conrelid = fkc.oid\n"//
-            + "  and con.contype = 'f'\n"//
-            + "  and (pkic.relkind = 'i' or pkic.relkind = 'i')\n"//
-            + "  and pkic.oid = con.conindid\n"//
-            + "  and fkn.nspname = ? and fkc.relname = ?\n"//
-            + "order by pkn.nspname, pkc.relname, con.conname, pos.n";
-    private static final String       UK_INDEX    = ""//
-            + "select tmp.table_schema,\n"//
-            + "       tmp.table_name,\n"//
-            + "       tmp.non_unique,\n"//
-            + "       tmp.index_name,\n"//
-            + "       tmp.type,\n"//
-            + "       tmp.ordinal_position,\n"//
-            + "       trim(both '\"' from pg_catalog.pg_get_indexdef(tmp.ci_oid, tmp.ordinal_position, false)) as column_name,\n"//
-            + "       case tmp.am_name when 'btree' then case tmp.i_indoption[tmp.ordinal_position - 1] & 1 when 1 then 'D' else 'A' end else null end as asc_or_desc,\n"//
-            + "       tmp.cardinality,\n"//
-            + "       tmp.pages,\n"//
-            + "       tmp.filter_condition\n"//
-            + "from (select n.nspname                                                                                    as table_schema,\n"//
-            + "             ct.relname                                                                                   as table_name,\n"//
-            + "             not i.indisunique                                                                            as non_unique,\n"//
-            + "             ci.relname                                                                                   as index_name,\n"//
-            + "             case i.indisclustered when true then 1 else case am.amname when 'hash' then 2 else 3 end end as type,\n"//
-            + "             (information_schema._pg_expandarray(i.indkey)).n                                             as ordinal_position,\n"//
-            + "             ci.reltuples                                                                                 as cardinality,\n"//
-            + "             ci.relpages                                                                                  as pages,\n"//
-            + "             pg_catalog.pg_get_expr(i.indpred, i.indrelid)                                                as filter_condition,\n"//
-            + "             ci.oid                                                                                       as ci_oid,\n"//
-            + "             i.indoption                                                                                  as i_indoption,\n"//
-            + "             am.amname                                                                                    as am_name\n"//
-            + "      from pg_catalog.pg_class ct\n"//
-            + "               join pg_catalog.pg_namespace n on (ct.relnamespace = n.oid)\n"//
-            + "               join pg_catalog.pg_index i on (ct.oid = i.indrelid)\n"//
-            + "               join pg_catalog.pg_class ci on (ci.oid = i.indexrelid)\n"//
-            + "               join pg_catalog.pg_am am on (ci.relam = am.oid)\n"//
-            + "      where true and n.nspname = ? and ct.relname = ?) as tmp\n"//
-            + "order by non_unique, type, index_name, ordinal_position";
-    private              Long         serverVersionNumber;
+    private static final String       TABLE       = ""                                                                                                                                                                                                  //
+                                                    + "select t.*, c.comment from (\n"                                                                                                                                                                  //
+                                                    + "    select schemaname as table_schema, matviewname as table_name, 'MATERIALIZED VIEW' as table_type, null as is_typed from pg_matviews\n"                                                        //
+                                                    + "    union\n"                                                                                                                                                                                     //
+                                                    + "    select table_schema, table_name, table_type, is_typed from information_schema.tables\n"                                                                                                      //
+                                                    + ") t\n"                                                                                                                                                                                           //
+                                                    + "left join (\n"                                                                                                                                                                                   //
+                                                    + "    select n.nspname, c.relname, cast(obj_description(c.relfilenode, 'pg_class') as varchar) as comment from pg_class c\n"                                                                       //
+                                                    + "    left join pg_namespace n on c.relnamespace = n.oid\n"                                                                                                                                        //
+                                                    + ") as c on c.nspname = table_schema and c.relname = table_name";
+    private static final String       COLUMNS     = ""                                                                                                                                                                                                  //
+                                                    + "select * from (\n"                                                                                                                                                                               //
+                                                    + "    select n.nspname                                                                                                                               as schema_name,\n"                            //
+                                                    + "           c.relname                                                                                                                               as table_name,\n"                             //
+                                                    + "           a.attname                                                                                                                               as column_name,\n"                            //
+                                                    + "           a.atttypid                                                                                                                              as type_oid,\n"                               //
+                                                    + "           a.atttypmod                                                                                                                             as type_mod,\n"                               //
+                                                    + "           case\n"                                                                                                                                                                               //
+                                                    + "               when t.typtype = 'd' then format_type(t.typbasetype, NULL::integer)\n"                                                                                                            //
+                                                    + "               else format_type(a.atttypid, NULL::integer) end                                                                                     as type_name,\n"                              //
+                                                    + "           (t.typelem <> 0::oid and t.typlen = '-1'::integer)                                                                                      as type_is_array,\n"                          //
+                                                    + "           t.typbasetype,\n"                                                                                                                                                                     //
+                                                    + "           t.typtype,\n"                                                                                                                                                                         //
+                                                    + "           a.attnotnull or (t.typtype = 'd' and t.typnotnull)                                                                                      as not_null,\n"                               //
+                                                    //            + "           case\n"//
+                                                    //            + "               when a.attidentity = any (array ['a'::\"char\", 'd'::\"char\"]) then 'YES'::text\n"//
+                                                    //            + "               else 'NO'::text\n"//
+                                                    //            + "               end                                                                                                                                 as is_identity,\n"//
+                                                    + "           a.attlen,\n"                                                                                                                                                                          //
+                                                    + "           information_schema._pg_char_max_length(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))         as character_maximum_length,\n"               //
+                                                    + "           information_schema._pg_char_octet_length(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))       as character_octet_length,\n"                 //
+                                                    + "           information_schema._pg_numeric_precision(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))       as numeric_precision,\n"                      //
+                                                    + "           information_schema._pg_numeric_precision_radix(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*)) as numeric_precision_radix,\n"                //
+                                                    + "           information_schema._pg_numeric_scale(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))           as numeric_scale,\n"                          //
+                                                    + "           information_schema._pg_datetime_precision(information_schema._pg_truetypid(a.*, t.*), information_schema._pg_truetypmod(a.*, t.*))      as datetime_precision,\n"                     //
+                                                    + "           t.typtypmod,\n"                                                                                                                                                                       //
+                                                    + "           row_number() over (partition by a.attrelid order by a.attnum)                                                                           as attnum,\n"                                 //
+                                                    + "           pg_catalog.pg_get_expr(def.adbin, def.adrelid)                                                                                          as column_default,\n"                         //
+                                                    + "           dsc.description                                                                                                                         as comments\n"                                //
+                                                    + "    from pg_catalog.pg_namespace n\n"                                                                                                                                                            //
+                                                    + "             join pg_catalog.pg_class c on (c.relnamespace = n.oid)\n"                                                                                                                           //
+                                                    + "             join pg_catalog.pg_attribute a on (a.attrelid = c.oid)\n"                                                                                                                           //
+                                                    + "             left join pg_catalog.pg_type t on (a.atttypid = t.oid)\n"                                                                                                                           //
+                                                    + "             left join pg_catalog.pg_attrdef def on (a.attrelid = def.adrelid and a.attnum = def.adnum)\n"                                                                                       //
+                                                    + "             left join pg_catalog.pg_description dsc on (c.oid = dsc.objoid and a.attnum = dsc.objsubid)\n"                                                                                      //
+                                                    + "             left join pg_catalog.pg_class dc on (dc.oid = dsc.classoid and dc.relname = 'pg_class')\n"                                                                                          //
+                                                    + "             left join pg_catalog.pg_namespace dn on (dc.relnamespace = dn.oid and dn.nspname = 'pg_catalog')\n"                                                                                 //
+                                                    + "    where c.relkind in ('r', 'p', 'v', 'f', 'm')\n"                                                                                                                                              //
+                                                    + "      and a.attnum > 0\n"                                                                                                                                                                        //
+                                                    + "      and not a.attisdropped\n"                                                                                                                                                                  //
+                                                    + "      and n.nspname = ?\n"                                                                                                                                                                       //
+                                                    + "      and c.relname =?\n"                                                                                                                                                                        //
+                                                    + ") c where true\n"                                                                                                                                                                                //
+                                                    + "order by schema_name, c.table_name, attnum";                                                                                                                                                     //
+    private static final String       PK          = ""                                                                                                                                                                                                  //
+                                                    + "select result.table_schema, result.table_name, result.column_name, result.key_seq, result.pk_name\n"                                                                                             //
+                                                    + "from (select n.nspname                                        as table_schema,\n"                                                                                                                //
+                                                    + "             ct.relname                                       as table_name,\n"                                                                                                                  //
+                                                    + "             a.attname                                        as column_name,\n"                                                                                                                 //
+                                                    + "             (information_schema._pg_expandarray(i.indkey)).n as key_seq,\n"                                                                                                                     //
+                                                    + "             ci.relname                                       as pk_name,\n"                                                                                                                     //
+                                                    + "             information_schema._pg_expandarray(i.indkey)     as keys,\n"                                                                                                                        //
+                                                    + "             a.attnum                                         as a_attnum\n"                                                                                                                     //
+                                                    + "      from pg_catalog.pg_class ct\n"                                                                                                                                                             //
+                                                    + "               join pg_catalog.pg_attribute a on (ct.oid = a.attrelid)\n"                                                                                                                        //
+                                                    + "               join pg_catalog.pg_namespace n on (ct.relnamespace = n.oid)\n"                                                                                                                    //
+                                                    + "               join pg_catalog.pg_index i on (a.attrelid = i.indrelid)\n"                                                                                                                        //
+                                                    + "               join pg_catalog.pg_class ci on (ci.oid = i.indexrelid)\n"                                                                                                                         //
+                                                    + "      where true\n"                                                                                                                                                                              //
+                                                    + "        and n.nspname = ? and ct.relname = ? and i.indisprimary) result\n"                                                                                                                       //
+                                                    + "where result.a_attnum = (result.keys).x\n"                                                                                                                                                       //
+                                                    + "order by result.table_name, result.pk_name, result.key_seq";
+    private static final String       FK          = ""                                                                                                                                                                                                  //
+                                                    + "select pkic.relname as pk_name, pkn.nspname as pk_table_schema, pkc.relname as pk_table_name, pka.attname as pk_column_name,\n"                                                                  //
+                                                    + "       con.conname  as fk_name, fkn.nspname as fk_table_schema, fkc.relname as fk_table_name, fka.attname as fk_column_name,\n"                                                                  //
+                                                    + "       pos.n        as key_seq,\n"                                                                                                                                                               //
+                                                    + "       case con.confmatchtype when 'f' then 'FULL' when 'p' then 'PARTIAL' when 's' then 'NONE' else null end as match_option,\n"                                                                //
+                                                    + "       case con.confupdtype   when 'c' then 'CASCADE' when 'n' then 'SET NULL' when 'd' then 'SET DEFAULT' when 'r' then 'RESTRICT' when 'a' then 'NO ACTION' else null end as update_rule,\n"   //
+                                                    + "       case con.confdeltype   when 'c' then 'CASCADE' when 'n' then 'SET NULL' when 'd' then 'SET DEFAULT' when 'r' then 'RESTRICT' when 'a' then 'NO ACTION' else null end as delete_rule\n"    //
+                                                    + "from pg_catalog.pg_namespace pkn, pg_catalog.pg_class pkc, pg_catalog.pg_attribute pka,\n"                                                                                                       //
+                                                    + "     pg_catalog.pg_namespace fkn, pg_catalog.pg_class fkc, pg_catalog.pg_attribute fka,\n"                                                                                                       //
+                                                    + "     pg_catalog.pg_constraint con,\n"                                                                                                                                                            //
+                                                    + "     pg_catalog.generate_series(1, 32) pos(n),\n"                                                                                                                                                //
+                                                    + "     pg_catalog.pg_class pkic\n"                                                                                                                                                                 //
+                                                    + "where pkn.oid = pkc.relnamespace\n"                                                                                                                                                              //
+                                                    + "  and pkc.oid = pka.attrelid\n"                                                                                                                                                                  //
+                                                    + "  and pka.attnum = con.confkey[pos.n]\n"                                                                                                                                                         //
+                                                    + "  and con.confrelid = pkc.oid\n"                                                                                                                                                                 //
+                                                    + "  and fkn.oid = fkc.relnamespace\n"                                                                                                                                                              //
+                                                    + "  and fkc.oid = fka.attrelid\n"                                                                                                                                                                  //
+                                                    + "  and fka.attnum = con.conkey[pos.n]\n"                                                                                                                                                          //
+                                                    + "  and con.conrelid = fkc.oid\n"                                                                                                                                                                  //
+                                                    + "  and con.contype = 'f'\n"                                                                                                                                                                       //
+                                                    + "  and (pkic.relkind = 'i' or pkic.relkind = 'i')\n"                                                                                                                                              //
+                                                    + "  and pkic.oid = con.conindid\n"                                                                                                                                                                 //
+                                                    + "  and fkn.nspname = ? and fkc.relname = ?\n"                                                                                                                                                     //
+                                                    + "order by pkn.nspname, pkc.relname, con.conname, pos.n";
+    private static final String       UK_INDEX    = ""                                                                                                                                                                                                  //
+                                                    + "select tmp.table_schema,\n"                                                                                                                                                                      //
+                                                    + "       tmp.table_name,\n"                                                                                                                                                                        //
+                                                    + "       tmp.non_unique,\n"                                                                                                                                                                        //
+                                                    + "       tmp.index_name,\n"                                                                                                                                                                        //
+                                                    + "       tmp.type,\n"                                                                                                                                                                              //
+                                                    + "       tmp.ordinal_position,\n"                                                                                                                                                                  //
+                                                    + "       trim(both '\"' from pg_catalog.pg_get_indexdef(tmp.ci_oid, tmp.ordinal_position, false)) as column_name,\n"                                                                               //
+                                                    + "       case tmp.am_name when 'btree' then case tmp.i_indoption[tmp.ordinal_position - 1] & 1 when 1 then 'D' else 'A' end else null end as asc_or_desc,\n"                                       //
+                                                    + "       tmp.cardinality,\n"                                                                                                                                                                       //
+                                                    + "       tmp.pages,\n"                                                                                                                                                                             //
+                                                    + "       tmp.filter_condition\n"                                                                                                                                                                   //
+                                                    + "from (select n.nspname                                                                                    as table_schema,\n"                                                                    //
+                                                    + "             ct.relname                                                                                   as table_name,\n"                                                                      //
+                                                    + "             not i.indisunique                                                                            as non_unique,\n"                                                                      //
+                                                    + "             ci.relname                                                                                   as index_name,\n"                                                                      //
+                                                    + "             case i.indisclustered when true then 1 else case am.amname when 'hash' then 2 else 3 end end as type,\n"                                                                            //
+                                                    + "             (information_schema._pg_expandarray(i.indkey)).n                                             as ordinal_position,\n"                                                                //
+                                                    + "             ci.reltuples                                                                                 as cardinality,\n"                                                                     //
+                                                    + "             ci.relpages                                                                                  as pages,\n"                                                                           //
+                                                    + "             pg_catalog.pg_get_expr(i.indpred, i.indrelid)                                                as filter_condition,\n"                                                                //
+                                                    + "             ci.oid                                                                                       as ci_oid,\n"                                                                          //
+                                                    + "             i.indoption                                                                                  as i_indoption,\n"                                                                     //
+                                                    + "             am.amname                                                                                    as am_name\n"                                                                          //
+                                                    + "      from pg_catalog.pg_class ct\n"                                                                                                                                                             //
+                                                    + "               join pg_catalog.pg_namespace n on (ct.relnamespace = n.oid)\n"                                                                                                                    //
+                                                    + "               join pg_catalog.pg_index i on (ct.oid = i.indrelid)\n"                                                                                                                            //
+                                                    + "               join pg_catalog.pg_class ci on (ci.oid = i.indexrelid)\n"                                                                                                                         //
+                                                    + "               join pg_catalog.pg_am am on (ci.relam = am.oid)\n"                                                                                                                                //
+                                                    + "      where true and n.nspname = ? and ct.relname = ?) as tmp\n"                                                                                                                                 //
+                                                    + "order by non_unique, type, index_name, ordinal_position";
+    private Long                      serverVersionNumber;
 
-    public PostgresMetadataProvider(Connection connection) {
+    public PostgresMetadataProvider(Connection connection){
         super(connection);
     }
 
-    public PostgresMetadataProvider(DataSource dataSource) {
+    public PostgresMetadataProvider(DataSource dataSource){
         super(dataSource);
     }
 
@@ -371,12 +372,12 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
             }
             // UK、PK
             String primaryUniqueKeyQuery = ""//
-                    + "select tc.table_schema,tc.table_name,tc.constraint_type,kcu.column_name\n"//
-                    + "from information_schema.table_constraints as tc\n"//
-                    + "  join information_schema.key_column_usage as kcu on tc.constraint_name = kcu.constraint_name\n"//
-                    + "  join information_schema.constraint_column_usage as ccu on ccu.constraint_name = tc.constraint_name\n"//
-                    + "where constraint_type in ('PRIMARY KEY', 'UNIQUE')\n"//
-                    + "and tc.table_schema = ? and tc.table_name = ?";
+                                           + "select tc.table_schema,tc.table_name,tc.constraint_type,kcu.column_name\n"//
+                                           + "from information_schema.table_constraints as tc\n"//
+                                           + "  join information_schema.key_column_usage as kcu on tc.constraint_name = kcu.constraint_name\n"//
+                                           + "  join information_schema.constraint_column_usage as ccu on ccu.constraint_name = tc.constraint_name\n"//
+                                           + "where constraint_type in ('PRIMARY KEY', 'UNIQUE')\n"//
+                                           + "and tc.table_schema = ? and tc.table_name = ?";
             primaryUniqueKeyList = new JdbcTemplate(conn).queryForList(primaryUniqueKeyQuery, schemaName, tableName);
         }
         List<String> primaryKeyColumnNameList = primaryUniqueKeyList.stream().filter(recordMap -> {
@@ -410,7 +411,7 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         }
         //
         String queryString = "select constraint_schema,constraint_name,constraint_type from information_schema.table_constraints" //
-                + " where table_schema = ? and table_name = ?";
+                             + " where table_schema = ? and table_name = ?";
         try (Connection conn = this.connectSupplier.get()) {
             List<Map<String, Object>> mapList = new JdbcTemplate(conn).queryForList(queryString, schemaName, tableName);
             if (mapList == null) {
@@ -460,14 +461,16 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
                     return Integer.compare(o1Index, o2Index);
                 }
                 return 0;
-            }).map(this::convertPrimaryKey).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((pk1, pk2) -> {
-                // reducing group by data in to one.
-                pk1.getColumns().addAll(pk2.getColumns());
-                return pk1;
-            })));
+            })
+                .map(this::convertPrimaryKey)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((pk1, pk2) -> {
+                    // reducing group by data in to one.
+                    pk1.getColumns().addAll(pk2.getColumns());
+                    return pk1;
+                })));
             //
             if (pkMap.size() > 1) {
                 throw new SQLException("Data error encountered multiple primary keys '" + StringUtils.join(pkMap.keySet().toArray(), "','") + "'");
@@ -503,20 +506,28 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
                     return Integer.compare(o1Index, o2Index);
                 }
                 return 0;
-            }).filter(recordMap -> {
-                // ignore nonUnique
-                return Boolean.TRUE.equals(!safeToBoolean(recordMap.get("non_unique")));
-            }).map(this::convertUniqueKey).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((uk1, uk2) -> {
-                // reducing group by data in to one.
-                uk1.getColumns().addAll(uk2.getColumns());
-                uk1.getStorageType().putAll(uk2.getStorageType());
-                return uk1;
-            }))).values().stream().map(o -> {
-                return o.orElse(null);
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            })
+                .filter(recordMap -> {
+                    // ignore nonUnique
+                    return Boolean.TRUE.equals(!safeToBoolean(recordMap.get("non_unique")));
+                })
+                .map(this::convertUniqueKey)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((uk1, uk2) -> {
+                    // reducing group by data in to one.
+                    uk1.getColumns().addAll(uk2.getColumns());
+                    uk1.getStorageType().putAll(uk2.getStorageType());
+                    return uk1;
+                })))
+                .values()
+                .stream()
+                .map(o -> {
+                    return o.orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         }
     }
 
@@ -545,17 +556,24 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
                     return Integer.compare(o1Index, o2Index);
                 }
                 return 0;
-            }).map(this::convertForeignKey).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((fk1, fk2) -> {
-                // reducing group by data in to one.
-                fk1.getColumns().addAll(fk2.getColumns());
-                fk1.getReferenceMapping().putAll(fk2.getReferenceMapping());
-                return fk1;
-            }))).values().stream().map(o -> {
-                return o.orElse(null);
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            })
+                .map(this::convertForeignKey)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((fk1, fk2) -> {
+                    // reducing group by data in to one.
+                    fk1.getColumns().addAll(fk2.getColumns());
+                    fk1.getReferenceMapping().putAll(fk2.getReferenceMapping());
+                    return fk1;
+                })))
+                .values()
+                .stream()
+                .map(o -> {
+                    return o.orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         }
     }
 
@@ -612,17 +630,24 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
                     return Integer.compare(o1Index, o2Index);
                 }
                 return 0;
-            }).map(this::convertIndex).collect(Collectors.groupingBy(o -> {
-                // group by (schema + name)
-                return o.getSchema() + "," + o.getName();
-            }, Collectors.reducing((idx1, idx2) -> {
-                // reducing group by data in to one.
-                idx1.getColumns().addAll(idx2.getColumns());
-                idx1.getStorageType().putAll(idx2.getStorageType());
-                return idx1;
-            }))).values().stream().map(o -> {
-                return o.orElse(null);
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            })
+                .map(this::convertIndex)
+                .collect(Collectors.groupingBy(o -> {
+                    // group by (schema + name)
+                    return o.getSchema() + "," + o.getName();
+                }, Collectors.reducing((idx1, idx2) -> {
+                    // reducing group by data in to one.
+                    idx1.getColumns().addAll(idx2.getColumns());
+                    idx1.getStorageType().putAll(idx2.getStorageType());
+                    return idx1;
+                })))
+                .values()
+                .stream()
+                .map(o -> {
+                    return o.orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         }
     }
 

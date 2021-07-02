@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi;
-
 import com.clougence.schema.metadata.FieldType;
 import lombok.Getter;
 import lombok.Setter;

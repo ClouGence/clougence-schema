@@ -7,6 +7,7 @@ import com.clougence.schema.umi.ValueUmiSchema;
 import net.hasor.utils.StringUtils;
 
 public abstract class AbstractProvider {
+
     public abstract DsType getDataSourceType();
 
     protected String fmtTable(boolean useDelimited, CaseSensitivityType caseSensitivity, String schema, String table) {

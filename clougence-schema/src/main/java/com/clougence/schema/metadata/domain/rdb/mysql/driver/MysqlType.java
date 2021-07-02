@@ -24,20 +24,22 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
+ * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 package com.clougence.schema.metadata.domain.rdb.mysql.driver;
-import net.hasor.utils.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
 
+import net.hasor.utils.StringUtils;
+
 /***
  *  copy form mysql driver 8.0.22
  */
 public enum MysqlType implements SQLType {
+
     /**
      * DECIMAL[(M[,D])] [UNSIGNED] [ZEROFILL]
      * A packed "exact" fixed-point number. M is the total number of digits (the precision) and D is the number of digits
@@ -59,7 +61,8 @@ public enum MysqlType implements SQLType {
      *
      * @see MysqlType#DECIMAL
      */
-    DECIMAL_UNSIGNED("DECIMAL UNSIGNED", Types.DECIMAL, BigDecimal.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 65L, "[(M[,D])] [UNSIGNED] [ZEROFILL]"),
+    DECIMAL_UNSIGNED("DECIMAL UNSIGNED", Types.DECIMAL, BigDecimal.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 65L,
+            "[(M[,D])] [UNSIGNED] [ZEROFILL]"),
     /**
      * TINYINT[(M)] [UNSIGNED] [ZEROFILL]
      * A very small integer. The signed range is -128 to 127. The unsigned range is 0 to 255.
@@ -72,7 +75,8 @@ public enum MysqlType implements SQLType {
      *
      * @see MysqlType#TINYINT
      */
-    TINYINT_UNSIGNED("TINYINT UNSIGNED", Types.TINYINT, Integer.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 3L, "[(M)] [UNSIGNED] [ZEROFILL]"),
+    TINYINT_UNSIGNED("TINYINT UNSIGNED", Types.TINYINT, Integer.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 3L,
+            "[(M)] [UNSIGNED] [ZEROFILL]"),
     /**
      * BOOL, BOOLEAN
      * These types are synonyms for TINYINT(1). A value of zero is considered false. Nonzero values are considered true
@@ -95,7 +99,8 @@ public enum MysqlType implements SQLType {
      *
      * @see MysqlType#SMALLINT
      */
-    SMALLINT_UNSIGNED("SMALLINT UNSIGNED", Types.SMALLINT, Integer.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 5L, "[(M)] [UNSIGNED] [ZEROFILL]"),
+    SMALLINT_UNSIGNED("SMALLINT UNSIGNED", Types.SMALLINT, Integer.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 5L,
+            "[(M)] [UNSIGNED] [ZEROFILL]"),
     /**
      * INT[(M)] [UNSIGNED] [ZEROFILL]
      * A normal-size integer. The signed range is -2147483648 to 2147483647. The unsigned range is 0 to 4294967295.
@@ -110,7 +115,8 @@ public enum MysqlType implements SQLType {
      *
      * @see MysqlType#INT
      */
-    INT_UNSIGNED("INT UNSIGNED", Types.INTEGER, Long.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 10L, "[(M)] [UNSIGNED] [ZEROFILL]"),
+    INT_UNSIGNED("INT UNSIGNED", Types.INTEGER, Long.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 10L,
+            "[(M)] [UNSIGNED] [ZEROFILL]"),
     /**
      * FLOAT[(M,D)] [UNSIGNED] [ZEROFILL]
      * A small (single-precision) floating-point number. Permissible values are -3.402823466E+38 to -1.175494351E-38, 0,
@@ -136,7 +142,8 @@ public enum MysqlType implements SQLType {
      *
      * @see MysqlType#FLOAT
      */
-    FLOAT_UNSIGNED("FLOAT UNSIGNED", Types.REAL, Float.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 12L, "[(M,D)] [UNSIGNED] [ZEROFILL]"),
+    FLOAT_UNSIGNED("FLOAT UNSIGNED", Types.REAL, Float.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 12L,
+            "[(M,D)] [UNSIGNED] [ZEROFILL]"),
     /**
      * DOUBLE[(M,D)] [UNSIGNED] [ZEROFILL]
      * A normal-size (double-precision) floating-point number. Permissible values are -1.7976931348623157E+308 to
@@ -159,7 +166,8 @@ public enum MysqlType implements SQLType {
      *
      * @see MysqlType#DOUBLE
      */
-    DOUBLE_UNSIGNED("DOUBLE UNSIGNED", Types.DOUBLE, Double.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 22L, "[(M,D)] [UNSIGNED] [ZEROFILL]"),
+    DOUBLE_UNSIGNED("DOUBLE UNSIGNED", Types.DOUBLE, Double.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 22L,
+            "[(M,D)] [UNSIGNED] [ZEROFILL]"),
     /**
      * FIELD_TYPE_NULL = 6
      */
@@ -193,7 +201,8 @@ public enum MysqlType implements SQLType {
      *
      * @see MysqlType#BIGINT
      */
-    BIGINT_UNSIGNED("BIGINT UNSIGNED", Types.BIGINT, BigInteger.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 20L, "[(M)] [UNSIGNED] [ZEROFILL]"),
+    BIGINT_UNSIGNED("BIGINT UNSIGNED", Types.BIGINT, BigInteger.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 20L,
+            "[(M)] [UNSIGNED] [ZEROFILL]"),
     /**
      * MEDIUMINT[(M)] [UNSIGNED] [ZEROFILL]
      * A medium-sized integer. The signed range is -8388608 to 8388607. The unsigned range is 0 to 16777215.
@@ -206,7 +215,8 @@ public enum MysqlType implements SQLType {
      *
      * @see MysqlType#MEDIUMINT
      */
-    MEDIUMINT_UNSIGNED("MEDIUMINT UNSIGNED", Types.INTEGER, Integer.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 8L, "[(M)] [UNSIGNED] [ZEROFILL]"),
+    MEDIUMINT_UNSIGNED("MEDIUMINT UNSIGNED", Types.INTEGER, Integer.class, MysqlType.FIELD_FLAG_UNSIGNED | MysqlType.FIELD_FLAG_ZEROFILL, MysqlType.IS_DECIMAL, 8L,
+            "[(M)] [UNSIGNED] [ZEROFILL]"),
     /**
      * DATE
      * A date. The supported range is '1000-01-01' to '9999-12-31'. MySQL displays DATE values in 'YYYY-MM-DD' format,
@@ -441,7 +451,8 @@ public enum MysqlType implements SQLType {
             typeName = fullMysqlTypeName;
         }
         // the order of checks is important because some short names could match parts of longer names
-        if (StringUtils.indexOfIgnoreCase(typeName, "DECIMAL") != -1 || StringUtils.indexOfIgnoreCase(typeName, "DEC") != -1 || StringUtils.indexOfIgnoreCase(typeName, "NUMERIC") != -1 || StringUtils.indexOfIgnoreCase(typeName, "FIXED") != -1) {
+        if (StringUtils.indexOfIgnoreCase(typeName, "DECIMAL") != -1 || StringUtils.indexOfIgnoreCase(typeName, "DEC") != -1
+            || StringUtils.indexOfIgnoreCase(typeName, "NUMERIC") != -1 || StringUtils.indexOfIgnoreCase(typeName, "FIXED") != -1) {
             return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 ? DECIMAL_UNSIGNED : DECIMAL;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "TINYBLOB") != -1) {
             // IMPORTANT: "TINYBLOB" must be checked before "TINY"
@@ -449,36 +460,46 @@ public enum MysqlType implements SQLType {
         } else if (StringUtils.indexOfIgnoreCase(typeName, "TINYTEXT") != -1) {
             // IMPORTANT: "TINYTEXT" must be checked before "TINY"
             return TINYTEXT;
-        } else if (StringUtils.indexOfIgnoreCase(typeName, "TINYINT") != -1 || StringUtils.indexOfIgnoreCase(typeName, "TINY") != -1 || StringUtils.indexOfIgnoreCase(typeName, "INT1") != -1) {
-            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? TINYINT_UNSIGNED : TINYINT;
+        } else if (StringUtils.indexOfIgnoreCase(typeName, "TINYINT") != -1 || StringUtils.indexOfIgnoreCase(typeName, "TINY") != -1
+                   || StringUtils.indexOfIgnoreCase(typeName, "INT1") != -1) {
+            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1
+                   || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? TINYINT_UNSIGNED : TINYINT;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "MEDIUMINT") != -1
-                // IMPORTANT: "INT24" must be checked before "INT2"
-                || StringUtils.indexOfIgnoreCase(typeName, "INT24") != -1 || StringUtils.indexOfIgnoreCase(typeName, "INT3") != -1 || StringUtils.indexOfIgnoreCase(typeName, "MIDDLEINT") != -1) {
-            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? MEDIUMINT_UNSIGNED : MEDIUMINT;
+                   // IMPORTANT: "INT24" must be checked before "INT2"
+                   || StringUtils.indexOfIgnoreCase(typeName, "INT24") != -1 || StringUtils.indexOfIgnoreCase(typeName, "INT3") != -1
+                   || StringUtils.indexOfIgnoreCase(typeName, "MIDDLEINT") != -1) {
+            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1
+                   || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? MEDIUMINT_UNSIGNED : MEDIUMINT;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "SMALLINT") != -1 || StringUtils.indexOfIgnoreCase(typeName, "INT2") != -1) {
-            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? SMALLINT_UNSIGNED : SMALLINT;
-        } else if (StringUtils.indexOfIgnoreCase(typeName, "BIGINT") != -1 || StringUtils.indexOfIgnoreCase(typeName, "SERIAL") != -1 || StringUtils.indexOfIgnoreCase(typeName, "INT8") != -1) {
+            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1
+                   || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? SMALLINT_UNSIGNED : SMALLINT;
+        } else if (StringUtils.indexOfIgnoreCase(typeName, "BIGINT") != -1 || StringUtils.indexOfIgnoreCase(typeName, "SERIAL") != -1
+                   || StringUtils.indexOfIgnoreCase(typeName, "INT8") != -1) {
             // SERIAL is an alias for BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE.
-            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? BIGINT_UNSIGNED : BIGINT;
+            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1
+                   || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? BIGINT_UNSIGNED : BIGINT;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "POINT") != -1) {
             // also covers "MULTIPOINT"
             // IMPORTANT: "POINT" must be checked before "INT"
             return GEOMETRY; // TODO think about different MysqlTypes for Spatial Data Types
-        } else if (StringUtils.indexOfIgnoreCase(typeName, "INT") != -1 || StringUtils.indexOfIgnoreCase(typeName, "INTEGER") != -1 || StringUtils.indexOfIgnoreCase(typeName, "INT4") != -1) {
+        } else if (StringUtils.indexOfIgnoreCase(typeName, "INT") != -1 || StringUtils.indexOfIgnoreCase(typeName, "INTEGER") != -1
+                   || StringUtils.indexOfIgnoreCase(typeName, "INT4") != -1) {
             // IMPORTANT: "INT" must be checked after all "*INT*" types
             return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? INT_UNSIGNED : INT;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "DOUBLE") != -1 || StringUtils.indexOfIgnoreCase(typeName, "REAL") != -1
-                /* || StringUtils.indexOfIgnoreCase(name, "DOUBLE PRECISION") != -1 is caught by "DOUBLE" check */
-                // IMPORTANT: "FLOAT8" must be checked before "FLOAT"
-                || StringUtils.indexOfIgnoreCase(typeName, "FLOAT8") != -1) {
+        /* || StringUtils.indexOfIgnoreCase(name, "DOUBLE PRECISION") != -1 is caught by "DOUBLE" check */
+        // IMPORTANT: "FLOAT8" must be checked before "FLOAT"
+                   || StringUtils.indexOfIgnoreCase(typeName, "FLOAT8") != -1) {
             // TODO Exception: If the REAL_AS_FLOAT SQL mode is enabled, REAL is a synonym for FLOAT rather than DOUBLE.
-            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? DOUBLE_UNSIGNED : DOUBLE;
+            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1
+                   || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? DOUBLE_UNSIGNED : DOUBLE;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "FLOAT") != -1 /*
-         * || StringUtils.indexOfIgnoreCase(name, "FLOAT4") != -1 is caught by
-         * "FLOAT" check
-         */) {
+                                                                          * || StringUtils.indexOfIgnoreCase(name, "FLOAT4") != -1 is caught by
+                                                                          * "FLOAT" check
+                                                                          */) {
             // TODO FLOAT(p) [UNSIGNED] [ZEROFILL]. If p is from 0 to 24, the data type becomes FLOAT with no M or D values. If p is from 25 to 53, the data type becomes DOUBLE with no M or D values.
-            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1 || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? FLOAT_UNSIGNED : FLOAT;
+            return StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "UNSIGNED") != -1
+                   || StringUtils.indexOfIgnoreCase(fullMysqlTypeName, "ZEROFILL") != -1 ? FLOAT_UNSIGNED : FLOAT;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "NULL") != -1) {
             return NULL;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "TIMESTAMP") != -1) {
@@ -503,11 +524,13 @@ public enum MysqlType implements SQLType {
             // IMPORTANT: "MEDIUMBLOB" must be checked before "BLOB"
             // IMPORTANT: "LONG VARBINARY" must be checked before "LONG" and "VARBINARY"
             return MEDIUMBLOB;
-        } else if (StringUtils.indexOfIgnoreCase(typeName, "MEDIUMTEXT") != -1 || StringUtils.indexOfIgnoreCase(typeName, "LONG VARCHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "LONG") != -1) {
+        } else if (StringUtils.indexOfIgnoreCase(typeName, "MEDIUMTEXT") != -1 || StringUtils.indexOfIgnoreCase(typeName, "LONG VARCHAR") != -1
+                   || StringUtils.indexOfIgnoreCase(typeName, "LONG") != -1) {
             // IMPORTANT: "MEDIUMTEXT" must be checked before "TEXT"
             // IMPORTANT: "LONG VARCHAR" must be checked before "VARCHAR"
             return MEDIUMTEXT;
-        } else if (StringUtils.indexOfIgnoreCase(typeName, "VARCHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "NVARCHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "NATIONAL VARCHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "CHARACTER VARYING") != -1) {
+        } else if (StringUtils.indexOfIgnoreCase(typeName, "VARCHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "NVARCHAR") != -1
+                   || StringUtils.indexOfIgnoreCase(typeName, "NATIONAL VARCHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "CHARACTER VARYING") != -1) {
             // IMPORTANT: "CHARACTER VARYING" must be checked before "CHARACTER" and "CHAR"
             return VARCHAR;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "VARBINARY") != -1) {
@@ -521,8 +544,9 @@ public enum MysqlType implements SQLType {
             // IMPORTANT: "LINESTRING" must be checked before "STRING"
             return GEOMETRY;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "STRING") != -1
-                // IMPORTANT: "CHAR" must be checked after all "*CHAR*" types
-                || StringUtils.indexOfIgnoreCase(typeName, "CHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "NCHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "NATIONAL CHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "CHARACTER") != -1) {
+                   // IMPORTANT: "CHAR" must be checked after all "*CHAR*" types
+                   || StringUtils.indexOfIgnoreCase(typeName, "CHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "NCHAR") != -1
+                   || StringUtils.indexOfIgnoreCase(typeName, "NATIONAL CHAR") != -1 || StringUtils.indexOfIgnoreCase(typeName, "CHARACTER") != -1) {
             return CHAR;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "BOOLEAN") != -1 || StringUtils.indexOfIgnoreCase(typeName, "BOOL") != -1) {
             return BOOLEAN;
@@ -539,8 +563,8 @@ public enum MysqlType implements SQLType {
         } else if (StringUtils.indexOfIgnoreCase(typeName, "TEXT") != -1) {
             return TEXT;
         } else if (StringUtils.indexOfIgnoreCase(typeName, "GEOM") != -1 // covers "GEOMETRY", "GEOMETRYCOLLECTION" and "GEOMCOLLECTION"
-                || StringUtils.indexOfIgnoreCase(typeName, "POINT") != -1 // also covers "MULTIPOINT"
-                || StringUtils.indexOfIgnoreCase(typeName, "POLYGON") != -1 // also covers "MULTIPOLYGON"
+                   || StringUtils.indexOfIgnoreCase(typeName, "POINT") != -1 // also covers "MULTIPOINT"
+                   || StringUtils.indexOfIgnoreCase(typeName, "POLYGON") != -1 // also covers "MULTIPOLYGON"
         ) {
             return GEOMETRY; // TODO think about different MysqlTypes for Spatial Data Types
         }
@@ -604,7 +628,7 @@ public enum MysqlType implements SQLType {
                 throw new UnsupportedOperationException("TIME_WITH_TIMEZONE type is not supported");
             case Types.TIMESTAMP_WITH_TIMEZONE:
                 throw new UnsupportedOperationException("TIMESTAMP_WITH_TIMEZONE type is not supported");
-                // TODO check next types
+            // TODO check next types
             case Types.ARRAY:
             case Types.DISTINCT:
             case Types.OTHER:
@@ -790,13 +814,13 @@ public enum MysqlType implements SQLType {
         }
     }
 
-    private final   String   name;
-    protected       int      jdbcType;
+    private final String     name;
+    protected int            jdbcType;
     protected final Class<?> javaClass;
-    private final   int      flagsMask;
-    private final   boolean  isDecimal;
-    private final   Long     precision;
-    private final   String   createParams;
+    private final int        flagsMask;
+    private final boolean    isDecimal;
+    private final Long       precision;
+    private final String     createParams;
 
     /**
      *
@@ -825,7 +849,7 @@ public enum MysqlType implements SQLType {
      * @param createParams
      *            params
      */
-    private MysqlType(String mysqlTypeName, int jdbcType, Class<?> javaClass, int allowedFlags, boolean isDec, Long precision, String createParams) {
+    private MysqlType(String mysqlTypeName, int jdbcType, Class<?> javaClass, int allowedFlags, boolean isDec, Long precision, String createParams){
         this.name = mysqlTypeName;
         this.jdbcType = jdbcType;
         this.javaClass = javaClass;
@@ -835,13 +859,9 @@ public enum MysqlType implements SQLType {
         this.createParams = createParams;
     }
 
-    public String getName() {
-        return this.name;
-    }
+    public String getName() { return this.name; }
 
-    public int getJdbcType() {
-        return this.jdbcType;
-    }
+    public int getJdbcType() { return this.jdbcType; }
 
     public boolean isAllowed(int flag) {
         return ((this.flagsMask & flag) > 0);
@@ -859,9 +879,7 @@ public enum MysqlType implements SQLType {
      *
      * @return true if the MySQL Type is a Decimal/Number Type
      */
-    public boolean isDecimal() {
-        return this.isDecimal;
-    }
+    public boolean isDecimal() { return this.isDecimal; }
 
     /**
      * The PRECISION column represents the maximum column size that the server supports for the given datatype.
@@ -879,35 +897,27 @@ public enum MysqlType implements SQLType {
      *
      * @return precision
      */
-    public Long getPrecision() {
-        return this.precision;
-    }
+    public Long getPrecision() { return this.precision; }
 
-    public String getCreateParams() {
-        return this.createParams;
-    }
+    public String getCreateParams() { return this.createParams; }
 
-    public static final  int     FIELD_FLAG_NOT_NULL       = 1;
-    public static final  int     FIELD_FLAG_PRIMARY_KEY    = 2;
-    public static final  int     FIELD_FLAG_UNIQUE_KEY     = 4;
-    public static final  int     FIELD_FLAG_MULTIPLE_KEY   = 8;
-    public static final  int     FIELD_FLAG_BLOB           = 16;
-    public static final  int     FIELD_FLAG_UNSIGNED       = 32;
-    public static final  int     FIELD_FLAG_ZEROFILL       = 64;
-    public static final  int     FIELD_FLAG_BINARY         = 128;
-    public static final  int     FIELD_FLAG_AUTO_INCREMENT = 512;
+    public static final int      FIELD_FLAG_NOT_NULL       = 1;
+    public static final int      FIELD_FLAG_PRIMARY_KEY    = 2;
+    public static final int      FIELD_FLAG_UNIQUE_KEY     = 4;
+    public static final int      FIELD_FLAG_MULTIPLE_KEY   = 8;
+    public static final int      FIELD_FLAG_BLOB           = 16;
+    public static final int      FIELD_FLAG_UNSIGNED       = 32;
+    public static final int      FIELD_FLAG_ZEROFILL       = 64;
+    public static final int      FIELD_FLAG_BINARY         = 128;
+    public static final int      FIELD_FLAG_AUTO_INCREMENT = 512;
     private static final boolean IS_DECIMAL                = true;
     private static final boolean IS_NOT_DECIMAL            = false;
 
     @Override
-    public String getVendor() {
-        return "com.mysql.cj";
-    }
+    public String getVendor() { return "com.mysql.cj"; }
 
     @Override
-    public Integer getVendorTypeNumber() {
-        return this.jdbcType;
-    }
+    public Integer getVendorTypeNumber() { return this.jdbcType; }
 
     // Protocol field type numbers
     public static final int FIELD_TYPE_DECIMAL     = 0;

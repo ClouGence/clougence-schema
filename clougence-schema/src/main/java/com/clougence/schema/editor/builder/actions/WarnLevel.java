@@ -1,4 +1,5 @@
 package com.clougence.schema.editor.builder.actions;
+
 public enum WarnLevel {
     //    /** 一般。*/
     Normal,

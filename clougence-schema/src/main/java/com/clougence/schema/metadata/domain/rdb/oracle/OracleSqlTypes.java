@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.oracle;
-import com.clougence.schema.metadata.FieldType;
-import com.clougence.schema.metadata.domain.rdb.oracle.driver.OracleType;
 
 import java.sql.JDBCType;
+
+import com.clougence.schema.metadata.FieldType;
+import com.clougence.schema.metadata.domain.rdb.oracle.driver.OracleType;
 
 /**
  * 参考 ojdbc8-19.8.0.0.jar
@@ -25,6 +26,7 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum OracleSqlTypes implements FieldType {
+
     CHAR("CHAR", OracleType.CHAR),
     NCHAR("NCHAR", OracleType.NCHAR),
     VARCHAR2("VARCHAR2", OracleType.VARCHAR2),
@@ -85,13 +87,13 @@ public enum OracleSqlTypes implements FieldType {
     SI_FEATURE_LIST("SI_FEATURE_LIST", OracleType.SI_FEATURE_LIST),
     SI_POSITIONAL_COLOR("SI_POSITIONAL_COLOR", OracleType.SI_POSITIONAL_COLOR),
     SI_STILL_IMAGE("SI_STILL_IMAGE", OracleType.SI_STILL_IMAGE),
-    SI_TEXTURE("SI_TEXTURE", OracleType.SI_TEXTURE),
-    ;
+    SI_TEXTURE("SI_TEXTURE", OracleType.SI_TEXTURE),;
+
     private final String   codeKey;
     private final JDBCType jdbcType;
     private final Integer  jdbcTypeNum;
 
-    OracleSqlTypes(String codeKey, OracleType oracleType) {
+    OracleSqlTypes(String codeKey, OracleType oracleType){
         this.codeKey = codeKey;
         this.jdbcType = toJdbcType(oracleType);
         this.jdbcTypeNum = (this.jdbcType != null) ? this.jdbcType.getVendorTypeNumber() : null;
@@ -107,14 +109,10 @@ public enum OracleSqlTypes implements FieldType {
     }
 
     @Override
-    public String getCodeKey() {
-        return this.codeKey;
-    }
+    public String getCodeKey() { return this.codeKey; }
 
     @Override
-    public Integer getJdbcType() {
-        return this.jdbcTypeNum;
-    }
+    public Integer getJdbcType() { return this.jdbcTypeNum; }
 
     @Override
     public JDBCType toJDBCType() {

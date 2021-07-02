@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.adb.mysql;
+import java.util.Date;
+
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Date;
 
 /**
  * AdbMySql 表
@@ -28,6 +28,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class AdbMySqlTable implements TableDef {
+
     private String            catalog;
     private String            schema;
     private String            table;
@@ -37,19 +38,11 @@ public class AdbMySqlTable implements TableDef {
     private Date              updateTime;
     private String            comment;
 
-    public String getCatalog() {
-        return this.catalog;
-    }
+    public String getCatalog() { return this.catalog; }
 
-    public String getSchema() {
-        return this.schema;
-    }
+    public String getSchema() { return this.schema; }
 
-    public String getTable() {
-        return this.table;
-    }
+    public String getTable() { return this.table; }
 
-    public AdbMySqlTableType getTableType() {
-        return this.tableType;
-    }
+    public AdbMySqlTableType getTableType() { return this.tableType; }
 }

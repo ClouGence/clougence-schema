@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+
+import java.sql.SQLException;
+import java.util.Map;
+
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.MetaDataService;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
-
-import java.sql.SQLException;
-import java.util.Map;
 
 /**
  * 元信息服务
@@ -28,6 +29,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface RdbMetaDataService extends MetaDataService {
+
     /** 默认情况下不使用 SQL 标识符包裹 大小写策略。 */
     public CaseSensitivityType getPlain() throws SQLException;
 

@@ -1,5 +1,4 @@
 package com.clougence.schema.metadata.domain.rdb.oracle;
-
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import lombok.Getter;
 import lombok.Setter;

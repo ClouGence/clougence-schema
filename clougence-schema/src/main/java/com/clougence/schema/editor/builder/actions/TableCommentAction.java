@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder.actions;
-import lombok.Getter;
 
 import java.util.List;
+
+import lombok.Getter;
 
 /**
  * @author mode 2021/6/8 19:56
  */
 @Getter
 public class TableCommentAction extends Action {
+
     private final String comment;
 
-    public TableCommentAction(List<String> sqlString, String catalog, String schema, String table, String comment) {
+    public TableCommentAction(List<String> sqlString, String catalog, String schema, String table, String comment){
         super(sqlString, catalog, schema, table);
         this.comment = comment;
     }

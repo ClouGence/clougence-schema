@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.NoColumnException;
@@ -23,27 +27,22 @@ import com.clougence.schema.editor.domain.EIndex;
 import com.clougence.schema.editor.domain.ETable;
 import net.hasor.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * @author mode 2021/5/21 19:56
  */
 class IndexEditorBuilder extends AbstractBuilder implements IndexEditor {
+
     private final ETable eTable;
     private final EIndex eIndex;
 
-    public IndexEditorBuilder(boolean beAffected, EditorContext context, ETable eTable, EIndex eIndex) {
+    public IndexEditorBuilder(boolean beAffected, EditorContext context, ETable eTable, EIndex eIndex){
         super(beAffected, context);
         this.eTable = eTable;
         this.eIndex = eIndex;
     }
 
     @Override
-    public EIndex getSource() {
-        return this.eIndex;
-    }
+    public EIndex getSource() { return this.eIndex; }
 
     @Override
     public void rename(String newName) {

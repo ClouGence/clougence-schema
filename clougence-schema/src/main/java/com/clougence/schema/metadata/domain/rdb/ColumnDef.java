@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb;
-import net.hasor.db.types.TypeHandlerRegistry;
 
 import java.sql.JDBCType;
+
+import net.hasor.db.types.TypeHandlerRegistry;
 
 /**
  * 列信息
@@ -24,6 +25,7 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ColumnDef {
+
     /** 列名 */
     public String getName();
 
@@ -34,9 +36,7 @@ public interface ColumnDef {
     public JDBCType getJdbcType();
 
     /** 对应的 javaType */
-    public default Class<?> getJavaType() {
-        return TypeHandlerRegistry.toJavaType(this.getJdbcType());
-    }
+    public default Class<?> getJavaType() { return TypeHandlerRegistry.toJavaType(this.getJdbcType()); }
 
     /** 是否为主键 */
     public boolean isPrimaryKey();

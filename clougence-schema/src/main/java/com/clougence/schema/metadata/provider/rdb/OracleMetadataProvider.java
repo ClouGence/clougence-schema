@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-
 import static com.clougence.schema.metadata.domain.rdb.oracle.OracleSqlTypes.TIMESTAMP;
 
 import java.sql.Connection;

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder.actions;
+import java.util.List;
+
 import com.clougence.schema.editor.domain.EColumn;
 import lombok.Getter;
-
-import java.util.List;
 
 /**
  * @author mode 2021/6/8 19:56
  */
 @Getter
 public class ColumnRenameAction extends Action {
+
     private final EColumn columnInfo;
     private final String  newColumnName;
 
-    public ColumnRenameAction(List<String> sqlString, String catalog, String schema, String table, EColumn columnInfo, String newColumnName) {
+    public ColumnRenameAction(List<String> sqlString, String catalog, String schema, String table, EColumn columnInfo, String newColumnName){
         super(sqlString, catalog, schema, table);
         this.columnInfo = columnInfo.clone();
         this.newColumnName = newColumnName;

@@ -1,6 +1,8 @@
 package com.clougence.schema.editor;
+
 public class NoColumnException extends RuntimeException {
-    public NoColumnException(String s) {
+
+    public NoColumnException(String s){
         super(s);
     }
 }

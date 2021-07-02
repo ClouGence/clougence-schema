@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.domain;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.*;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author mode 2021/5/21 19:56
@@ -25,6 +26,7 @@ import java.util.*;
 @Getter
 @Setter
 public class EIndex extends EChange<EIndex> {
+
     private String              name;
     private EIndexType          type;
     private List<String>        columnList = new ArrayList<>();

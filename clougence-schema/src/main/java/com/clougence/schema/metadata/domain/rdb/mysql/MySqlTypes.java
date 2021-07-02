@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.mysql;
-import com.clougence.schema.metadata.FieldType;
 
 import java.sql.JDBCType;
+
+import com.clougence.schema.metadata.FieldType;
 
 /**
  * <li>https://dev.mysql.com/doc/refman/5.7/en/data-types.html</li>
@@ -25,6 +26,7 @@ import java.sql.JDBCType;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum MySqlTypes implements FieldType {
+
     /**
      * BIT[(M)]
      *
@@ -282,12 +284,12 @@ public enum MySqlTypes implements FieldType {
      * GEOMETRY can store geometry values of any type.
      * The other single-value types (POINT, LINESTRING, and POLYGON) restrict their values to a particular geometry type.
      */
-    GEOMETRY_COLLECTION("GEOMCOLLECTION", JDBCType.BINARY),
-    ;
+    GEOMETRY_COLLECTION("GEOMCOLLECTION", JDBCType.BINARY),;
+
     private final String   codeKey;
     private final JDBCType jdbcType;
 
-    MySqlTypes(String codeKey, JDBCType jdbcType) {
+    MySqlTypes(String codeKey, JDBCType jdbcType){
         this.codeKey = codeKey;
         this.jdbcType = jdbcType;
     }
@@ -302,14 +304,10 @@ public enum MySqlTypes implements FieldType {
     }
 
     @Override
-    public String getCodeKey() {
-        return this.codeKey;
-    }
+    public String getCodeKey() { return this.codeKey; }
 
     @Override
-    public Integer getJdbcType() {
-        return this.jdbcType.getVendorTypeNumber();
-    }
+    public Integer getJdbcType() { return this.jdbcType.getVendorTypeNumber(); }
 
     @Override
     public JDBCType toJDBCType() {

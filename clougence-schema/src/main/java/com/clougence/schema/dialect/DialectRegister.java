@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package com.clougence.schema.dialect;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.dialect.provider.DmDialect;
 import com.clougence.schema.dialect.provider.MySqlDialect;
 import com.clougence.schema.dialect.provider.OracleDialect;
 import com.clougence.schema.dialect.provider.PostgreDialect;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 方言管理器
@@ -29,6 +30,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DialectRegister {
+
     private static final Map<DsType, Dialect> dialectCache = new HashMap<>();
 
     static {
@@ -46,5 +48,3 @@ public class DialectRegister {
         return dialectCache.getOrDefault(dsType, DefaultDialect.DEFAULT);
     }
 }
-
-

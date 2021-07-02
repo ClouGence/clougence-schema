@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
@@ -28,37 +32,32 @@ import com.clougence.schema.metadata.typemapping.TypeMapping;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 import net.hasor.utils.StringUtils;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 /**
  * @author mode 2021/5/21 19:56
  */
 public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
+
     private final ETable eTable;
 
-    public TableEditorBuilder(String schema, String name, EditorContext context) {
+    public TableEditorBuilder(String schema, String name, EditorContext context){
         super(false, context);
         this.eTable = new ETable();
         this.eTable.setSchema(schema);
         this.eTable.setName(name);
     }
 
-    public TableEditorBuilder(ETable eTable, EditorContext context) {
+    public TableEditorBuilder(ETable eTable, EditorContext context){
         super(false, context);
         this.eTable = eTable;
     }
 
-    TableEditorBuilder(boolean beAffected, EditorContext context, ETable eTable) {
+    TableEditorBuilder(boolean beAffected, EditorContext context, ETable eTable){
         super(beAffected, context);
         this.eTable = eTable;
     }
 
     @Override
-    public ETable getSource() {
-        return this.eTable;
-    }
+    public ETable getSource() { return this.eTable; }
 
     @Override
     public void rename(String newName) {
@@ -87,9 +86,7 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
     }
 
     @Override
-    public PrimaryEditor getPrimaryEditor() {
-        return new PrimaryEditorBuilder(this.beAffected, this.context, this.eTable, this.eTable.getPrimaryKey());
-    }
+    public PrimaryEditor getPrimaryEditor() { return new PrimaryEditorBuilder(this.beAffected, this.context, this.eTable, this.eTable.getPrimaryKey()); }
 
     @Override
     public void createPrimaryEditor(String primaryName, List<String> columns) {
@@ -113,7 +110,8 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
     }
 
     @Override
-    public ColumnEditor addColumn(String columnName, String dbType, boolean nullable, Long length, Integer numericPrecision, Integer numericScale, Integer datetimePrecision, String defaultValue, boolean autoGenerate, String comment) {
+    public ColumnEditor addColumn(String columnName, String dbType, boolean nullable, Long length, Integer numericPrecision, Integer numericScale, Integer datetimePrecision,
+                                  String defaultValue, boolean autoGenerate, String comment) {
         List<String> columnNames = this.eTable.getColumnList().stream().map(EColumn::getName).collect(Collectors.toList());
         if (columnNames.contains(columnName)) {
             throw new ConflictException("column '" + columnName + " already exists.");
@@ -188,7 +186,8 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
     }
 
     @Override
-    public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, RdbForeignKeyRule updateRule, RdbForeignKeyRule deleteRule, Map<String, String> referenceMapping) {
+    public ForeignKeyEditor addForeignKeyEditor(String fkName, String referenceSchema, String referenceTable, RdbForeignKeyRule updateRule, RdbForeignKeyRule deleteRule,
+                                                Map<String, String> referenceMapping) {
         List<String> indexNames = this.eTable.getIndices().stream().map(EIndex::getName).collect(Collectors.toList());
         if (indexNames.contains(fkName)) {
             throw new ConflictException("foreignKey '" + fkName + " already exists.");
@@ -216,9 +215,7 @@ public class TableEditorBuilder extends AbstractBuilder implements TableEditor {
     }
 
     @Override
-    public List<Action> getActions() {
-        return this.actions;
-    }
+    public List<Action> getActions() { return this.actions; }
 
     @Override
     public void configCaseSensitivity(boolean useDelimited, CaseSensitivityType caseSensitivityType) {

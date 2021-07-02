@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package com.clougence.schema.dialect.provider;
+
 /**
  * PostgreSQL 对象名有大小写敏感不敏感的问题
  * @version : 2020-10-31
  * @author 赵永春 (zyc@hasor.net)
  */
 public class PostgreDialect extends AbstractDialect {
+
     @Override
     protected String keyWordsResource() {
         return "/META-INF/clougence/db-keywords/postgresql.keywords";

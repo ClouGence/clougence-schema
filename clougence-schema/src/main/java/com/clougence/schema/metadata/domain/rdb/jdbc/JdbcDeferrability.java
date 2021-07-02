@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.jdbc;
+
 import java.sql.DatabaseMetaData;
 
 /**
@@ -22,21 +23,21 @@ import java.sql.DatabaseMetaData;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum JdbcDeferrability {
+
     /** see SQL92 for definition. */
     ImportedKeyInitiallyDeferred(DatabaseMetaData.importedKeyInitiallyDeferred),
     /** see SQL92 for definition */
     ImportedKeyInitiallyImmediate(DatabaseMetaData.importedKeyInitiallyImmediate),
     /** see SQL92 for definition */
     ImportedKeyNotDeferrable(DatabaseMetaData.importedKeyNotDeferrable);
+
     private final int typeNumber;
 
-    JdbcDeferrability(int typeNumber) {
+    JdbcDeferrability(int typeNumber){
         this.typeNumber = typeNumber;
     }
 
-    public int getTypeNumber() {
-        return this.typeNumber;
-    }
+    public int getTypeNumber() { return this.typeNumber; }
 
     public static JdbcDeferrability valueOfCode(Integer typeNumber) {
         if (typeNumber == null) {

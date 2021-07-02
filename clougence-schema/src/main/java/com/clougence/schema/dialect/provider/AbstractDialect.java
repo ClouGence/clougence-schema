@@ -4,7 +4,6 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 package com.clougence.schema.dialect.provider;
-
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;

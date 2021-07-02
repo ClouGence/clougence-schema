@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.triggers;
-import com.clougence.schema.editor.domain.EColumn;
 
 import java.util.List;
+
+import com.clougence.schema.editor.domain.EColumn;
 
 /**
  * @author mode 2021/5/21 19:56
  */
 public interface ColumnTriggers extends java.util.EventListener {
-    public List<String> addColumn(TriggerContext buildContext, String catalog, String schema, String table,    //
-            EColumn columnInfo);
 
-    public List<String> dropColumn(TriggerContext buildContext, String catalog, String schema, String table,   //
-            EColumn columnInfo);
+    public List<String> addColumn(TriggerContext buildContext, String catalog, String schema, String table, //
+                                  EColumn columnInfo);
+
+    public List<String> dropColumn(TriggerContext buildContext, String catalog, String schema, String table, //
+                                   EColumn columnInfo);
 
     public default boolean supportColumnRename() {
         return true;
     }
 
     public List<String> columnRename(TriggerContext buildContext, String catalog, String schema, String table, //
-            EColumn columnInfo, String newColumnName);
+                                     EColumn columnInfo, String newColumnName);
 
     public List<String> columnChange(TriggerContext buildContext, String catalog, String schema, String table, //
-            EColumn columnInfo, EColumn newInfo, List<String> diffChange);
+                                     EColumn columnInfo, EColumn newInfo, List<String> diffChange);
 
-    public List<String> columnComment(TriggerContext buildContext, String catalog, String schema, String table,//
-            EColumn columnInfo, String comment);
+    public List<String> columnComment(TriggerContext buildContext, String catalog, String schema, String table, //
+                                      EColumn columnInfo, String comment);
 }

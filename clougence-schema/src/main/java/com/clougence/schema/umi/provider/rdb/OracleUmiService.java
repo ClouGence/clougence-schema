@@ -1,5 +1,4 @@
 package com.clougence.schema.umi.provider.rdb;
-
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
