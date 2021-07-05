@@ -4,6 +4,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 package com.clougence.schema.dialect.provider;
+
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
@@ -60,11 +61,11 @@ public abstract class AbstractDialect implements Dialect {
 
     @Override
     public String tableName(boolean useQualifier, UmiSchema tableSchema) {
-        String[] columnSchemaPath = tableSchema.getPath();
-        if (columnSchemaPath == null || columnSchemaPath.length <= 1) {
+        List<String> columnSchemaPath = tableSchema.getPath();
+        if (columnSchemaPath == null || columnSchemaPath.size() <= 1) {
             return fmtName(useQualifier, tableSchema.getName());
         } else {
-            return fmtName(useQualifier, columnSchemaPath[columnSchemaPath.length - 1]) + "." + fmtName(useQualifier, tableSchema.getName());
+            return fmtName(useQualifier, columnSchemaPath.get(columnSchemaPath.size() - 1)) + "." + fmtName(useQualifier, tableSchema.getName());
         }
     }
 

@@ -12,7 +12,7 @@ public interface UmiSchema extends UmiAttributes {
 
     public FieldType getDataType();
 
-    public String[] getPath();
+    public List<String> getPath();
 
     public List<UmiConstraint> getConstraints();
 

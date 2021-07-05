@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,13 +48,13 @@ public abstract class AbstractUmiSchema extends AbstractUmiAttributes implements
     public String getComment() { return this.comment; }
 
     @Override
-    public String[] getPath() {
+    public List<String> getPath() {
         if (this.parentPath == null) {
-            return new String[] { this.name };
+            return Collections.singletonList(this.name);
         }
-        List<String> stringList = Arrays.asList(this.parentPath);
+        List<String> stringList = new ArrayList<>(Arrays.asList(this.parentPath));
         stringList.add(this.name);
-        return stringList.toArray(new String[0]);
+        return stringList;
     }
 
     @Override
