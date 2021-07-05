@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+
 import java.util.*;
 
 import com.clougence.schema.editor.ConflictException;
@@ -49,6 +50,12 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
         if (StringUtils.isBlank(newName)) {
             throw new NullPointerException("new name is null.");
         }
+        //
+        String oldName = this.eColumn.getName();
+        if (StringUtils.equals(oldName, newName)) {
+            return;
+        }
+        //
         ColumnEditor columnEditor = new TableEditorBuilder(true, this.context, this.eTable).getColumn(newName);
         if (columnEditor != null) {
             throw new ConflictException("column '" + newName + " already exists.");
@@ -57,7 +64,6 @@ class ColumnEditorBuilder extends AbstractBuilder implements ColumnEditor {
             throw new UnsupportedOperationException("provider " + this.context.getBuilderProvider().getClass() + " column rename Unsupported.");
         }
         //
-        String oldName = this.eColumn.getName();
         boolean reAddPk = false;
         List<String> reAddIndex = new ArrayList<>();
         Map<String, String> reAddFk = new LinkedHashMap<>();

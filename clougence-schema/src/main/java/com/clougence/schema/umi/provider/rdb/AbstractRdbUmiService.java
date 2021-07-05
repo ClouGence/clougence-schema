@@ -1,4 +1,5 @@
 package com.clougence.schema.umi.provider.rdb;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -39,9 +40,9 @@ public abstract class AbstractRdbUmiService<T extends RdbMetaDataService> extend
         }
         //
         rdbTable.setName(umiTable.getName());
-        rdbTable.setTypeDef(UmiTypes.Table);
+        rdbTable.setDataType(UmiTypes.Table);
         rdbTable.setComment(umiTable.getComment());
-        rdbTable.getAttributes().setValue(RdbTableType.class.getName(), umiTable.getTypeDef().getCodeKey());
+        rdbTable.getAttributes().setValue(RdbTableType.class.getName(), umiTable.getDataType().getCodeKey());
         //
         RdbPrimaryKey primaryKey = getPrimaryKey(catalog, schema, table);
         if (primaryKey != null) {

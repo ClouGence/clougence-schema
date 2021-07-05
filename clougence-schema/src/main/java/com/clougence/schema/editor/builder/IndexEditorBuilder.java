@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +50,11 @@ class IndexEditorBuilder extends AbstractBuilder implements IndexEditor {
         if (StringUtils.isBlank(newName)) {
             throw new NullPointerException("new name is null.");
         }
+        String oldName = this.eIndex.getName();
+        if (StringUtils.equals(oldName, newName)) {
+            return;
+        }
+        //
         IndexEditor indexEditor = new TableEditorBuilder(true, this.context, this.eTable).getIndexEditor(newName);
         if (indexEditor != null) {
             throw new ConflictException("index '" + newName + " already exists.");

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi.provider.rdb;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.junit.Test;
 import com.clougence.schema.AbstractMetadataServiceSupplierTest;
 import com.clougence.schema.DsType;
 import com.clougence.schema.DsUtils;
@@ -30,15 +39,6 @@ import com.clougence.schema.umi.special.rdb.*;
 import com.clougence.schema.umi.types.JavaTypes;
 import com.clougence.schema.umi.types.UmiTypes;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /***
  *
@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class PostgreSqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<PostgresMetadataProvider> {
+
     @Override
     protected Connection initConnection() throws SQLException {
         return DsUtils.localPg();

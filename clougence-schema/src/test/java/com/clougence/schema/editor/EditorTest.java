@@ -1,4 +1,11 @@
 package com.clougence.schema.editor;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.junit.Test;
 import com.clougence.schema.AbstractMetadataServiceSupplierTest;
 import com.clougence.schema.DsType;
 import com.clougence.schema.DsUtils;
@@ -8,15 +15,9 @@ import com.clougence.schema.metadata.provider.rdb.MySqlMetadataProvider;
 import com.clougence.schema.metadata.typemapping.TypeMapping;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 
 public class EditorTest extends AbstractMetadataServiceSupplierTest<MySqlMetadataProvider> {
+
     @Override
     protected Connection initConnection() throws SQLException {
         return DsUtils.localMySQL();

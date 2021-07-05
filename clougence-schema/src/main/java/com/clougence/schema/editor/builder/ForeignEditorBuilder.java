@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+
 import java.util.*;
 
 import com.clougence.schema.editor.ConflictException;
@@ -46,6 +47,11 @@ class ForeignEditorBuilder extends AbstractBuilder implements ForeignKeyEditor {
         if (StringUtils.isBlank(newName)) {
             throw new NullPointerException("new name is null.");
         }
+        String oldName = this.eForeignKey.getName();
+        if (StringUtils.equals(oldName, newName)) {
+            return;
+        }
+        //
         ForeignKeyEditor foreignKeyEditor = new TableEditorBuilder(true, this.context, this.eTable).getForeignKeyEditor(newName);
         if (foreignKeyEditor != null) {
             throw new ConflictException("foreign Key '" + newName + " already exists.");

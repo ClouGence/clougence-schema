@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema;
-import com.alibaba.druid.pool.DruidDataSource;
-import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,12 +22,18 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
+
 /***
  * 创建JDBC环境
  * @version : 2014-1-13
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DsUtils {
+
     public static String MYSQL_SCHEMA_NAME    = "devtester";
     public static String ADBMYSQL_SCHEMA_NAME = "adb_mysql_4387qyy";
 

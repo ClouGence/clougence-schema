@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-import com.clougence.schema.AbstractMetadataServiceSupplierTest;
-import com.clougence.schema.DsUtils;
-import com.clougence.schema.metadata.FieldType;
-import com.clougence.schema.metadata.domain.rdb.oracle.*;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -32,12 +25,20 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.Test;
+import com.clougence.schema.AbstractMetadataServiceSupplierTest;
+import com.clougence.schema.DsUtils;
+import com.clougence.schema.metadata.FieldType;
+import com.clougence.schema.metadata.domain.rdb.oracle.*;
+import net.hasor.db.jdbc.core.JdbcTemplate;
+
 /***
  *
  * @version : 2021-3-22
  * @author 赵永春 (zyc@hasor.net)
  */
 public class OracleMetadataServiceSupplierTest extends AbstractMetadataServiceSupplierTest<OracleMetadataProvider> {
+
     @Override
     protected Connection initConnection() throws SQLException {
         return DsUtils.localOracle();

@@ -6,12 +6,12 @@ import java.util.Map;
 
 import com.clougence.schema.umi.io.serializer.ValueUmiSchemaSerializer;
 import com.clougence.schema.umi.special.rdb.RdbColumn;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class RdbColumnSerializer //
-        extends ValueUmiSchemaSerializer<RdbColumn> {
+public class RdbColumnSerializer extends ValueUmiSchemaSerializer<RdbColumn> {
 
-    protected void writeToMap(RdbColumn rdbColumn, Map<String, Object> toMap) {
+    protected void writeToMap(RdbColumn rdbColumn, Map<String, Object> toMap) throws JsonProcessingException {
         super.writeToMap(rdbColumn, toMap);
         toMap.put("class", RdbColumn.class.getName());
 

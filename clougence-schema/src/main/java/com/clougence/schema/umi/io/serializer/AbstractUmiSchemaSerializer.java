@@ -6,14 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.clougence.schema.SerializerRegistry;
 import com.clougence.schema.umi.AbstractUmiSchema;
 import com.clougence.schema.umi.UmiConstraint;
-import com.clougence.schema.umi.io.SerializerRegistry;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractUmiSchemaSerializer<T extends AbstractUmiSchema> //
         extends AbstractUmiAttributesSerializer<T> {
 
-    protected void writeToMap(T umiSchema, Map<String, Object> toMap) {
+    protected void writeToMap(T umiSchema, Map<String, Object> toMap) throws JsonProcessingException {
         super.writeToMap(umiSchema, toMap);
 
         toMap.put("name", umiSchema.getName());
@@ -39,10 +42,12 @@ public abstract class AbstractUmiSchemaSerializer<T extends AbstractUmiSchema> /
             if (serializer == null) {
                 throw new UnsupportedOperationException(umiConstraint.getClass().getName() + " type Unsupported.");
             } else {
-                constraintList.add(serializer.apply(umiConstraint));
+                String applyJson = serializer.apply(umiConstraint);
+                Map<String, Object> readValue = new ObjectMapper().readValue(applyJson, new TypeReference<Map<String, Object>>() {
+                });
+                constraintList.add(readValue);
             }
         }
         toMap.put("constraints", constraintList);
     }
-
 }

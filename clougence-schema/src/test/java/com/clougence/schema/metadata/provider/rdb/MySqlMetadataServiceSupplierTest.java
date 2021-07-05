@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
-import com.clougence.schema.AbstractMetadataServiceSupplierTest;
-import com.clougence.schema.DsUtils;
-import com.clougence.schema.metadata.domain.rdb.mysql.*;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-import org.junit.Test;
+import static com.clougence.schema.DsUtils.MYSQL_SCHEMA_NAME;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.clougence.schema.DsUtils.MYSQL_SCHEMA_NAME;
+import org.junit.Test;
+import com.clougence.schema.AbstractMetadataServiceSupplierTest;
+import com.clougence.schema.DsUtils;
+import com.clougence.schema.metadata.domain.rdb.mysql.*;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 
 /***
  *
@@ -36,6 +36,7 @@ import static com.clougence.schema.DsUtils.MYSQL_SCHEMA_NAME;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MySqlMetadataServiceSupplierTest extends AbstractMetadataServiceSupplierTest<MySqlMetadataProvider> {
+
     @Override
     protected Connection initConnection() throws SQLException {
         return DsUtils.localMySQL();

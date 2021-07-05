@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi.special.rdb;
+
 import com.clougence.schema.umi.ValueUmiSchema;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,4 +33,5 @@ public class RdbColumn extends ValueUmiSchema {
     private Integer numericPrecision;
     private Integer numericScale;
     private Integer datetimePrecision;
+
 }

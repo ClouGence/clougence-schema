@@ -1,45 +1,34 @@
-// package com.clougence.schema.umi.io.serializer.special.rdb;
-//
-// import java.io.IOException;
-// import java.util.ArrayList;
-// import java.util.HashMap;
-// import java.util.Map;
-//
-// import com.clougence.schema.umi.io.serializer.AbstractUmiConstraintSerializer;
-// import com.clougence.schema.umi.special.rdb.RdbForeignKey;
-// import com.fasterxml.jackson.databind.ObjectMapper;
-//
-// public class RdbIndexSerializer //
-// extends AbstractUmiConstraintSerializer<RdbIndex> {
-//
-// protected void writeToMap(RdbForeignKey rdbForeignKey, Map<String, Object> toMap) {
-// super.writeToMap(rdbForeignKey, toMap);
-// toMap.put("class", RdbForeignKey.class.getName());
-//
-// toMap.put("columnList", new ArrayList<>(rdbForeignKey.getColumnList()));
-// toMap.put("referenceSchema", rdbForeignKey.getReferenceSchema());
-// toMap.put("referenceTable", rdbForeignKey.getReferenceTable());
-// toMap.put("referenceMapping", new HashMap<>(rdbForeignKey.getReferenceMapping()));
-// if (rdbForeignKey.getUpdateRule() == null) {
-// toMap.put("updateRule", null);
-// } else {
-// toMap.put("updateRule", rdbForeignKey.getUpdateRule().getTypeName());
-// }
-// if (rdbForeignKey.getDeleteRule() == null) {
-// toMap.put("deleteRule", null);
-// } else {
-// toMap.put("deleteRule", rdbForeignKey.getDeleteRule().getTypeName());
-// }
-//
-// }
-//
-// @Override
-// public String eApply(RdbForeignKey strutsUmiSchema) throws IOException {
-// Map<String, Object> dataMap = new HashMap<>();
-// this.writeToMap(strutsUmiSchema, dataMap);
-// return new ObjectMapper().writeValueAsString(dataMap);
-// }
-// }
-//// RdbPrimaryKey
-//// RdbTable
-//// RdbUniqueKey
+package com.clougence.schema.umi.io.serializer.special.rdb;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import com.clougence.schema.umi.special.rdb.RdbIndex;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.hasor.utils.StringUtils;
+import net.hasor.utils.function.EFunction;
+
+public class RdbIndexSerializer implements EFunction<RdbIndex, String, IOException> {
+
+    @Override
+    public String eApply(RdbIndex rdbIndex) throws IOException {
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("class", RdbIndex.class.getName());
+
+        dataMap.put("name", rdbIndex.getName());
+        dataMap.put("type", rdbIndex.getType());
+        dataMap.put("columnList", rdbIndex.getColumnList());
+
+        Map<String, String> attrMap = new HashMap<>();
+        rdbIndex.getAttributes().toMap().forEach((BiConsumer<Object, Object>) (key, value) -> {
+            String keyStr = StringUtils.toString(key);
+            String valueStr = StringUtils.toString(value);
+            rdbIndex.getAttributes().setValue(keyStr, valueStr);
+        });
+        dataMap.put("attributes", attrMap);
+
+        return new ObjectMapper().writeValueAsString(dataMap);
+    }
+}

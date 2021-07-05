@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.clougence.schema.umi.ValueUmiSchema;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ValueUmiSchemaSerializer<T extends ValueUmiSchema> //
         extends AbstractUmiSchemaSerializer<T> {
 
-    protected void writeToMap(T umiSchema, Map<String, Object> toMap) {
+    protected void writeToMap(T umiSchema, Map<String, Object> toMap) throws JsonProcessingException {
         super.writeToMap(umiSchema, toMap);
         toMap.put("class", ValueUmiSchema.class.getName());
 

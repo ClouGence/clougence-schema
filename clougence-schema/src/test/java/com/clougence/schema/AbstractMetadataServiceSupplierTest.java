@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package com.clougence.schema;
-import com.clougence.schema.metadata.provider.rdb.AbstractMetadataProvider;
-import net.hasor.db.jdbc.core.JdbcTemplate;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.clougence.schema.metadata.provider.rdb.AbstractMetadataProvider;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 
 /***
  *
@@ -31,9 +31,10 @@ import java.sql.SQLException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractMetadataServiceSupplierTest<T extends AbstractMetadataProvider> {
-    private static final Logger     logger = LoggerFactory.getLogger(AbstractMetadataServiceSupplierTest.class);
-    protected            Connection connection;
-    protected            T          repository;
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractMetadataServiceSupplierTest.class);
+    protected Connection        connection;
+    protected T                 repository;
 
     protected abstract T initRepository(Connection con);
 

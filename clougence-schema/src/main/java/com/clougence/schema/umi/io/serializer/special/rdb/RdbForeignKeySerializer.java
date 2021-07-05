@@ -7,12 +7,12 @@ import java.util.Map;
 
 import com.clougence.schema.umi.io.serializer.AbstractUmiConstraintSerializer;
 import com.clougence.schema.umi.special.rdb.RdbForeignKey;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class RdbForeignKeySerializer //
-        extends AbstractUmiConstraintSerializer<RdbForeignKey> {
+public class RdbForeignKeySerializer extends AbstractUmiConstraintSerializer<RdbForeignKey> {
 
-    protected void writeToMap(RdbForeignKey rdbForeignKey, Map<String, Object> toMap) {
+    protected void writeToMap(RdbForeignKey rdbForeignKey, Map<String, Object> toMap) throws JsonProcessingException {
         super.writeToMap(rdbForeignKey, toMap);
         toMap.put("class", RdbForeignKey.class.getName());
 
