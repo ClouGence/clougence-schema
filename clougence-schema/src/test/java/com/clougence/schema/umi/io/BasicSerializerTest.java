@@ -1,6 +1,5 @@
 package com.clougence.schema.umi.io;
 
-import java.lang.reflect.Type;
 import java.util.Set;
 
 import org.junit.Before;
@@ -19,8 +18,8 @@ public class BasicSerializerTest extends AbstractSerializerTest {
 
     @Before
     public void beforeTest() {
-        Set<Type> keys = SerializerRegistry.deserializerKeys();
-        for (Type key : keys) {
+        Set<Class<?>> keys = SerializerRegistry.deserializerKeys();
+        for (Class<?> key : keys) {
             assert SerializerRegistry.getDeserializer(key) != null;
         }
     }

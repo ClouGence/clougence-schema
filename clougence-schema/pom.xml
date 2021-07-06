@@ -22,6 +22,7 @@
         <!--<skipTests>true</skipTests>-->
         <hasor.version>4.2.5</hasor.version>
         <kudu.version>1.15.0</kudu.version>
+        <jackson.version>2.12.3</jackson.version>
     </properties>
 
     <developers>
@@ -45,7 +46,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.11.1</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- 测试 -->
