@@ -31,16 +31,7 @@ public class ArrayUmiSchema extends AbstractUmiSchema {
     /** 获取集合中的对象类型 */
     private AbstractUmiSchema genericType;
 
-    public ArrayUmiSchema(){
-        this.setDataType(UmiStrutsTypes.Array);
-    }
-
     @Override
     public final FieldType getDataType() { return UmiStrutsTypes.Array; }
 
-    public final void setDataType(FieldType fieldType) {
-        if (fieldType != this.getDataType()) {
-            throw new UnsupportedOperationException("FieldType must be Array");
-        }
-    }
 }

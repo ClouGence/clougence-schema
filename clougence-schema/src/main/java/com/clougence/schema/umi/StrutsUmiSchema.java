@@ -34,16 +34,7 @@ public class StrutsUmiSchema extends AbstractUmiSchema {
     /** 每个字段Map */
     private Map<String, AbstractUmiSchema> properties = new LinkedHashMap<>();
 
-    public StrutsUmiSchema(){
-        this.setDataType(UmiStrutsTypes.Struts);
-    }
-
     @Override
     public FieldType getDataType() { return UmiStrutsTypes.Struts; }
 
-    public void setDataType(FieldType fieldType) {
-        if (fieldType != this.getDataType()) {
-            throw new UnsupportedOperationException("FieldType must be Struts");
-        }
-    }
 }

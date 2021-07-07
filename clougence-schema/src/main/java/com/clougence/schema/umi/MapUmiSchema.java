@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi;
+
 import com.clougence.schema.metadata.FieldType;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,16 +28,7 @@ import lombok.Setter;
 @Setter
 public class MapUmiSchema extends AbstractUmiSchema {
 
-    public MapUmiSchema(){
-        this.setDataType(UmiStrutsTypes.Map);
-    }
-
     @Override
     public final FieldType getDataType() { return UmiStrutsTypes.Map; }
 
-    public final void setDataType(FieldType fieldType) {
-        if (fieldType != this.getDataType()) {
-            throw new UnsupportedOperationException("FieldType must be Map");
-        }
-    }
 }

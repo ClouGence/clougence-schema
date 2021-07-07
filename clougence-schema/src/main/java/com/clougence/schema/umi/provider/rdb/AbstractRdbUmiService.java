@@ -8,7 +8,6 @@ import com.clougence.schema.metadata.provider.rdb.RdbMetaDataService;
 import com.clougence.schema.umi.ValueUmiSchema;
 import com.clougence.schema.umi.provider.AbstractUmiService;
 import com.clougence.schema.umi.special.rdb.*;
-import com.clougence.schema.umi.types.UmiTypes;
 import net.hasor.utils.function.ESupplier;
 
 /**
@@ -40,7 +39,6 @@ public abstract class AbstractRdbUmiService<T extends RdbMetaDataService> extend
         }
         //
         rdbTable.setName(umiTable.getName());
-        rdbTable.setDataType(UmiTypes.Table);
         rdbTable.setComment(umiTable.getComment());
         rdbTable.getAttributes().setValue(RdbTableType.class.getName(), umiTable.getDataType().getCodeKey());
         //
