@@ -16,6 +16,11 @@
 package com.clougence.schema.umi.special.rdb;
 
 import com.clougence.schema.umi.ValueUmiSchema;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonDeserializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonSerializer;
+import com.clougence.schema.umi.serializer.special.rdb.RdbColumnSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +31,23 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonSerialize(using = RdbColumn.JacksonSerializer.class)
+@JsonDeserialize(using = RdbColumn.JacksonDeserializer.class)
 public class RdbColumn extends ValueUmiSchema {
+
+    public static class JacksonDeserializer extends AbstractJsonDeserializer<RdbColumn> {
+
+        public JacksonDeserializer(){
+            super(new RdbColumnSerializer());
+        }
+    }
+
+    public static class JacksonSerializer extends AbstractJsonSerializer<RdbColumn> {
+
+        public JacksonSerializer(){
+            super(new RdbColumnSerializer());
+        }
+    }
 
     private Long    charLength;
     private Long    byteLength;

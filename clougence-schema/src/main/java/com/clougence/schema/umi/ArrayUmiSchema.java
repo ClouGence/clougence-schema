@@ -16,6 +16,11 @@
 package com.clougence.schema.umi;
 
 import com.clougence.schema.metadata.FieldType;
+import com.clougence.schema.umi.serializer.ArrayUmiSchemaSerializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonDeserializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +31,23 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonSerialize(using = ArrayUmiSchema.JacksonSerializer.class)
+@JsonDeserialize(using = ArrayUmiSchema.JacksonDeserializer.class)
 public class ArrayUmiSchema extends AbstractUmiSchema {
+
+    public static class JacksonDeserializer extends AbstractJsonDeserializer<ArrayUmiSchema> {
+
+        public JacksonDeserializer(){
+            super(new ArrayUmiSchemaSerializer<>());
+        }
+    }
+
+    public static class JacksonSerializer extends AbstractJsonSerializer<ArrayUmiSchema> {
+
+        public JacksonSerializer(){
+            super(new ArrayUmiSchemaSerializer<>());
+        }
+    }
 
     /** 获取集合中的对象类型 */
     private AbstractUmiSchema genericType;

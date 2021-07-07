@@ -19,6 +19,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.clougence.schema.metadata.FieldType;
+import com.clougence.schema.umi.serializer.StrutsUmiSchemaSerializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonDeserializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +34,23 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonSerialize(using = StrutsUmiSchema.JacksonSerializer.class)
+@JsonDeserialize(using = StrutsUmiSchema.JacksonDeserializer.class)
 public class StrutsUmiSchema extends AbstractUmiSchema {
+
+    public static class JacksonDeserializer extends AbstractJsonDeserializer<StrutsUmiSchema> {
+
+        public JacksonDeserializer(){
+            super(new StrutsUmiSchemaSerializer<>());
+        }
+    }
+
+    public static class JacksonSerializer extends AbstractJsonSerializer<StrutsUmiSchema> {
+
+        public JacksonSerializer(){
+            super(new StrutsUmiSchemaSerializer<>());
+        }
+    }
 
     /** 每个字段Map */
     private Map<String, AbstractUmiSchema> properties = new LinkedHashMap<>();

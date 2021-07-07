@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 package com.clougence.schema.umi;
+
 import com.clougence.schema.metadata.FieldType;
+import com.clougence.schema.umi.serializer.ValueUmiSchemaSerializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonDeserializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,11 +31,28 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonSerialize(using = ValueUmiSchema.JacksonSerializer.class)
+@JsonDeserialize(using = ValueUmiSchema.JacksonDeserializer.class)
 public class ValueUmiSchema extends AbstractUmiSchema {
+
+    public static class JacksonDeserializer extends AbstractJsonDeserializer<ValueUmiSchema> {
+
+        public JacksonDeserializer(){
+            super(new ValueUmiSchemaSerializer<>());
+        }
+    }
+
+    public static class JacksonSerializer extends AbstractJsonSerializer<ValueUmiSchema> {
+
+        public JacksonSerializer(){
+            super(new ValueUmiSchemaSerializer<>());
+        }
+    }
 
     private String    defaultValue = null;
     private FieldType dataType     = UmiStrutsTypes.Any;
 
     @Override
     public final FieldType getDataType() { return this.dataType; }
+
 }

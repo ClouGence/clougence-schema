@@ -16,6 +16,11 @@
 package com.clougence.schema.umi;
 
 import com.clougence.schema.metadata.FieldType;
+import com.clougence.schema.umi.serializer.MapUmiSchemaSerializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonDeserializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +31,23 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonSerialize(using = MapUmiSchema.JacksonSerializer.class)
+@JsonDeserialize(using = MapUmiSchema.JacksonDeserializer.class)
 public class MapUmiSchema extends AbstractUmiSchema {
+
+    public static class JacksonDeserializer extends AbstractJsonDeserializer<MapUmiSchema> {
+
+        public JacksonDeserializer(){
+            super(new MapUmiSchemaSerializer<>());
+        }
+    }
+
+    public static class JacksonSerializer extends AbstractJsonSerializer<MapUmiSchema> {
+
+        public JacksonSerializer(){
+            super(new MapUmiSchemaSerializer<>());
+        }
+    }
 
     @Override
     public final FieldType getDataType() { return UmiStrutsTypes.Map; }

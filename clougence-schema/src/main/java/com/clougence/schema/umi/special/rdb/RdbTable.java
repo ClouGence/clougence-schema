@@ -21,6 +21,11 @@ import java.util.List;
 
 import com.clougence.schema.umi.StrutsUmiSchema;
 import com.clougence.schema.umi.constraint.GeneralConstraintType;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonDeserializer;
+import com.clougence.schema.umi.serializer.jackson.AbstractJsonSerializer;
+import com.clougence.schema.umi.serializer.special.rdb.RdbTableSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,7 +36,23 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonSerialize(using = RdbTable.JacksonSerializer.class)
+@JsonDeserialize(using = RdbTable.JacksonDeserializer.class)
 public class RdbTable extends StrutsUmiSchema {
+
+    public static class JacksonDeserializer extends AbstractJsonDeserializer<RdbTable> {
+
+        public JacksonDeserializer(){
+            super(new RdbTableSerializer());
+        }
+    }
+
+    public static class JacksonSerializer extends AbstractJsonSerializer<RdbTable> {
+
+        public JacksonSerializer(){
+            super(new RdbTableSerializer());
+        }
+    }
 
     private List<RdbIndex> indices = new ArrayList<>();
 
