@@ -65,7 +65,7 @@ public abstract class AbstractDialect implements Dialect {
         if (columnSchemaPath == null || columnSchemaPath.size() <= 1) {
             return fmtName(useQualifier, tableSchema.getName());
         } else {
-            return fmtName(useQualifier, columnSchemaPath.get(columnSchemaPath.size() - 1)) + "." + fmtName(useQualifier, tableSchema.getName());
+            return fmtName(useQualifier, columnSchemaPath.get(columnSchemaPath.size() - 2)) + "." + fmtName(useQualifier, tableSchema.getName());
         }
     }
 
