@@ -8,6 +8,33 @@
 
     <!-- Project Info -->
     <name>clougence-schema-parent</name>
+    <description>master POM</description>
+    <url>${project.website}</url>
+    <inceptionYear>${project.inceptionYear}</inceptionYear>
+
+    <!-- 授权协议 -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git@github.com:ClouGence/clougence-schema.git</connection>
+        <developerConnection>scm:git:git@github.com:ClouGence/clougence-schema.git</developerConnection>
+        <url>git@github.com:ClouGence/clougence-schema.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- 开发者 -->
+    <developers>
+        <developer>
+            <name>赵永春(Mr.Zhao)</name>
+            <email>zyc@hasor.net</email>
+        </developer>
+    </developers>
 
     <!-- 配置属性 -->
     <properties>
@@ -15,6 +42,8 @@
         <downloadJavadocs>true</downloadJavadocs>
         <jacoco.version>0.8.5</jacoco.version>
         <project.shortname>Clougence-</project.shortname>
+        <project.website>https://www.clougence.com/</project.website>
+        <project.inceptionYear>2021</project.inceptionYear>
         <hasor.version>4.2.5</hasor.version>
     </properties>
 
