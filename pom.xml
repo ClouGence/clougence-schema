@@ -22,9 +22,9 @@
 
     <!-- SCM -->
     <scm>
-        <connection>scm:git:git@github.com:ClouGence/clougence-schema.git</connection>
-        <developerConnection>scm:git:git@github.com:ClouGence/clougence-schema.git</developerConnection>
-        <url>git@github.com:ClouGence/clougence-schema.git</url>
+        <connection>scm:git:git@gitee.com:clougence/clougence-schema.git</connection>
+        <developerConnection>scm:git:git@gitee.com:clougence/clougence-schema.git</developerConnection>
+        <url>git@gitee.com:clougence/clougence-schema.git</url>
         <tag>HEAD</tag>
     </scm>
 
