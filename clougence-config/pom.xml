@@ -6,16 +6,21 @@
         <artifactId>clougence-schema-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
+
+    <!-- Maven Info -->
     <artifactId>clougence-config</artifactId>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
     <name>clougence-config</name>
+    <description>reading configs util.</description>
 
-    <!-- 配置属性 -->
-    <properties>
-        <hasor.version>4.2.5</hasor.version>
-    </properties>
+    <developers>
+        <developer>
+            <name>赵永春(Mr.Zhao)</name>
+            <email>zyc@hasor.net</email>
+        </developer>
+    </developers>
 
     <!-- 公共依赖 -->
     <dependencies>
