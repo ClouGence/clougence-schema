@@ -1,0 +1,4 @@
+
+mvn release:clean release:prepare -Dmaven.test.skip -Prelease
+
+mvn clean package install deploy -Prelease
