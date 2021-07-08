@@ -48,8 +48,6 @@ public abstract class AbstractUmiSchemaSerializer<T extends AbstractUmiSchema> /
         List<UmiConstraint> constraintList = new ArrayList<>();
         for (Object constraintData : constraintDataList) {
             Map<String, Object> constraintMap = (Map<String, Object>) constraintData;
-            String constraintType = (String) constraintMap.get("class");
-            Class<?> constraintClass = ClassUtils.getClass(constraintType);
             constraintList.add(this.serializer.deserialize(new ObjectMapper().writeValueAsString(constraintMap)));
         }
         umiSchema.setConstraints(constraintList);

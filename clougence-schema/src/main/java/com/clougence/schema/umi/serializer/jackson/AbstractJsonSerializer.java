@@ -22,6 +22,10 @@ public abstract class AbstractJsonSerializer<T> extends JsonSerializer<T> {
             gen.writeStartObject();
             gen.writeRaw(apply.substring(1, apply.length() - 1));
             gen.writeEndObject();
+        } else if (apply.startsWith("[") && apply.endsWith("]")) {
+            gen.writeStartArray();
+            gen.writeRaw(apply.substring(1, apply.length() - 1));
+            gen.writeEndArray();
         }
     }
 }

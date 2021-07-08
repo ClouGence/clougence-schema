@@ -18,6 +18,6 @@ public class AbstractJsonDeserializer<T> extends JsonDeserializer<T> {
     @Override
     public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         String jsonData = p.readValueAsTree().toString();
-        return (T) this.serializer.deserialize(jsonData);
+        return this.serializer.deserialize(jsonData);
     }
 }
