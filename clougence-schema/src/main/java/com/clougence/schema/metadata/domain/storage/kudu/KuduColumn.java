@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.storage.kudu;
+
 import org.apache.kudu.ColumnSchema.CompressionAlgorithm;
 import org.apache.kudu.Common.DataType;
 import lombok.Getter;

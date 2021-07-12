@@ -47,10 +47,9 @@ public class MySqlCreateUtils extends AbstractProvider {
         // idx
         List<EIndex> indices = eTable.getIndices();
         if (indices != null && !indices.isEmpty()) {
-            for (int i = 0; i < indices.size(); i++) {
+            for (EIndex index : indices) {
                 sqlBuild.append(",\n");
-                EIndex eIndex = indices.get(i);
-                buildIndex(sqlBuild, buildContext, eIndex);
+                buildIndex(sqlBuild, buildContext, index);
             }
         }
         //
@@ -104,9 +103,9 @@ public class MySqlCreateUtils extends AbstractProvider {
         CaseSensitivityType caseSensitivity = useDelimited ? buildContext.getDelimitedCaseSensitivity() : buildContext.getPlainCaseSensitivity();
         //
         if (eIndex.getType() == EIndexType.Unique) {
-            sqlBuild.append("  unique key ");
+            sqlBuild.append(" unique key ");
         } else {
-            sqlBuild.append("  key ");
+            sqlBuild.append(" key ");
         }
         sqlBuild.append(fmtIndex(useDelimited, caseSensitivity, eIndex.getName()));
         List<String> pkColumns = eIndex.getColumnList();

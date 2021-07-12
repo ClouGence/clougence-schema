@@ -1,4 +1,5 @@
 package com.clougence.schema.editor.provider.mysql;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -108,7 +109,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         StringBuilder sqlBuild = buildAlterTable(buildContext, catalog, schema, table);
         //
         sqlBuild.append(" modify column " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
-        sqlBuild.append(MySqlProviderUtils.buildColumnType(newInfo));
+        sqlBuild.append(" " + MySqlProviderUtils.buildColumnType(newInfo));
         if (StringUtils.isNotBlank(newInfo.getComment())) {
             sqlBuild.append(" comment '" + newInfo.getComment() + "'");
         }
