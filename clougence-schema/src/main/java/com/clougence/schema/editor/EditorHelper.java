@@ -1,4 +1,5 @@
 package com.clougence.schema.editor;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
@@ -151,7 +152,7 @@ public class EditorHelper {
             return new TableEditorBuilder(eTable, editorContext);
         } catch (Exception e) {
             String msg = "editorData to TableEditor error.msg:" + ExceptionUtils.getRootCauseMessage(e);
-            throw new RuntimeException(msg, e);
+            throw ExceptionUtils.toRuntimeException(e, ee -> new RuntimeException(msg, ee));
         }
     }
 
@@ -179,7 +180,7 @@ public class EditorHelper {
             return new TableEditorBuilder(eTable, editorContext);
         } catch (Exception e) {
             String msg = "editorData to TableEditor error.msg:" + ExceptionUtils.getRootCauseMessage(e);
-            throw new RuntimeException(msg, e);
+            throw ExceptionUtils.toRuntimeException(e, ee -> new RuntimeException(msg, ee));
         }
     }
 }
