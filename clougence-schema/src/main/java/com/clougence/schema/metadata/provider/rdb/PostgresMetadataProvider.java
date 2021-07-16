@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+
 import java.sql.Connection;
 import java.sql.JDBCType;
 import java.sql.SQLException;
@@ -789,7 +790,18 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         aliasMap.put("timetz", "time with time zone");
         aliasMap.put("varbit", "bit varying");
         aliasMap.put("bool", "boolean");
+        // https://www.postgresql.org/docs/13/datatype-oid.html
+        aliasMap.put("regclass", "oid");
+        aliasMap.put("regcollation", "oid");
+        aliasMap.put("regconfig", "oid");
+        aliasMap.put("regdictionary", "oid");
+        aliasMap.put("regnamespace", "oid");
+        aliasMap.put("regoper", "oid");
+        aliasMap.put("regoperator", "oid");
         aliasMap.put("regproc", "oid");
+        aliasMap.put("regprocedure", "oid");
+        aliasMap.put("regrole", "oid");
+        aliasMap.put("regtype", "oid");
         //
         aliasMap.put("int[]", "integer[]");
         aliasMap.put("int2[]", "smallint[]");
