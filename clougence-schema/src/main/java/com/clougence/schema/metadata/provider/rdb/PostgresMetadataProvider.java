@@ -789,6 +789,7 @@ public class PostgresMetadataProvider extends AbstractMetadataProvider implement
         aliasMap.put("timetz", "time with time zone");
         aliasMap.put("varbit", "bit varying");
         aliasMap.put("bool", "boolean");
+        aliasMap.put("regproc", "oid");
         //
         aliasMap.put("int[]", "integer[]");
         aliasMap.put("int2[]", "smallint[]");

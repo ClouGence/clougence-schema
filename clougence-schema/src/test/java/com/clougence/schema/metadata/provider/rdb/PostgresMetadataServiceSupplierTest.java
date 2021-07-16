@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -191,6 +192,18 @@ public class PostgresMetadataServiceSupplierTest extends AbstractMetadataService
         assert !columnMap.get("r_index").isUniqueKey();
         assert !columnMap.get("r_data").isPrimaryKey();
         assert !columnMap.get("r_data").isUniqueKey();
+    }
+
+    @Test
+    public void getColumns_3() throws SQLException {
+        List<PostgresColumn> columnList = this.repository.getColumns("pg_catalog", "pg_amproc");
+        Map<String, PostgresColumn> columnMap = columnList.stream().collect(Collectors.toMap(PostgresColumn::getName, c -> c));
+        assert columnMap.size() == 6;
+        assert columnMap.get("amproc").getSqlType() == PostgresTypes.OID;
+        assert columnMap.get("amprocfamily").getSqlType() == PostgresTypes.OID;
+        assert columnMap.get("oid").getSqlType() == PostgresTypes.OID;
+        assert columnMap.get("amprocrighttype").getSqlType() == PostgresTypes.OID;
+        assert columnMap.get("amproclefttype").getSqlType() == PostgresTypes.OID;
     }
 
     @Test
