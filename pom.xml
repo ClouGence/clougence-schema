@@ -240,6 +240,10 @@
             <id>rdc-snapshots</id>
             <url>https://packages.aliyun.com/maven/repository/2012878-snapshot-wXHWRP</url>
         </snapshotRepository>
+        <repository>
+            <id>rdc-releases</id>
+            <url>https://packages.aliyun.com/maven/repository/2012878-release-sX3W6A</url>
+        </repository>
     </distributionManagement>
     <repositories>
         <repository>
@@ -249,6 +253,13 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>rdc-releases</id>
+            <url>https://packages.aliyun.com/maven/repository/2012878-release-sX3W6A</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -256,6 +267,13 @@
             <url>https://packages.aliyun.com/maven/repository/2012878-snapshot-wXHWRP</url>
             <snapshots>
                 <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>rdc-releases</id>
+            <url>https://packages.aliyun.com/maven/repository/2012878-release-sX3W6A</url>
+            <snapshots>
+                <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
