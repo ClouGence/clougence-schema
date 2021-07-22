@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.config;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.text.ParsePosition;
@@ -23,8 +24,8 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.io.FilenameUtils;
+import com.clougence.commons.StringUtils;
+import com.clougence.commons.io.FilenameUtils;
 
 /**
  * Settings接口的抽象实现。

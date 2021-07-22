@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.config;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,10 +23,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import com.clougence.commons.ResourcesUtils;
+import com.clougence.commons.StringUtils;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.StreamType;
-import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.StringUtils;
 
 /**
  * 继承自{@link InputStreamSettings}父类，该类自动装载 classpath 中所有静态配置文件。

@@ -1,4 +1,5 @@
 package com.clougence.schema.editor;
+
 import com.clougence.schema.metadata.CaseSensitivityType;
 import lombok.Getter;
 import lombok.Setter;

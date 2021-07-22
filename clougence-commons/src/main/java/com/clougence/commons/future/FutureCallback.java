@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.domain.storage.kudu;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.Getter;
-import lombok.Setter;
-
+package com.clougence.commons.future;
 /**
- * Kudu Index
- * @version : 2021-06-24
+ *
+ * @version : 2014年11月15日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Getter
-@Setter
-public class KuduIndex {
+public interface FutureCallback<T> {
+    /**执行完毕。*/
+    public void completed(T result);
 
-    private List<String> columns = new ArrayList<>();
+    /**执行过程出错*/
+    public void failed(Throwable ex);
 }

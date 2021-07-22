@@ -48,12 +48,18 @@
     </properties>
 
     <modules>
+        <module>clougence-commons</module>
         <module>clougence-config</module>
         <module>clougence-schema</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.clougence</groupId>
+                <artifactId>clougence-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.clougence</groupId>
                 <artifactId>clougence-config</artifactId>

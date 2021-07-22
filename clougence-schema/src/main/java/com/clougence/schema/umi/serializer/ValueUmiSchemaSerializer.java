@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.clougence.commons.ClassUtils;
+import com.clougence.commons.EnumUtils;
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.umi.ValueUmiSchema;
-import com.clougence.schema.utils.EnumUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.hasor.utils.ClassUtils;
-import net.hasor.utils.StringUtils;
 
 public class ValueUmiSchemaSerializer<T extends ValueUmiSchema> extends AbstractUmiSchemaSerializer<T> {
 

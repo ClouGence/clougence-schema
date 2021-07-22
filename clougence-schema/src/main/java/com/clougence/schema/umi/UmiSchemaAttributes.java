@@ -1,9 +1,10 @@
 package com.clougence.schema.umi;
+
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.clougence.schema.utils.CollectionUtils;
+import com.clougence.commons.CollectionUtils;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -25,9 +25,8 @@
     <!-- 公共依赖 -->
     <dependencies>
         <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-commons</artifactId>
-            <version>${hasor.version}</version>
+            <groupId>com.clougence</groupId>
+            <artifactId>clougence-commons</artifactId>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>

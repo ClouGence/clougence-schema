@@ -1,4 +1,5 @@
 package com.clougence.schema.metadata.typemapping;
+
 import com.clougence.schema.DsType;
 import lombok.Getter;
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+
 import static com.clougence.schema.metadata.domain.rdb.oracle.OracleSqlTypes.TIMESTAMP;
 
 import java.sql.Connection;
@@ -23,12 +24,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.oracle.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.utils.StringUtils;
 
 /**
  * Oracle 元信息获取，参考资料：

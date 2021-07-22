@@ -3,8 +3,8 @@ package com.clougence.schema.umi.serializer;
 import java.io.IOException;
 import java.util.Map;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.umi.AbstractUmiConstraint;
-import net.hasor.utils.StringUtils;
 
 public abstract class AbstractUmiConstraintSerializer<T extends AbstractUmiConstraint> //
         extends AbstractUmiAttributesSerializer<T> {

@@ -15,8 +15,6 @@
  */
 package com.clougence.schema.metadata.domain.storage.kudu;
 
-import org.apache.kudu.ColumnSchema.CompressionAlgorithm;
-import org.apache.kudu.Common.DataType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,20 +27,21 @@ import lombok.Setter;
 @Setter
 public class KuduColumn {
 
-    private String               name;
-    private KuduTypes            kuduTypes;
-    private String               comment;
+    private String    name;
+    private KuduTypes kuduTypes;
+    private String    columnType;
+    private String    comment = "";
+    private boolean   primaryKey;
+    private boolean   partition;
 
-    private Integer              precision;
-    private Integer              scale;
-    private Integer              length;
+    private boolean   nullable;
+    private Object    defaultValue;
+    private Integer   precision;
+    private Integer   scale;
+    private Integer   length;
 
-    private boolean              key;
-    private boolean              nullable;
-    private Object               defaultValue;
-    private int                  desiredBlockSize;
-    private KuduEncoding         encoding;
-    private CompressionAlgorithm compressionAlgorithm;
-    private int                  typeSize;
-    private DataType             wireType;
+    private Integer   desiredBlockSize;
+    private String    encoding;
+    private String    compressionAlgorithm;
+    private Integer   typeSize;
 }

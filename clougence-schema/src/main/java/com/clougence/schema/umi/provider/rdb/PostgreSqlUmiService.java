@@ -1,10 +1,13 @@
 package com.clougence.schema.umi.provider.rdb;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.clougence.commons.StringUtils;
+import com.clougence.commons.function.ESupplier;
 import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.domain.rdb.postgres.*;
 import com.clougence.schema.metadata.provider.rdb.PostgresMetadataProvider;
@@ -16,8 +19,6 @@ import com.clougence.schema.umi.constraint.Unique;
 import com.clougence.schema.umi.special.rdb.*;
 import com.clougence.schema.umi.types.JavaTypes;
 import com.clougence.schema.umi.types.UmiTypes;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.function.ESupplier;
 import net.hasor.utils.json.JSON;
 
 /**

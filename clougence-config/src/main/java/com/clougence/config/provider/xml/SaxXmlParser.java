@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.config.provider.xml;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -21,10 +22,10 @@ import java.util.Stack;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+import com.clougence.commons.StringUtils;
 import com.clougence.config.SettingNode;
 import com.clougence.config.Settings;
 import com.clougence.config.data.TreeNode;
-import net.hasor.utils.StringUtils;
 
 /**
  * @version : 2013-7-13

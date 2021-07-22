@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,23 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.utils;
-
+package com.clougence.commons.future;
 /**
  *
- * @version : 2013-4-12
+ * @version : 2014年11月15日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class EnumUtils {
-
-    public static Enum<?> readEnum(String enumName, Class<?> enumType) {
-        Class<Enum<?>> forEnum = (Class<Enum<?>>) enumType;
-        for (Enum<?> item : forEnum.getEnumConstants()) {
-            String enumValue = item.name().toLowerCase();
-            if (enumValue.equals(enumName.toLowerCase())) {
-                return item;
-            }
-        }
-        return null;
-    }
+public interface Cancellable {
+    /**取消调用。*/
+    public boolean cancel();
 }

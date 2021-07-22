@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.adb.mysql;
+
 import java.sql.JDBCType;
 
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
@@ -29,24 +30,26 @@ import lombok.Setter;
 @Setter
 public class AdbMySqlColumn implements ColumnDef {
 
-    private String        name;
-    private boolean       nullable;
-    private String        dataType;
-    private String        columnType;
-    private AdbMySqlTypes sqlType;
-    private JDBCType      jdbcType;
-    private boolean       primaryKey;
-    private String        comment;
+    private String                      name;
+    private boolean                     nullable;
+    private String                      dataType;
+    private String                      columnType;
+    private AdbMySqlTypes               sqlType;
+    private JDBCType                    jdbcType;
+    private boolean                     primaryKey;
+    private String                      comment;
     //
-    private Integer       datetimePrecision;
-    private Integer       numericPrecision;
-    private Integer       numericScale;
-    private String        defaultValue;
+    private Integer                     datetimePrecision;
+    private Integer                     numericPrecision;
+    private Integer                     numericScale;
+    private String                      defaultValue;
     //
-    private String        defaultCollationName;
-    private String        defaultCharacterSetName;
-    private Long          charactersMaxLength;
-    private Integer       bytesMaxLength;
+    private String                      defaultCollationName;
+    private String                      defaultCharacterSetName;
+    private Long                        charactersMaxLength;
+    private Integer                     bytesMaxLength;
+    //
+    private AdbMySqlOnCurrentUpdateType onCurrentUpdateType;
 
     public String getName() { return this.name; }
 

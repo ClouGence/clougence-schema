@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.umi.AbstractUmiAttributes;
-import net.hasor.utils.StringUtils;
 
 public abstract class AbstractUmiAttributesSerializer<T extends AbstractUmiAttributes> implements Serializer<T> {
 

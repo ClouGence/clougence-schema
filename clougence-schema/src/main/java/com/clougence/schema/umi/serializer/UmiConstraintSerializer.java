@@ -3,6 +3,8 @@ package com.clougence.schema.umi.serializer;
 import java.io.IOException;
 import java.util.Map;
 
+import com.clougence.commons.ClassUtils;
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.umi.UmiConstraint;
 import com.clougence.schema.umi.constraint.NonNull;
 import com.clougence.schema.umi.constraint.Primary;
@@ -19,8 +21,6 @@ import com.clougence.schema.umi.special.rdb.RdbUniqueKey;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.hasor.utils.ClassUtils;
-import net.hasor.utils.StringUtils;
 
 public class UmiConstraintSerializer implements Serializer<UmiConstraint> {
 

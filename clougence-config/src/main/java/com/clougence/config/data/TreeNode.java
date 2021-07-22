@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.config.data;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,11 +23,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.clougence.commons.ArrayUtils;
+import com.clougence.commons.StringUtils;
 import com.clougence.config.SettingNode;
 import com.clougence.config.Settings;
 import com.clougence.config.UpdateValue;
-import net.hasor.utils.ArrayUtils;
-import net.hasor.utils.StringUtils;
 
 /**
  * @version : 2014年10月11日

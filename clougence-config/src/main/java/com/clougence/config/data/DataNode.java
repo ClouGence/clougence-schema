@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package com.clougence.config.data;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.config.Settings;
 import com.clougence.config.UpdateValue;
-import net.hasor.utils.StringUtils;
 
 /**
  * @version : 2014年10月11日

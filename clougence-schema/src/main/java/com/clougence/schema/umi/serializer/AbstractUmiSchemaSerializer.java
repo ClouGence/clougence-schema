@@ -6,14 +6,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.clougence.commons.ClassUtils;
+import com.clougence.commons.EnumUtils;
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.umi.AbstractUmiSchema;
 import com.clougence.schema.umi.UmiConstraint;
-import com.clougence.schema.utils.EnumUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.hasor.utils.ClassUtils;
-import net.hasor.utils.StringUtils;
 
 public abstract class AbstractUmiSchemaSerializer<T extends AbstractUmiSchema> //
         extends AbstractUmiAttributesSerializer<T> {

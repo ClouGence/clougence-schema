@@ -3,6 +3,8 @@ package com.clougence.schema.umi.serializer;
 import java.io.IOException;
 import java.util.Map;
 
+import com.clougence.commons.ClassUtils;
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.umi.*;
 import com.clougence.schema.umi.serializer.special.rdb.RdbColumnSerializer;
 import com.clougence.schema.umi.serializer.special.rdb.RdbTableSerializer;
@@ -11,8 +13,6 @@ import com.clougence.schema.umi.special.rdb.RdbTable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.hasor.utils.ClassUtils;
-import net.hasor.utils.StringUtils;
 
 public class UmiSchemaSerializer implements Serializer<UmiSchema> {
 

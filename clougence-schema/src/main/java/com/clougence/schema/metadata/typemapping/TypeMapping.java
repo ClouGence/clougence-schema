@@ -1,4 +1,5 @@
 package com.clougence.schema.metadata.typemapping;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -6,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.clougence.commons.function.ESupplier;
+import com.clougence.commons.supplier.SingleProvider;
 import com.clougence.config.InputStreamSettings;
 import com.clougence.config.SettingNode;
 import com.clougence.config.Settings;
 import com.clougence.config.provider.StreamType;
 import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.FieldType;
-import net.hasor.utils.function.ESupplier;
-import net.hasor.utils.supplier.SingleProvider;
 
 /**
  * SqlType Mapping Registry

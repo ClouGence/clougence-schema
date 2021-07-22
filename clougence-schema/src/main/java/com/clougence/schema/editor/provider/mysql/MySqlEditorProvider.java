@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.AbstractProvider;
@@ -12,7 +13,6 @@ import com.clougence.schema.editor.provider.BuilderProvider;
 import com.clougence.schema.editor.triggers.TriggerContext;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import lombok.extern.slf4j.Slf4j;
-import net.hasor.utils.StringUtils;
 
 /**
  * @author mode 2021/1/8 19:56
@@ -94,7 +94,7 @@ public class MySqlEditorProvider extends AbstractProvider implements BuilderProv
         //
         sqlBuild.append(" change column " + fmtColumn(useDelimited, caseSensitivity, columnInfo.getName()));
         sqlBuild.append(" " + fmtColumn(useDelimited, caseSensitivity, newColumnName));
-        sqlBuild.append(MySqlProviderUtils.buildColumnType(columnInfo));
+        sqlBuild.append(" " + MySqlProviderUtils.buildColumnType(columnInfo));
         if (StringUtils.isNotBlank(columnInfo.getComment())) {
             sqlBuild.append(" comment '" + columnInfo.getComment() + "'");
         }

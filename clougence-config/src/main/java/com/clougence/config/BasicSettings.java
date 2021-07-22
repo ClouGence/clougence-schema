@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.config;
+
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -21,10 +22,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.clougence.commons.BeanUtils;
+import com.clougence.commons.StringUtils;
+import com.clougence.commons.convert.ConverterUtils;
 import com.clougence.config.data.TreeNode;
-import net.hasor.utils.BeanUtils;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.convert.ConverterUtils;
 
 /**
  * Settings接口的抽象实现。

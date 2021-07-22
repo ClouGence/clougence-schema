@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+
 import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
@@ -21,13 +22,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.jdbc.*;
 import net.hasor.db.jdbc.extractor.ColumnMapResultSetExtractor;
 import net.hasor.db.jdbc.extractor.RowMapperResultSetExtractor;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
-import net.hasor.utils.StringUtils;
 
 /**
  * 基于 JDBC 接口的元信息获取

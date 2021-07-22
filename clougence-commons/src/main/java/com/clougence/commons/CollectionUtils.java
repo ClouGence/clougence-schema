@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.utils;
-
+package com.clougence.commons;
 import java.util.*;
 import java.util.function.Function;
 
@@ -24,7 +23,6 @@ import java.util.function.Function;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class CollectionUtils {
-
     // Empty utilities
     //--------------------------------------------------------------------------
     public static boolean isNotEmpty(List<?> tables) {
@@ -62,7 +60,6 @@ public class CollectionUtils {
     /** 迭代器类型转换 */
     public static <T, O> Iterator<O> convertIterator(final Iterator<T> oriIterator, final Function<T, O> converter) {
         return new Iterator<O>() {
-
             @Override
             public void remove() {
                 oriIterator.remove();
@@ -83,7 +80,6 @@ public class CollectionUtils {
     /** 转换为 Enumeration */
     public static <T> Enumeration<T> asEnumeration(final Iterator<T> iterator) {
         return new Enumeration<T>() {
-
             @Override
             public boolean hasMoreElements() {
                 return iterator.hasNext();
@@ -101,7 +97,6 @@ public class CollectionUtils {
         final Enumeration<T> i1 = enum1 != null ? enum1 : CollectionUtils.asEnumeration(Collections.emptyIterator());
         final Enumeration<T> i2 = enum2 != null ? enum2 : CollectionUtils.asEnumeration(Collections.emptyIterator());
         return new Enumeration<T>() {
-
             private Enumeration<T> it = i1;
 
             @Override
@@ -124,7 +119,6 @@ public class CollectionUtils {
         final Iterator<T> i1 = iterator1 != null ? iterator1 : Collections.emptyIterator();
         final Iterator<T> i2 = iterator2 != null ? iterator2 : Collections.emptyIterator();
         return new Iterator<T>() {
-
             private Iterator<T> it = i1;
 
             @Override

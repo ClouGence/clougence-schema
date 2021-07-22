@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.umi.serializer.Serializer;
 import com.clougence.schema.umi.special.rdb.RdbIndex;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.hasor.utils.StringUtils;
 
 public class RdbIndexSerializer implements Serializer<RdbIndex> {
 

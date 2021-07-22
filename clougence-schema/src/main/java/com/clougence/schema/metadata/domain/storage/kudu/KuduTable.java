@@ -16,13 +16,12 @@
 package com.clougence.schema.metadata.domain.storage.kudu;
 
 import java.util.List;
-import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Kudu
+ * Kudu Table
  * @version : 2021-06-24
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -30,28 +29,15 @@ import lombok.Setter;
 @Setter
 public class KuduTable {
 
+    // tableInfo
     private String              tableId;
     private String              tableName;
-    private int                 numReplicas;
-    private String              comment;
-
-    private Map<String, String> extraConfig;
-    private String              owner;
+    // tableStatistics(read only)
     private long                onDiskSize;
     private long                liveRowCount;
-
-    private List<String>        partitionColumnList;
-
-    //    private final List<ColumnSchema>    columnsByIndex;
-    //    private final List<ColumnSchema>    primaryKeyColumns;
-    //    private final Map<String, Integer>  columnsByName;
-    //    private final Map<Integer, Integer> columnsById;
-    //    private final Map<String, Integer>  columnIdByName;
-    //    private final int[]                 columnOffsets;
-    //    private final int                   varLengthColumnCount;
-    //    private final int                   rowSize;
-    //    private final boolean               hasNullableColumns;
-    //    private final int                   isDeletedIndex;
-    //    private static final int            NO_IS_DELETED_INDEX = -1;
-
+    // open table info
+    private Integer             numReplicas;
+    private String              owner;
+    private String              comment;
+    private List<KuduPartition> partitionList;
 }

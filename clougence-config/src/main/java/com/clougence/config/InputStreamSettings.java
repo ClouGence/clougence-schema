@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 package com.clougence.config;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
+import com.clougence.commons.ResourcesUtils;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.SettingsReader;
 import com.clougence.config.provider.StreamType;
 import com.clougence.config.provider.properties.PropertiesSettingsReader;
 import com.clougence.config.provider.xml.XmlSettingsReader;
 import com.clougence.config.provider.yaml.YamlSettingsReader;
-import net.hasor.utils.ResourcesUtils;
 
 /***
  * 传入{@link InputStream}的方式获取{@link Settings}接口的支持。

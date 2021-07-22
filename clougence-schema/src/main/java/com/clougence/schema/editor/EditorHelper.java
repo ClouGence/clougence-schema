@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import javax.sql.DataSource;
 
+import com.clougence.commons.ExceptionUtils;
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.builder.TableEditorBuilder;
 import com.clougence.schema.editor.domain.EIndexType;
@@ -22,7 +23,6 @@ import com.clougence.schema.umi.special.rdb.RdbTable;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import net.hasor.utils.ExceptionUtils;
 
 @Slf4j
 public class EditorHelper {
@@ -152,7 +152,7 @@ public class EditorHelper {
             return new TableEditorBuilder(eTable, editorContext);
         } catch (Exception e) {
             String msg = "editorData to TableEditor error.msg:" + ExceptionUtils.getRootCauseMessage(e);
-            throw ExceptionUtils.toRuntimeException(e, ee -> new RuntimeException(msg, ee));
+            throw ExceptionUtils.toRuntime(e, ee -> new RuntimeException(msg, ee));
         }
     }
 
@@ -180,7 +180,7 @@ public class EditorHelper {
             return new TableEditorBuilder(eTable, editorContext);
         } catch (Exception e) {
             String msg = "editorData to TableEditor error.msg:" + ExceptionUtils.getRootCauseMessage(e);
-            throw ExceptionUtils.toRuntimeException(e, ee -> new RuntimeException(msg, ee));
+            throw ExceptionUtils.toRuntime(e, ee -> new RuntimeException(msg, ee));
         }
     }
 }

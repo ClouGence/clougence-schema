@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.domain.rdb.mysql;
+
 import java.sql.JDBCType;
 
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
@@ -29,25 +30,27 @@ import lombok.Setter;
 @Setter
 public class MySqlColumn implements ColumnDef {
 
-    private String     name;
-    private boolean    nullable;
-    private String     dataType;
-    private String     columnType;
-    private MySqlTypes sqlType;
-    private JDBCType   jdbcType;
-    private boolean    primaryKey;
-    private boolean    uniqueKey;              //如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
-    private String     comment;
+    private String                   name;
+    private boolean                  nullable;
+    private String                   dataType;
+    private String                   columnType;
+    private MySqlTypes               sqlType;
+    private JDBCType                 jdbcType;
+    private boolean                  primaryKey;
+    private boolean                  uniqueKey;              //如若存在联合唯一索引需要借助getUniqueKey 来查询具体信息，这里只会表示该列存在至少一个唯一索引的引用。
+    private String                   comment;
     //
-    private Integer    datetimePrecision;
-    private Integer    numericPrecision;
-    private Integer    numericScale;
-    private String     defaultValue;
+    private Integer                  datetimePrecision;
+    private Integer                  numericPrecision;
+    private Integer                  numericScale;
+    private String                   defaultValue;
     //
-    private String     defaultCollationName;
-    private String     defaultCharacterSetName;
-    private Long       charactersMaxLength;
-    private Long       bytesMaxLength;
+    private String                   defaultCollationName;
+    private String                   defaultCharacterSetName;
+    private Long                     charactersMaxLength;
+    private Long                     bytesMaxLength;
+    //
+    private MySqlOnCurrentUpdateType onCurrentUpdateType;
 
     public String getName() { return this.name; }
 

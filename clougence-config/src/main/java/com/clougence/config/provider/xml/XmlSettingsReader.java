@@ -16,6 +16,7 @@
  *
  */
 package com.clougence.config.provider.xml;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,11 +28,11 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import com.clougence.commons.ResourcesUtils;
 import com.clougence.config.Settings;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.SettingsReader;
 import com.clougence.config.provider.StreamType;
-import net.hasor.utils.ResourcesUtils;
 
 /**
  *

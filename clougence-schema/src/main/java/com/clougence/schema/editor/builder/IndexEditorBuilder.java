@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.NoColumnException;
@@ -26,7 +27,6 @@ import com.clougence.schema.editor.TableEditor.IndexEditor;
 import com.clougence.schema.editor.domain.EColumn;
 import com.clougence.schema.editor.domain.EIndex;
 import com.clougence.schema.editor.domain.ETable;
-import net.hasor.utils.StringUtils;
 
 /**
  * @author mode 2021/5/21 19:56

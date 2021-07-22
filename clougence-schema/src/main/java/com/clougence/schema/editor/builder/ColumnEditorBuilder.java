@@ -17,6 +17,7 @@ package com.clougence.schema.editor.builder;
 
 import java.util.*;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.TableEditor.ColumnEditor;
@@ -26,7 +27,6 @@ import com.clougence.schema.editor.domain.EColumn;
 import com.clougence.schema.editor.domain.EForeignKey;
 import com.clougence.schema.editor.domain.EIndex;
 import com.clougence.schema.editor.domain.ETable;
-import net.hasor.utils.StringUtils;
 
 /**
  * @author mode 2021/5/21 19:56

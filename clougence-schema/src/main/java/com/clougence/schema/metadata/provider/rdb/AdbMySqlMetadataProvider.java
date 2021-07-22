@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.clougence.schema.metadata.provider.rdb;
+
 import java.sql.Connection;
 import java.sql.JDBCType;
 import java.sql.SQLException;
@@ -21,13 +22,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.adb.mysql.*;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.utils.StringUtils;
 
 /**
  * Adb For MySql 3.0 元信息获取，参考资料：

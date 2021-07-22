@@ -1,7 +1,8 @@
 package com.clougence.schema.umi.provider;
+
+import com.clougence.commons.function.ESupplier;
 import com.clougence.schema.metadata.MetaDataService;
 import com.clougence.schema.umi.UmiService;
-import net.hasor.utils.function.ESupplier;
 
 /**
  * mysql DsSchemaRService

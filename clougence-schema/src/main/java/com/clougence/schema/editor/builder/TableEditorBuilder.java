@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package com.clougence.schema.editor.builder;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
@@ -30,7 +32,6 @@ import com.clougence.schema.editor.provider.EditorProviderRegister;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.typemapping.TypeMapping;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
-import net.hasor.utils.StringUtils;
 
 /**
  * @author mode 2021/5/21 19:56

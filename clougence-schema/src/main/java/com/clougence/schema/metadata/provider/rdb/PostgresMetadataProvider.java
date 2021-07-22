@@ -22,12 +22,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.postgres.*;
 import com.clougence.schema.metadata.domain.rdb.postgres.driver.PgServerVersion;
 import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.utils.StringUtils;
 
 /**
  * Postgres 元信息获取，参考资料：

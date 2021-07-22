@@ -16,6 +16,7 @@
  *
  */
 package com.clougence.config.provider.yaml;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -25,13 +26,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.yaml.snakeyaml.Yaml;
+import com.clougence.commons.ResourcesUtils;
 import com.clougence.config.SettingNode;
 import com.clougence.config.Settings;
 import com.clougence.config.data.TreeNode;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.SettingsReader;
 import com.clougence.config.provider.StreamType;
-import net.hasor.utils.ResourcesUtils;
 
 /**
  *

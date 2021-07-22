@@ -1,16 +1,17 @@
 package com.clougence.schema.editor.provider.postgresql;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.clougence.commons.StringUtils;
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.domain.*;
 import com.clougence.schema.editor.provider.AbstractProvider;
 import com.clougence.schema.editor.triggers.TriggerContext;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import lombok.extern.slf4j.Slf4j;
-import net.hasor.utils.StringUtils;
 
 /**
  * @author mode 2021/1/8 19:56
