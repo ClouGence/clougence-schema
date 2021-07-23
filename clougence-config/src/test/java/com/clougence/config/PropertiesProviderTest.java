@@ -18,14 +18,13 @@ package com.clougence.config;
 import java.io.IOException;
 import java.net.URL;
 
-import com.clougence.config.BasicSettings;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.clougence.commons.ResourcesUtils;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.StreamType;
 import com.clougence.config.provider.properties.PropertiesSettingsReader;
-import net.hasor.utils.ResourcesUtils;
 
 public class PropertiesProviderTest {
 
