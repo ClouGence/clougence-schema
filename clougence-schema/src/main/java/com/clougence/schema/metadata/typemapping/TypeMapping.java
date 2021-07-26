@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.clougence.commons.function.ESupplier;
-import com.clougence.commons.supplier.SingleProvider;
+import com.clougence.utils.function.ESupplier;
+import com.clougence.utils.supplier.SingleProvider;
 import com.clougence.config.InputStreamSettings;
 import com.clougence.config.SettingNode;
 import com.clougence.config.Settings;

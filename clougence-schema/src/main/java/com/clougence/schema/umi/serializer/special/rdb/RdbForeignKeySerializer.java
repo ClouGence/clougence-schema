@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.schema.umi.serializer.AbstractUmiConstraintSerializer;
 import com.clougence.schema.umi.special.rdb.RdbForeignKey;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;

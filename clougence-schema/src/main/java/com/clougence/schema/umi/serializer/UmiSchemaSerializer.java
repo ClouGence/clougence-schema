@@ -3,8 +3,8 @@ package com.clougence.schema.umi.serializer;
 import java.io.IOException;
 import java.util.Map;
 
-import com.clougence.commons.ClassUtils;
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.ClassUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.schema.umi.*;
 import com.clougence.schema.umi.serializer.special.rdb.RdbColumnSerializer;
 import com.clougence.schema.umi.serializer.special.rdb.RdbTableSerializer;

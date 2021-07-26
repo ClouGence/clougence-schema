@@ -21,7 +21,7 @@ import java.net.URL;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.clougence.commons.ResourcesUtils;
+import com.clougence.utils.ResourcesUtils;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.StreamType;
 import com.clougence.config.provider.xml.XmlSettingsReader;

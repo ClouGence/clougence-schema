@@ -23,8 +23,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import com.clougence.commons.ResourcesUtils;
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.ResourcesUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.StreamType;
 

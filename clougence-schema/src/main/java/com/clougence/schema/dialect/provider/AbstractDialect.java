@@ -12,8 +12,8 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.clougence.commons.ResourcesUtils;
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.ResourcesUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.schema.dialect.Dialect;
 import com.clougence.schema.umi.UmiSchema;
 import net.hasor.utils.io.IOUtils;

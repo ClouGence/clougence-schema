@@ -22,9 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.clougence.commons.BeanUtils;
-import com.clougence.commons.StringUtils;
-import com.clougence.commons.convert.ConverterUtils;
+import com.clougence.utils.BeanUtils;
+import com.clougence.utils.StringUtils;
+import com.clougence.utils.convert.ConverterUtils;
 import com.clougence.config.data.TreeNode;
 
 /**

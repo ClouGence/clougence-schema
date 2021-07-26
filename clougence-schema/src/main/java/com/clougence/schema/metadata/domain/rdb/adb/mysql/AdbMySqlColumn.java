@@ -47,7 +47,7 @@ public class AdbMySqlColumn implements ColumnDef {
     private String                      defaultCollationName;
     private String                      defaultCharacterSetName;
     private Long                        charactersMaxLength;
-    private Integer                     bytesMaxLength;
+    private Long                        bytesMaxLength;
     //
     private AdbMySqlOnCurrentUpdateType onCurrentUpdateType;
 

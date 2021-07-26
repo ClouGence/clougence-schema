@@ -17,7 +17,7 @@ package com.clougence.schema.editor.builder;
 
 import java.util.*;
 
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.schema.editor.ConflictException;
 import com.clougence.schema.editor.EditorContext;
 import com.clougence.schema.editor.TableEditor.ColumnEditor;

@@ -28,10 +28,10 @@ import java.time.*;
 import java.util.*;
 import javax.sql.DataSource;
 
-import com.clougence.commons.StringUtils;
-import com.clougence.commons.convert.ConverterUtils;
-import com.clougence.commons.function.EFunction;
-import com.clougence.commons.function.ESupplier;
+import com.clougence.utils.StringUtils;
+import com.clougence.utils.convert.ConverterUtils;
+import com.clougence.utils.function.EFunction;
+import com.clougence.utils.function.ESupplier;
 import com.clougence.schema.metadata.CaseSensitivityType;
 
 /**

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.clougence.commons.NumberUtils;
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.NumberUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.schema.umi.serializer.ValueUmiSchemaSerializer;
 import com.clougence.schema.umi.special.rdb.RdbColumn;
 import com.fasterxml.jackson.core.JsonProcessingException;

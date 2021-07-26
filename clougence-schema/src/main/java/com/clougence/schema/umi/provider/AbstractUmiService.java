@@ -1,6 +1,6 @@
 package com.clougence.schema.umi.provider;
 
-import com.clougence.commons.function.ESupplier;
+import com.clougence.utils.function.ESupplier;
 import com.clougence.schema.metadata.MetaDataService;
 import com.clougence.schema.umi.UmiService;
 

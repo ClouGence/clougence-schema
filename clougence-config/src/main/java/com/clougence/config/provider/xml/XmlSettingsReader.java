@@ -28,7 +28,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import com.clougence.commons.ResourcesUtils;
+import com.clougence.utils.ResourcesUtils;
 import com.clougence.config.Settings;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.SettingsReader;

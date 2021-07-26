@@ -22,7 +22,7 @@ import java.util.Stack;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.config.SettingNode;
 import com.clougence.config.Settings;
 import com.clougence.config.data.TreeNode;

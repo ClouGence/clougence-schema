@@ -23,8 +23,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import com.clougence.commons.ArrayUtils;
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.ArrayUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.config.SettingNode;
 import com.clougence.config.Settings;
 import com.clougence.config.UpdateValue;
