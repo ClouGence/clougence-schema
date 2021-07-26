@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;

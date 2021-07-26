@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.clougence.commons.ClassUtils;
-import com.clougence.commons.EnumUtils;
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.ClassUtils;
+import com.clougence.utils.EnumUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.umi.AbstractUmiSchema;
 import com.clougence.schema.umi.UmiConstraint;

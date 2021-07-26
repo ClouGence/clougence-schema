@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.clougence.commons.ClassUtils;
-import com.clougence.commons.EnumUtils;
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.ClassUtils;
+import com.clougence.utils.EnumUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.umi.ValueUmiSchema;
 import com.fasterxml.jackson.core.JsonProcessingException;

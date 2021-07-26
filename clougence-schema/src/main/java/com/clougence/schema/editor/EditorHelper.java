@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import javax.sql.DataSource;
 
-import com.clougence.commons.ExceptionUtils;
+import com.clougence.utils.ExceptionUtils;
 import com.clougence.schema.DsType;
 import com.clougence.schema.editor.builder.TableEditorBuilder;
 import com.clougence.schema.editor.domain.EIndexType;

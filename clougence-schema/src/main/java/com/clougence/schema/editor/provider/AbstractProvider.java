@@ -1,6 +1,6 @@
 package com.clougence.schema.editor.provider;
 
-import com.clougence.commons.StringUtils;
+import com.clougence.utils.StringUtils;
 import com.clougence.schema.DsType;
 import com.clougence.schema.dialect.Dialect;
 import com.clougence.schema.dialect.DialectRegister;

@@ -25,7 +25,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import com.clougence.commons.ResourcesUtils;
+import com.clougence.utils.ResourcesUtils;
 import com.clougence.config.Settings;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.SettingsReader;

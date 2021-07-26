@@ -32,6 +32,10 @@
     <dependencies>
         <dependency>
             <groupId>com.clougence</groupId>
+            <artifactId>clougence-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.clougence</groupId>
             <artifactId>clougence-config</artifactId>
         </dependency>
         <dependency>
@@ -104,7 +108,7 @@
             <groupId>org.apache.kudu</groupId>
             <artifactId>kudu-client</artifactId>
             <version>${kudu.version}</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.kudu</groupId>

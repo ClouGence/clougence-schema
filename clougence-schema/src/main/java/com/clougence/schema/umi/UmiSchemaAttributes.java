@@ -4,7 +4,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.clougence.commons.CollectionUtils;
+import com.clougence.utils.CollectionUtils;
 import lombok.Getter;
 import lombok.Setter;
 

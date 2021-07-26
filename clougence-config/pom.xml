@@ -26,7 +26,7 @@
     <dependencies>
         <dependency>
             <groupId>com.clougence</groupId>
-            <artifactId>clougence-commons</artifactId>
+            <artifactId>clougence-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
@@ -39,7 +39,7 @@
 
     <build>
         <plugins>
-            <!-- 把 inject、yaml 的源码和 class 集成到 hasor-core 项目中 -->
+            <!-- 把 yaml 的源码和 class 集成到 clougence-config 项目中 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>

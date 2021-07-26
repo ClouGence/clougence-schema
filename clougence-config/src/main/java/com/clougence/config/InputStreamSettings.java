@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
-import com.clougence.commons.ResourcesUtils;
+import com.clougence.utils.ResourcesUtils;
 import com.clougence.config.provider.ConfigSource;
 import com.clougence.config.provider.SettingsReader;
 import com.clougence.config.provider.StreamType;

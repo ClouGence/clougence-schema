@@ -24,8 +24,8 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.clougence.commons.StringUtils;
-import com.clougence.commons.io.FilenameUtils;
+import com.clougence.utils.StringUtils;
+import com.clougence.utils.io.FilenameUtils;
 
 /**
  * Settings接口的抽象实现。

@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.clougence.commons.StringUtils;
-import com.clougence.commons.function.ESupplier;
+import com.clougence.utils.StringUtils;
+import com.clougence.utils.function.ESupplier;
 import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.domain.rdb.postgres.*;
 import com.clougence.schema.metadata.provider.rdb.PostgresMetadataProvider;

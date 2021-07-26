@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.yaml.snakeyaml.Yaml;
-import com.clougence.commons.ResourcesUtils;
+import com.clougence.utils.ResourcesUtils;
 import com.clougence.config.SettingNode;
 import com.clougence.config.Settings;
 import com.clougence.config.data.TreeNode;
