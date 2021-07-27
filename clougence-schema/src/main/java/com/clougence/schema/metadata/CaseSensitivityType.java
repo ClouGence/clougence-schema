@@ -21,12 +21,33 @@ package com.clougence.schema.metadata;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum CaseSensitivityType {
+
     /** 大写 */
-    Upper,
+    Upper("UPPER"),
     /** 小写 */
-    Lower,
+    Lower("LOWER"),
     /** 精确的 */
-    Exact,
+    Exact("EXACT"),
     /** 模糊的（即可大写也可小写） */
-    Fuzzy
+    Fuzzy("FUZZY");
+
+    private final String typeName;
+
+    CaseSensitivityType(String typeName){
+        this.typeName = typeName;
+    }
+
+    public String getTypeName() { return this.typeName; }
+
+    public static CaseSensitivityType valueOfCode(String code) {
+        for (CaseSensitivityType constraintType : CaseSensitivityType.values()) {
+            if (constraintType.typeName.equalsIgnoreCase(code)) {
+                return constraintType;
+            }
+            if (constraintType.name().equalsIgnoreCase(code)) {
+                return constraintType;
+            }
+        }
+        return null;
+    }
 }

@@ -1,12 +1,12 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package com.clougence.utils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,6 +124,7 @@ import java.util.Locale;
  */
 //@Immutable
 public class StringUtils {
+
     // Performance testing notes (JDK 1.4, Jul03, scolebourne)
     // Whitespace:
     // Character.isWhitespace() is faster than WHITESPACE.indexOf()
@@ -142,16 +144,16 @@ public class StringUtils {
      * The empty String <code>""</code>.
      * @since 2.0
      */
-    public static final  String EMPTY           = "";
+    public static final String EMPTY           = "";
     /**
      * Represents a failed index search.
      * @since 2.1
      */
-    public static final  int    INDEX_NOT_FOUND = -1;
+    public static final int    INDEX_NOT_FOUND = -1;
     /**
      * <p>The maximum size to which the padding constant(s) can expand.</p>
      */
-    private static final int    PAD_LIMIT       = 8192;
+    private static final int   PAD_LIMIT       = 8192;
 
     /**
      * <p><code>StringUtils</code> instances should NOT be constructed in
@@ -161,7 +163,7 @@ public class StringUtils {
      * <p>This constructor is public to permit tools that require a JavaBean
      * instance to operate.</p>
      */
-    public StringUtils() {
+    public StringUtils(){
         super();
     }
     // Empty checks
@@ -1442,8 +1444,7 @@ public class StringUtils {
         int csLast = csLen - 1;
         int searchLen = searchChars.length;
         int searchLast = searchLen - 1;
-        outer:
-        for (int i = 0; i < csLen; i++) {
+        outer: for (int i = 0; i < csLen; i++) {
             char ch = str.charAt(i);
             for (int j = 0; j < searchLen; j++) {
                 if (searchChars[j] == ch) {
@@ -5138,7 +5139,6 @@ public class StringUtils {
      * StringUtils.defaultString("bat") = "bat"
      * </pre>
      *
-     * @see ObjectUtils#toString(Object)
      * @see String#valueOf(Object)
      * @param str  the String to check, may be null
      * @return the passed in String, or the empty String if it
@@ -5158,7 +5158,6 @@ public class StringUtils {
      * StringUtils.defaultString("bat", "NULL") = "bat"
      * </pre>
      *
-     * @see ObjectUtils#toString(Object, String)
      * @see String#valueOf(Object)
      * @param str  the String to check, may be null
      * @param defaultStr  the default String to return
@@ -5680,7 +5679,7 @@ public class StringUtils {
            of the current cost count being calculated).  (Note that the arrays aren't really
            copied anymore, just switched...this is clearly much better than cloning an array
            or doing a System.arraycopy() each time  through the outer loop.)
-
+        
            Effectively, the difference between the two implementations is this one does not
            cause an out of memory condition when calculating the LD over two very large strings.
          */
