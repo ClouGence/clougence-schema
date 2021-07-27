@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.provider.storage;
+package com.clougence.schema.metadata.provider.rdb;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -33,12 +33,14 @@ import org.apache.kudu.client.*;
 import org.apache.kudu.client.ListTablesResponse.TableInfo;
 import org.apache.kudu.client.PartitionSchema.HashBucketSchema;
 import org.apache.kudu.client.PartitionSchema.RangeSchema;
+import com.clougence.schema.metadata.CaseSensitivityType;
+import com.clougence.schema.metadata.domain.rdb.ColumnDef;
+import com.clougence.schema.metadata.domain.rdb.TableDef;
+import com.clougence.schema.metadata.domain.rdb.kudu.*;
+import com.clougence.schema.metadata.domain.rdb.kudu.KuduTable;
 import com.clougence.utils.StringUtils;
 import com.clougence.utils.ThreadUtils;
 import com.clougence.utils.convert.ConverterUtils;
-import com.clougence.schema.metadata.MetaDataService;
-import com.clougence.schema.metadata.domain.storage.kudu.*;
-import com.clougence.schema.metadata.domain.storage.kudu.KuduTable;
 
 /**
  * fetch KuDU metadata，Resources：
@@ -46,7 +48,7 @@ import com.clougence.schema.metadata.domain.storage.kudu.KuduTable;
  * @version : 2020-07-20
  * @author 赵永春 (zyc@hasor.net)
  */
-public class KuDuMetadataProvider implements MetaDataService {
+public class KuDuMetadataProvider implements RdbMetaDataService {
 
     private final Supplier<KuduClient> clientSupplier;
 
@@ -60,6 +62,39 @@ public class KuDuMetadataProvider implements MetaDataService {
 
     @Override
     public String getVersion() throws SQLException { return "unknown"; }
+
+    public CaseSensitivityType getPlain() throws SQLException { return CaseSensitivityType.Exact; }
+
+    public CaseSensitivityType getDelimited() throws SQLException { return CaseSensitivityType.Exact; }
+
+    @Override
+    public String getCurrentSchema() throws SQLException { return null; }
+
+    @Override
+    public String getCurrentCatalog() throws SQLException { return null; }
+
+    @Override
+    public TableDef searchTable(String catalog, String schema, String table) throws SQLException {
+        try {
+            return getTable(table);
+        } catch (KuduException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    @Override
+    public Map<String, ColumnDef> getColumnMap(String catalog, String schema, String table) throws SQLException {
+        try {
+            List<KuduColumn> columns = this.getColumns(table);
+            if (columns != null) {
+                return columns.stream().collect(Collectors.toMap(KuduColumn::getName, o -> o));
+            } else {
+                return Collections.emptyMap();
+            }
+        } catch (KuduException e) {
+            throw new SQLException(e);
+        }
+    }
 
     public List<String> getAllTableNames() throws KuduException {
         KuduClient kuduClient = this.clientSupplier.get();
@@ -101,6 +136,26 @@ public class KuDuMetadataProvider implements MetaDataService {
 
         org.apache.kudu.client.KuduTable kuduTable = kuduClient.openTable(tableName);
         return convertTable(kuduTable);
+    }
+
+    public List<KuduTable> findTable(String[] tables) throws KuduException {
+        Set<String> set1 = new HashSet<>(getAllTableNames());
+        Set<String> set2 = new HashSet<>(Arrays.asList(tables));
+        set1.retainAll(set2);
+
+        KuduClient kuduClient = this.clientSupplier.get();
+
+        List<KuduTable> tableList = new ArrayList<>();
+        for (String tableName : set1) {
+            if (!kuduClient.tableExists(tableName)) {
+                continue;
+            }
+            org.apache.kudu.client.KuduTable kuduTable = kuduClient.openTable(tableName);
+            KuduTable convertTable = convertTable(kuduTable);
+            tableList.add(convertTable);
+        }
+
+        return tableList;
     }
 
     public List<KuduColumn> getColumns(String tableName) throws KuduException {
@@ -147,7 +202,7 @@ public class KuDuMetadataProvider implements MetaDataService {
         //
         boolean hasPrecision = kuduColumn.getPrecision() != null;
         boolean hasScale = kuduColumn.getScale() != null;
-        boolean hasLength = kuduColumn.getLength() != null;
+        //boolean hasLength = kuduColumn.getLength() != null;
         ColumnTypeAttributesBuilder attributesBuilder = new ColumnTypeAttributes.ColumnTypeAttributesBuilder();
         if (hasPrecision) {
             attributesBuilder.precision(kuduColumn.getPrecision() == null ? 0 : kuduColumn.getPrecision());
@@ -155,9 +210,9 @@ public class KuDuMetadataProvider implements MetaDataService {
         if (hasScale) {
             attributesBuilder.scale(kuduColumn.getScale() == null ? 0 : kuduColumn.getScale());
         }
-        if (hasLength) {
-            attributesBuilder.length(kuduColumn.getLength() == null ? 0 : kuduColumn.getLength());
-        }
+        //if (hasLength) {
+        //attributesBuilder.length(kuduColumn.getLength() == null ? 0 : kuduColumn.getLength());
+        //}
         return attributesBuilder.build();
     }
 
@@ -171,10 +226,14 @@ public class KuDuMetadataProvider implements MetaDataService {
         List<ColumnSchema> convertColumns = new ArrayList<>();
         for (KuduColumn kuduColumn : columns) {
             try {
-                ColumnSchemaBuilder columnBuilder = new ColumnSchemaBuilder(kuduColumn.getName(), kuduColumn.getKuduTypes().getKuduType());
+                Type kdType = findKdType(kuduColumn.getKuduTypes().getKuduType());
+                if (kdType == null) {
+                    throw new UnsupportedOperationException("your kudu version column type '" + kuduColumn.getKuduTypes().getKuduType() + "' Unsupported.");
+                }
+                ColumnSchemaBuilder columnBuilder = new ColumnSchemaBuilder(kuduColumn.getName(), kdType);
                 columnBuilder.comment(kuduColumn.getComment());
                 columnBuilder.key(kuduColumn.isPrimaryKey());
-                columnBuilder.nullable(kuduColumn.isNullable());
+                columnBuilder.nullable(!kuduColumn.isPrimaryKey() && kuduColumn.isNullable());
                 columnBuilder.defaultValue(kuduColumn.getDefaultValue());
 
                 ColumnTypeAttributes typeAttributes = buildColumnTypeAttributes(kuduColumn);
@@ -201,7 +260,7 @@ public class KuDuMetadataProvider implements MetaDataService {
 
         CreateTableOptions tableOptions = new CreateTableOptions();
         tableOptions.setOwner(tableInfo.getOwner());
-        tableOptions.setComment(tableInfo.getComment());
+        //tableOptions.setComment(tableInfo.getComment());
         if (tableInfo.getNumReplicas() != null) {
             tableOptions.setNumReplicas(tableInfo.getNumReplicas());
         }
@@ -282,15 +341,15 @@ public class KuDuMetadataProvider implements MetaDataService {
         tableInfo.setTableId(kuduTable.getTableId());
         tableInfo.setTableName(kuduTable.getName());
 
-        KuduTableStatistics tableStatistics = kuduTable.getTableStatistics();
-        if (tableStatistics != null) {
-            tableInfo.setOnDiskSize(tableStatistics.getOnDiskSize());
-            tableInfo.setLiveRowCount(tableStatistics.getLiveRowCount());
-        }
+        //        KuduTableStatistics tableStatistics = kuduTable.getTableStatistics();
+        //        if (tableStatistics != null) {
+        //            tableInfo.setOnDiskSize(tableStatistics.getOnDiskSize());
+        //            tableInfo.setLiveRowCount(tableStatistics.getLiveRowCount());
+        //        }
 
         tableInfo.setNumReplicas(kuduTable.getNumReplicas());
-        tableInfo.setOwner(kuduTable.getOwner());
-        tableInfo.setComment(kuduTable.getComment());
+        //        tableInfo.setOwner(kuduTable.getOwner());
+        //        tableInfo.setComment(kuduTable.getComment());
         tableInfo.setPartitionList(new ArrayList<>());
 
         PartitionSchema partitionSchema = kuduTable.getPartitionSchema();
@@ -340,9 +399,11 @@ public class KuDuMetadataProvider implements MetaDataService {
         column.setDefaultValue(columnInfo.getDefaultValue());
         column.setNullable(columnInfo.isNullable());
         ColumnTypeAttributes typeAttributes = columnInfo.getTypeAttributes();
-        column.setPrecision(typeAttributes.getPrecision());
-        column.setScale(typeAttributes.getScale());
-        column.setLength(typeAttributes.getLength());
+        if (typeAttributes != null) {
+            column.setPrecision(typeAttributes.getPrecision());
+            column.setScale(typeAttributes.getScale());
+            //column.setLength(typeAttributes.getLength());
+        }
 
         column.setPrimaryKey(columnInfo.isKey());
         column.setDesiredBlockSize(columnInfo.getDesiredBlockSize());
@@ -374,5 +435,14 @@ public class KuDuMetadataProvider implements MetaDataService {
             columnMap.put(columnId, columnName);
         }
         return columnMap;
+    }
+
+    private Type findKdType(String kdTypeStr) {
+        for (Type kdType : Type.values()) {
+            if (StringUtils.equalsIgnoreCase(kdTypeStr, kdType.name())) {
+                return kdType;
+            }
+        }
+        return null;
     }
 }

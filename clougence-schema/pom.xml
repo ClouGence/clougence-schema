@@ -24,7 +24,7 @@
 
     <!-- 配置属性 -->
     <properties>
-        <kudu.version>1.15.0</kudu.version>
+        <kudu.version>1.10.0</kudu.version>
         <jackson.version>2.12.3</jackson.version>
     </properties>
 
@@ -108,33 +108,33 @@
             <groupId>org.apache.kudu</groupId>
             <artifactId>kudu-client</artifactId>
             <version>${kudu.version}</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.kudu</groupId>
-            <artifactId>kudu-test-utils</artifactId>
-            <version>${kudu.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kudu</groupId>
-            <artifactId>kudu-binary</artifactId>
-            <version>${kudu.version}</version>
-            <classifier>${os.detected.classifier}</classifier>
-            <scope>test</scope>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.kudu</groupId>-->
+        <!--            <artifactId>kudu-test-utils</artifactId>-->
+        <!--            <version>${kudu.version}</version>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.kudu</groupId>-->
+        <!--            <artifactId>kudu-binary</artifactId>-->
+        <!--            <version>${kudu.version}</version>-->
+        <!--            <classifier>${os.detected.classifier}</classifier>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
     </dependencies>
 
     <!-- 构建描述 -->
-    <build>
-        <!-- kudu env -->
-        <extensions>
-            <!-- Used to find the right kudu-binary artifact with the Maven property ${os.detected.classifier} -->
-            <extension>
-                <groupId>kr.motd.maven</groupId>
-                <artifactId>os-maven-plugin</artifactId>
-                <version>1.6.2</version>
-            </extension>
-        </extensions>
-    </build>
+    <!--    <build>-->
+    <!--        &lt;!&ndash; kudu env &ndash;&gt;-->
+    <!--        <extensions>-->
+    <!--            &lt;!&ndash; Used to find the right kudu-binary artifact with the Maven property ${os.detected.classifier} &ndash;&gt;-->
+    <!--            <extension>-->
+    <!--                <groupId>kr.motd.maven</groupId>-->
+    <!--                <artifactId>os-maven-plugin</artifactId>-->
+    <!--                <version>1.6.2</version>-->
+    <!--            </extension>-->
+    <!--        </extensions>-->
+    <!--    </build>-->
 </project>

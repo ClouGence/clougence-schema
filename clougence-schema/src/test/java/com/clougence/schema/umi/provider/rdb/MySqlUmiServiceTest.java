@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 import com.clougence.schema.AbstractMetadataServiceSupplierTest;
-import com.clougence.schema.DsType;
 import com.clougence.schema.DsUtils;
 import com.clougence.schema.metadata.domain.rdb.mysql.MySqlTypes;
 import com.clougence.schema.metadata.provider.rdb.MySqlMetadataProvider;
@@ -37,7 +36,6 @@ import com.clougence.schema.umi.ValueUmiSchema;
 import com.clougence.schema.umi.constraint.GeneralConstraintType;
 import com.clougence.schema.umi.constraint.Primary;
 import com.clougence.schema.umi.constraint.Unique;
-import com.clougence.schema.umi.provider.UmiServiceRegister;
 import com.clougence.schema.umi.special.rdb.*;
 import com.clougence.schema.umi.types.UmiTypes;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -72,7 +70,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getRootSchemasTest() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        UmiService umiService = new MySqlUmiService(this.connection);
         //
         List<UmiSchema> rootSchemas = umiService.getRootSchemas();
         List<String> collect = rootSchemas.stream().map(UmiSchema::getName).collect(Collectors.toList());
@@ -83,7 +81,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getSchemaTest_01() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        UmiService umiService = new MySqlUmiService(this.connection);
         //
         UmiSchema schema1 = umiService.getSchemaByPath("abc");
         UmiSchema schema2 = umiService.getSchemaByPath(MYSQL_SCHEMA_NAME);
@@ -93,7 +91,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getSchemaTest_02() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        UmiService umiService = new MySqlUmiService(this.connection);
         List<UmiSchema> schemaByPath1 = umiService.getChildSchemaByPath("information_schema");
         List<UmiSchema> schemaByPath2 = umiService.getChildSchemaByPath("mysql");
         List<String> tablesOfSchema1 = schemaByPath1.stream().map(UmiSchema::getName).collect(Collectors.toList());
@@ -106,7 +104,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getSchemaTest_03() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        UmiService umiService = new MySqlUmiService(this.connection);
         List<UmiSchema> columnSchemas = umiService.getChildSchemaByPath("information_schema", "COLUMNS");
         List<String> columnsOfTable = columnSchemas.stream().map(UmiSchema::getName).collect(Collectors.toList());
         //
@@ -118,7 +116,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getSchemaTest_04() throws SQLException {
-        UmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        UmiService umiService = new MySqlUmiService(this.connection);
         UmiSchema columnSchemas = umiService.getSchemaByPath("information_schema", "COLUMNS", "COLUMN_NAME");
         //
         assert columnSchemas.getName().equalsIgnoreCase("COLUMN_NAME");
@@ -128,7 +126,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getSchemasTest() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         List<ValueUmiSchema> schemaList = umiService.getSchemas();
         List<String> collect = schemaList.stream().map(ValueUmiSchema::getName).collect(Collectors.toList());
         assert collect.contains("information_schema");
@@ -138,7 +136,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getSchemaTest() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         ValueUmiSchema schema1 = umiService.getSchema(null, "abc");
         ValueUmiSchema schema2 = umiService.getSchema(null, MYSQL_SCHEMA_NAME);
         assert schema1 == null;
@@ -147,7 +145,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getTables() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         List<ValueUmiSchema> mysqlTables1 = umiService.getTables(null, "mysql");
         List<ValueUmiSchema> mysqlTables2 = umiService.getTables(null, "information_schema");
         //
@@ -163,7 +161,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void findTables() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         List<ValueUmiSchema> tableList = umiService.getTables(null, "information_schema", new String[] { "COLUMNS", "TABLES", "SCHEMATA", "ABC" });
         List<String> tableNames = tableList.stream().map(ValueUmiSchema::getName).collect(Collectors.toList());
         assert tableNames.size() == 3;
@@ -174,7 +172,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getTable() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         RdbTable tableObj1 = umiService.loadTable(null, "information_schema", "COLUMNS");
         RdbTable tableObj2 = umiService.loadTable(null, "information_schema", "ABC");
         RdbTable tableObj3 = umiService.loadTable(null, MYSQL_SCHEMA_NAME, "t3");
@@ -187,7 +185,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getColumns_1() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         List<RdbColumn> columnList = umiService.getColumns(null, "information_schema", "COLUMNS");
         Map<String, RdbColumn> columnMap = columnList.stream().collect(Collectors.toMap(RdbColumn::getName, c -> c));
         assert columnMap.size() > 11;
@@ -208,7 +206,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getColumns_2() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         List<RdbColumn> columnList = umiService.getColumns(null, MYSQL_SCHEMA_NAME, "proc_table_ref");
         Map<String, RdbColumn> columnMap = columnList.stream().collect(Collectors.toMap(RdbColumn::getName, c -> c));
         assert columnMap.size() == 6;
@@ -228,7 +226,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getConstraint1() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         RdbTable rdbTable = umiService.loadTable(null, MYSQL_SCHEMA_NAME, "proc_table_ref");
         assert rdbTable.hasConstraint(Primary.class);
         assert rdbTable.hasConstraint(Unique.class);
@@ -239,7 +237,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getConstraint2() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         RdbTable rdbTable = umiService.loadTable(null, MYSQL_SCHEMA_NAME, "proc_table_ref");
         //
         List<Primary> constraints1 = rdbTable.getConstraint(Primary.class);
@@ -267,7 +265,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getPrimaryKey1() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         RdbTable rdbTable = umiService.loadTable(null, MYSQL_SCHEMA_NAME, "proc_table_ref");
         //
         RdbPrimaryKey primaryKey = rdbTable.getPrimaryKey();
@@ -279,7 +277,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getPrimaryKey2() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         RdbTable rdbTable = umiService.loadTable(null, MYSQL_SCHEMA_NAME, "proc_table");
         //
         RdbPrimaryKey primaryKey = rdbTable.getPrimaryKey();
@@ -292,7 +290,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getPrimaryKey3() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         ValueUmiSchema rdbTable = umiService.getTable(null, MYSQL_SCHEMA_NAME, "t3");
         RdbPrimaryKey primaryKey = umiService.getPrimaryKey(null, MYSQL_SCHEMA_NAME, "t3");
         //
@@ -302,7 +300,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getUniqueKey() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         List<RdbUniqueKey> uniqueKeyList = umiService.getUniqueKey(null, MYSQL_SCHEMA_NAME, "tb_user");
         Map<String, RdbUniqueKey> uniqueKeyMap = uniqueKeyList.stream().collect(Collectors.toMap(RdbUniqueKey::getName, u -> u));
         assert uniqueKeyMap.size() == 2;
@@ -319,7 +317,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getForeignKey() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         List<RdbForeignKey> foreignKeyList1 = umiService.getForeignKey(null, MYSQL_SCHEMA_NAME, "tb_user");
         assert foreignKeyList1.size() == 0;
         List<RdbForeignKey> foreignKeyList2 = umiService.getForeignKey(null, MYSQL_SCHEMA_NAME, "proc_table_ref");
@@ -338,7 +336,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getIndexes1() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         List<RdbIndex> indexList = umiService.getIndexes(null, MYSQL_SCHEMA_NAME, "tb_user");
         Map<String, RdbIndex> indexMap = indexList.stream().collect(Collectors.toMap(RdbIndex::getName, i -> i));
         assert indexMap.size() == 4;
@@ -364,7 +362,7 @@ public class MySqlUmiServiceTest extends AbstractMetadataServiceSupplierTest<MyS
 
     @Test
     public void getIndexes2() throws SQLException {
-        RdbUmiService umiService = UmiServiceRegister.createRdbUmiService(DsType.MySQL, this.connection);
+        RdbUmiService umiService = new MySqlUmiService(this.connection);
         List<RdbIndex> indexList = umiService.getIndexes(null, MYSQL_SCHEMA_NAME, "proc_table_ref");
         Map<String, RdbIndex> indexMap = indexList.stream().collect(Collectors.toMap(RdbIndex::getName, i -> i));
         assert indexMap.size() == 4;

@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.domain.storage.kudu;
+package com.clougence.schema.metadata.domain.rdb.kudu;
 
 import java.util.List;
 
+import com.clougence.schema.metadata.domain.rdb.TableDef;
+import com.clougence.schema.metadata.domain.rdb.TableType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +29,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class KuduTable {
+public class KuduTable implements TableDef {
 
     // tableInfo
     private String              tableId;
@@ -40,4 +42,16 @@ public class KuduTable {
     private String              owner;
     private String              comment;
     private List<KuduPartition> partitionList;
+
+    @Override
+    public String getCatalog() { return null; }
+
+    @Override
+    public String getSchema() { return null; }
+
+    @Override
+    public String getTable() { return this.tableName; }
+
+    @Override
+    public final TableType getTableType() { return () -> "TABLE"; }
 }

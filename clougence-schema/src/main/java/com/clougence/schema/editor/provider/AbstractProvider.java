@@ -1,11 +1,11 @@
 package com.clougence.schema.editor.provider;
 
-import com.clougence.utils.StringUtils;
 import com.clougence.schema.DsType;
 import com.clougence.schema.dialect.Dialect;
 import com.clougence.schema.dialect.DialectRegister;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.umi.ValueUmiSchema;
+import com.clougence.utils.StringUtils;
 
 public abstract class AbstractProvider {
 

@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.domain.storage.kudu;
+package com.clougence.schema.metadata.domain.rdb.kudu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Kudu Partition
- * @version : 2021-04-01
+ * Kudu Primary Key
+ * @version : 2021-06-24
  * @author 赵永春 (zyc@hasor.net)
  */
 @Getter
 @Setter
-public class KuduPartition {
+public class KuduPrimaryKey {
 
-    private List<String>      columns;
-    private int               numBuckets;
-    private Integer           seed;
-    private KuduPartitionType partitionType;
+    private List<String> columns = new ArrayList<>();
 }

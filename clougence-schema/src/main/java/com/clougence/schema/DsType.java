@@ -22,12 +22,12 @@ package com.clougence.schema;
  */
 public enum DsType {
 
-    MySQL("MySQL"), //
-    AdbForMySQL("AdbForMySQL"), //
-    PostgreSQL("PostgreSQL"), //
-    Oracle("Oracle"), //
-    DM("DM"), //
-    ;
+    MySQL("MySQL"),
+    AdbForMySQL("AdbForMySQL"),
+    PostgreSQL("PostgreSQL"),
+    Oracle("Oracle"),
+    KuDu("KuDu"),
+    DM("DM"),;
 
     private final String typeName;
 

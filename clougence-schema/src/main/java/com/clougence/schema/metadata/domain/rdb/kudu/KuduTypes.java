@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.domain.storage.kudu;
+package com.clougence.schema.metadata.domain.rdb.kudu;
 
 import java.sql.JDBCType;
 
-import org.apache.kudu.Type;
 import com.clougence.schema.metadata.FieldType;
 
 /**
@@ -27,28 +26,28 @@ import com.clougence.schema.metadata.FieldType;
  */
 public enum KuduTypes implements FieldType {
 
-    INT8("int8", JDBCType.TINYINT, Type.INT8),
-    INT16("int16", JDBCType.SMALLINT, Type.INT16),
-    INT32("int32", JDBCType.INTEGER, Type.INT32),
-    INT64("int64", JDBCType.BIGINT, Type.INT64),
-    BINARY("binary", JDBCType.BINARY, Type.BINARY),
-    STRING("string", JDBCType.VARCHAR, Type.STRING),
-    BOOL("bool", JDBCType.BOOLEAN, Type.BOOL),
-    FLOAT("float", JDBCType.FLOAT, Type.FLOAT),
-    DOUBLE("double", JDBCType.DOUBLE, Type.DOUBLE),
-    UNIXTIME_MICROS("unixtime_micros", JDBCType.TIMESTAMP, Type.UNIXTIME_MICROS),
-    DECIMAL("decimal", JDBCType.DECIMAL, Type.DECIMAL),
-    VARCHAR("varchar", JDBCType.VARCHAR, Type.VARCHAR),
-    DATE("date", JDBCType.TIMESTAMP, Type.UNIXTIME_MICROS),;
+    INT8("int8", JDBCType.TINYINT, "INT8"),
+    INT16("int16", JDBCType.SMALLINT, "INT16"),
+    INT32("int32", JDBCType.INTEGER, "INT32"),
+    INT64("int64", JDBCType.BIGINT, "INT64"),
+    BINARY("binary", JDBCType.BINARY, "BINARY"),
+    STRING("string", JDBCType.VARCHAR, "STRING"),
+    BOOL("bool", JDBCType.BOOLEAN, "BOOL"),
+    FLOAT("float", JDBCType.FLOAT, "FLOAT"),
+    DOUBLE("double", JDBCType.DOUBLE, "DOUBLE"),
+    UNIXTIME_MICROS("unixtime_micros", JDBCType.TIMESTAMP, "UNIXTIME_MICROS"),
+    DECIMAL("decimal", JDBCType.DECIMAL, "DECIMAL"),
+    VARCHAR("varchar", JDBCType.VARCHAR, "VARCHAR"),
+    DATE("date", JDBCType.TIMESTAMP, "UNIXTIME_MICROS"),;
 
     private final String   codeKey;
     private final JDBCType jdbcType;
-    private final Type     kuduType;
+    private final String   kuduType;
 
-    KuduTypes(String codeKey, JDBCType jdbcType, Type kuduType){
+    KuduTypes(String codeKey, JDBCType jdbcType, String kdType){
         this.codeKey = codeKey;
         this.jdbcType = jdbcType;
-        this.kuduType = kuduType;
+        this.kuduType = kdType;
     }
 
     public static KuduTypes valueOfCode(String code) {
@@ -71,5 +70,5 @@ public enum KuduTypes implements FieldType {
         return this.jdbcType;
     }
 
-    public Type getKuduType() { return this.kuduType; }
+    public String getKuduType() { return this.kuduType; }
 }

@@ -13,35 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.domain.storage.kudu;
+package com.clougence.schema.metadata.domain.rdb.kudu;
+
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Kudu Column
+ * Kudu Partition
  * @version : 2021-04-01
  * @author 赵永春 (zyc@hasor.net)
  */
 @Getter
 @Setter
-public class KuduColumn {
+public class KuduPartition {
 
-    private String    name;
-    private KuduTypes kuduTypes;
-    private String    columnType;
-    private String    comment = "";
-    private boolean   primaryKey;
-    private boolean   partition;
-
-    private boolean   nullable;
-    private Object    defaultValue;
-    private Integer   precision;
-    private Integer   scale;
-    private Integer   length;
-
-    private Integer   desiredBlockSize;
-    private String    encoding;
-    private String    compressionAlgorithm;
-    private Integer   typeSize;
+    private List<String>      columns;
+    private int               numBuckets;
+    private Integer           seed;
+    private KuduPartitionType partitionType;
 }

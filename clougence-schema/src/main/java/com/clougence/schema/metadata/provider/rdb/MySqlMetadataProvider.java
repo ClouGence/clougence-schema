@@ -22,13 +22,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 
-import com.clougence.utils.StringUtils;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.FieldType;
 import com.clougence.schema.metadata.domain.rdb.ColumnDef;
 import com.clougence.schema.metadata.domain.rdb.TableDef;
 import com.clougence.schema.metadata.domain.rdb.mysql.*;
 import com.clougence.schema.metadata.domain.rdb.mysql.driver.MysqlType;
+import com.clougence.utils.StringUtils;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 
 /**

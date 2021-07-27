@@ -6,15 +6,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.kudu.client.KuduClient;
-import org.apache.kudu.test.KuduTestHarness;
-import org.junit.Rule;
 import org.junit.Test;
-import com.clougence.schema.metadata.domain.storage.kudu.*;
+import com.clougence.schema.metadata.domain.rdb.kudu.*;
+import com.clougence.schema.metadata.provider.rdb.KuDuMetadataProvider;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class KuduTest {
-
-    @Rule
-    public KuduTestHarness harness = new KuduTestHarness();
 
     protected KuduTable createTable(String name, String comment, String owner) {
         KuduTable table = new KuduTable();
@@ -43,16 +41,16 @@ public class KuduTest {
     }
 
     @Test
-    public void test() throws Exception {
+    public void testRemote() throws Exception {
         // Get a KuduClient configured to talk to the running mini cluster.
-        KuduClient client = harness.getClient();
+        KuduClient client = new KuduClient.KuduClientBuilder("192.168.0.244:7051").build();
 
         // Create a new Kudu table.
         KuduTable tbUser = createTable("tb_user", "test table", "zyc");
         List<KuduColumn> columns = new ArrayList<>();
-        columns.add(createColumn("uuid", KuduTypes.VARCHAR, 128, true));
-        columns.add(createColumn("name", KuduTypes.VARCHAR, 128, true));
-        columns.add(createColumn("password", KuduTypes.VARCHAR, 128, true));
+        columns.add(createColumn("uuid", KuduTypes.STRING, 128, true));
+        columns.add(createColumn("name", KuduTypes.STRING, 128, true));
+        columns.add(createColumn("password", KuduTypes.STRING, 128, true));
         columns.add(createColumn("age", KuduTypes.DECIMAL, null, false));
         columns.add(createColumn("create_time", KuduTypes.DATE, null, false));
         //
@@ -61,6 +59,13 @@ public class KuduTest {
         tbUser.getPartitionList().add(createPartition(3, 11, Arrays.asList("name", "password")));
 
         KuDuMetadataProvider provider = new KuDuMetadataProvider(client);
+        //
+        if (provider.getTable("tb_user") != null) {
+            provider.dropTable("tb_user", 5, TimeUnit.SECONDS);
+            log.info("drop table tb_user.");
+        }
+
+        //
         provider.createTable(tbUser, columns, 5, TimeUnit.SECONDS);
         //
         KuduTable tableInfo = provider.getTable("tb_user");

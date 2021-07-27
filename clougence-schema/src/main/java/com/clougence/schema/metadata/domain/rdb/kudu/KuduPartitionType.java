@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.clougence.schema.metadata.domain.storage.kudu;
+package com.clougence.schema.metadata.domain.rdb.kudu;
 
 /**
  * <li>https://kudu.apache.org/docs/schema_design.html</li>

@@ -1,25 +1,21 @@
 package com.clougence.schema.editor;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.sql.DataSource;
 
-import com.clougence.utils.ExceptionUtils;
-import com.clougence.schema.DsType;
 import com.clougence.schema.editor.builder.TableEditorBuilder;
 import com.clougence.schema.editor.domain.EIndexType;
 import com.clougence.schema.editor.domain.ETable;
 import com.clougence.schema.umi.constraint.GeneralConstraintType;
-import com.clougence.schema.umi.provider.UmiServiceRegister;
 import com.clougence.schema.umi.provider.rdb.RdbUmiService;
 import com.clougence.schema.umi.special.rdb.RdbColumn;
 import com.clougence.schema.umi.special.rdb.RdbForeignKeyRule;
 import com.clougence.schema.umi.special.rdb.RdbPrimaryKey;
 import com.clougence.schema.umi.special.rdb.RdbTable;
+import com.clougence.utils.ExceptionUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 public class EditorHelper {
 
     private final RdbUmiService rdbUmiService;
-
-    public EditorHelper(DsType dsType, Connection connection){
-        this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dsType, connection);
-    }
-
-    public EditorHelper(DsType dsType, DataSource dataSource){
-        this.rdbUmiService = UmiServiceRegister.createRdbUmiService(dsType, dataSource);
-    }
 
     public EditorHelper(RdbUmiService rdbUmiService){
         this.rdbUmiService = Objects.requireNonNull(rdbUmiService, "rdbUmiService must not null.");

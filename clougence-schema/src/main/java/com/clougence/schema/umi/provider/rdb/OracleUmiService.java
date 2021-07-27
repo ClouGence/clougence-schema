@@ -1,14 +1,14 @@
 package com.clougence.schema.umi.provider.rdb;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.sql.DataSource;
 
-import com.clougence.utils.StringUtils;
-import com.clougence.utils.function.ESupplier;
 import com.clougence.schema.DsType;
 import com.clougence.schema.metadata.domain.rdb.oracle.*;
 import com.clougence.schema.metadata.provider.rdb.OracleMetadataProvider;
@@ -20,12 +20,26 @@ import com.clougence.schema.umi.constraint.Unique;
 import com.clougence.schema.umi.special.rdb.*;
 import com.clougence.schema.umi.types.JavaTypes;
 import com.clougence.schema.umi.types.UmiTypes;
+import com.clougence.utils.StringUtils;
+import com.clougence.utils.function.ESupplier;
 import net.hasor.utils.json.JSON;
 
 /**
  * @author mode 2021/1/8 19:56
  */
 public class OracleUmiService extends AbstractRdbUmiService<OracleMetadataProvider> {
+
+    public OracleUmiService(DataSource dataSource){
+        this(new OracleMetadataProvider(dataSource));
+    }
+
+    public OracleUmiService(Connection connection){
+        this(new OracleMetadataProvider(connection));
+    }
+
+    public OracleUmiService(OracleMetadataProvider metadataProvider){
+        super(() -> metadataProvider);
+    }
 
     public OracleUmiService(ESupplier<OracleMetadataProvider, SQLException> metadataSupplier){
         super(metadataSupplier);
@@ -55,7 +69,7 @@ public class OracleUmiService extends AbstractRdbUmiService<OracleMetadataProvid
                 return StringUtils.equals(valueUmiSchema.getName(), parentPath[2]);
             }).findFirst().orElse(null);
         } else {
-            throw new IndexOutOfBoundsException("path is the deepest 3 levels.");
+            throw new IndexOutOfBoundsException("path more than 3 layers.");
         }
     }
 
@@ -71,7 +85,7 @@ public class OracleUmiService extends AbstractRdbUmiService<OracleMetadataProvid
             // load columns
             return new ArrayList<>(getColumns(null, parentPath[0], parentPath[1]));
         } else {
-            throw new IndexOutOfBoundsException("path is the deepest 2 levels.");
+            throw new IndexOutOfBoundsException("path more than 2 layers.");
         }
     }
 

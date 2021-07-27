@@ -1,4 +1,5 @@
 package com.clougence.schema.editor;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -13,6 +14,7 @@ import com.clougence.schema.editor.builder.actions.Action;
 import com.clougence.schema.metadata.CaseSensitivityType;
 import com.clougence.schema.metadata.provider.rdb.MySqlMetadataProvider;
 import com.clougence.schema.metadata.typemapping.TypeMapping;
+import com.clougence.schema.umi.provider.rdb.MySqlUmiService;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.utils.StringUtils;
 
@@ -41,7 +43,7 @@ public class EditorTest extends AbstractMetadataServiceSupplierTest<MySqlMetadat
 
     @Test
     public void editorInit() throws SQLException {
-        EditorHelper helper = new EditorHelper(DsType.MySQL, this.connection);
+        EditorHelper helper = new EditorHelper(new MySqlUmiService(this.connection));
         TableEditor tableEditor = helper.editTableEditor(null, repository.getCurrentSchema(), "tb_user", new EditorOptions());
         tableEditor.getColumn("loginName").delete();
         tableEditor.getColumn("index").rename("except");
