@@ -1,6 +1,8 @@
 package com.clougence.schema.umi.provider.rdb;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.clougence.schema.metadata.CaseSensitivityType;
@@ -8,6 +10,7 @@ import com.clougence.schema.metadata.provider.rdb.RdbMetaDataService;
 import com.clougence.schema.umi.ValueUmiSchema;
 import com.clougence.schema.umi.provider.AbstractUmiService;
 import com.clougence.schema.umi.special.rdb.*;
+import com.clougence.utils.StringUtils;
 import com.clougence.utils.function.ESupplier;
 
 /**
@@ -66,5 +69,32 @@ public abstract class AbstractRdbUmiService<T extends RdbMetaDataService> extend
         //
         rdbTable.getAttributes().setAttributes(umiTable.getAttributes());
         return rdbTable;
+    }
+
+    @Override
+    public List<RdbTable> loadTables(String catalog, String schema, String[] tables) throws SQLException {
+        if (tables == null || tables.length == 0) {
+            return Collections.emptyList();
+        }
+        List<RdbTable> resultList = new ArrayList<>();
+        for (String tableName : tables) {
+            if (StringUtils.isBlank(tableName)) {
+                continue;
+            }
+            RdbTable rdbTable = loadTable(catalog, schema, tableName);
+            resultList.add(rdbTable);
+        }
+        return resultList;
+    }
+
+    @Override
+    public List<RdbTable> loadTables(String catalog, String schema) throws SQLException {
+        List<ValueUmiSchema> tables = getTables(catalog, schema);
+        List<RdbTable> resultList = new ArrayList<>();
+        for (ValueUmiSchema tableName : tables) {
+            RdbTable rdbTable = loadTable(catalog, schema, tableName.getName());
+            resultList.add(rdbTable);
+        }
+        return resultList;
     }
 }

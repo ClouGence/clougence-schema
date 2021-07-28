@@ -21,6 +21,10 @@ public interface RdbUmiService extends UmiService {
 
     public RdbTable loadTable(String catalog, String schema, String table) throws SQLException;
 
+    public List<RdbTable> loadTables(String catalog, String schema, String[] tables) throws SQLException;
+
+    public List<RdbTable> loadTables(String catalog, String schema) throws SQLException;
+
     public List<ValueUmiSchema> getCatalogs() throws SQLException;
 
     public List<ValueUmiSchema> getSchemas() throws SQLException;
