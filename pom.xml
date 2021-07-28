@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.clougence</groupId>
     <artifactId>clougence-schema-parent</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- Project Info -->
@@ -25,7 +25,7 @@
         <connection>scm:git:git@gitee.com:clougence/clougence-schema.git</connection>
         <developerConnection>scm:git:git@gitee.com:clougence/clougence-schema.git</developerConnection>
         <url>git@gitee.com:clougence/clougence-schema.git</url>
-        <tag>Release.Clougence-1.0.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <!-- 开发者 -->
