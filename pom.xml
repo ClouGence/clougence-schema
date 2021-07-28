@@ -45,6 +45,8 @@
         <project.website>https://www.clougence.com/</project.website>
         <project.inceptionYear>2021</project.inceptionYear>
         <hasor.version>4.2.5</hasor.version>
+        <maven.test.skip>true</maven.test.skip>
+        <skipTests>true</skipTests>
     </properties>
 
     <modules>
